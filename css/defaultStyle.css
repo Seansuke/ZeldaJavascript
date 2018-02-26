@@ -1,0 +1,22 @@
+body {
+	background-image: url("../gfx/bg.png");
+	background-repeat: repeat;
+	margin: 0;
+}
+
+#gameWindow img {
+	position : absolute;
+	margin-left: 8px;
+	margin-top: 8px;
+}
+
+#console {
+	width: 656px;
+	display: block;
+}
+
+#gameWindow {
+	width: 656px;
+	height: 488px;
+	overflow: hidden;
+}

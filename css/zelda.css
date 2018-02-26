@@ -1,0 +1,17 @@
+body
+{
+	background-image: url("../gfx/bg.png");
+	background-repeat: repeat;
+}
+
+input
+{
+	position : absolute;
+}
+
+img
+{
+	margin-left: 180px;
+	margin-top: 50px;
+	position : absolute;
+}

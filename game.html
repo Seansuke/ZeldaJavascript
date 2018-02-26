@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title> 
+			The Legend of Zelda - JavaScript Edition - v1.3
+		</title>
+		<link 
+			rel = "stylesheet" 
+			type = "text/css" 
+			href = "css/defaultStyle.css" 
+		/>
+		<script type = "text/javascript" src = "js/globals.js" ></script>
+		<script type = "text/javascript" src = "js/classes.js" ></script>
+		<script type = "text/javascript" src = "js/methods.js" ></script>
+		<script type = "text/javascript" src = "js/controls.js" ></script>
+		<script type = "text/javascript" src = "js/statics.js" ></script>
+		<script type = "text/javascript" src = "js/player.js" ></script>
+		<script type = "text/javascript" src = "js/foe.js" ></script>
+		<script type = "text/javascript" src = "js/main.js" ></script>
+	</head>
+	<body onload="init()">
+		<div id="gameWindow">
+			<!-- TILES SECTION -->
+			<div id = "tiles">
+			</div>
+			 <!-- ENEMIES SECTION -->
+			<div id = "enemies">
+			</div>
+			 <!-- ATTACKS SECTION -->
+			<div id = "attacks">
+			</div>
+			 <!-- PLAYERS SECTION -->
+			<div id = "players">
+			</div>
+			 <!-- DROPS SECTION -->
+			<div id = "drops">
+			</div>
+		</div>
+		<div id="gui">
+			<!-- AUDIO -->
+			<audio autoplay="autoplay" loop="loop" >
+				<source src="bgm/overworld.ogg" type="audio/ogg" />
+				<source src="bgm/overworld.mp3" type="audio/mpeg" />
+				<source src="bgm/overworld.wav" type="audio/wav" />
+			</audio>
+
+			<input
+				id = "console" 
+				type = "text"
+				value = "Message Box" 
+				readonly="readonly"
+			/>
+
+			<div id = "heart"></div>
+
+			<div 
+				id = "rupeeWrapper"
+			>
+				<img src="gfx/drop/rupee.png" />
+				<input 
+					id = "rupee" 
+					type = "text" 
+					value = "0" 
+					readonly="readonly"
+					style = "
+						width: 4em;
+					"
+				/>
+			</div>
+
+			<img 
+				id = "tunicColors"
+				alt = "Credit: CukeMan from PureZC.com and Nintendo"
+				src = "gfx/gui/change-tunic.png"
+				onclick = "changeTunic();"
+			/>
+
+			<!-- Frame Skip Button -->
+			<div
+				id="fps"
+			>
+				<div
+					id = "faster"
+					onclick = "
+						spf -= 5;
+						clearInterval(timer);
+						timer = setInterval('action()',spf);
+					"
+				>
+					&gt;&gt;
+				</div>
+				<div
+					id = "slower" 
+					onclick = "
+						spf += 5;
+						clearInterval(timer);
+						timer = setInterval('action()',spf);
+					"
+				>
+					&lt;&lt;
+				</button>
+			</div>
+
+			<button 
+				id = "swordUpgrade"
+				type = "button" 
+				onclick = "swordUpgrade();"
+			>
+				Upgrade Sword -9
+			</button>
+			<button 
+				id = "boomerangUpgrade"
+				type = "button" 
+				onclick = "boomerangUpgrade();"
+			>
+				Buy/Up Boomerang -2
+			</button>
+			<button 
+				id = "bombUpgrade"
+				type = "button" 
+				onclick = "bombUpgrade();"
+			>
+				Buy/Up Bomb -5
+			</button>
+			<button 
+				id = "arrowUpgrade"
+				type = "button" 
+				onclick = "arrowUpgrade();"
+			>
+				Buy/Up Arrow -6
+			</button>
+			<button 
+				id = "heartsUpgrade"
+				type = "button" 
+				onclick = "heartUpgrade();"
+			>
+				Up Max Hearts -9
+			</button>
+
+			<div id = "helpGui">
+				<div>Default Controls:</div>
+				<div>WASD: Move</div>
+				<div>H: Sword</div>
+				<div>J: Boomerang</div>
+				<div>K: Bomb</div>
+				<div>L: Arrow</div>
+				<div>
+					Click 
+					<img 
+						id = "ctrslBtn"  
+						alt = "Controls"  
+						src = "gfx/controls.png"  
+						onclick = "controlSet()"  
+					/>
+				 	to change controls.
+			 	</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,88 @@
+body
+{
+	background-color : #DDDDFF;
+}
+
+h1 
+{
+	text-align:center;
+	line-height:1em;
+	font-family:Times, serif;
+}
+
+#head_details
+{
+	text-align:center;
+	line-height:1em;
+	font-family:Times, serif;
+	margin-bottom:2em;
+	border: outset #333333;
+}
+
+h2
+{
+	border: outset #333333;
+	background-color : #666666;
+	color : #FFFFFF;
+	text-align:center;
+	font-family:Times, serif;
+	line-height:2em;
+	font-size: 16pt;
+	font-weight: bold;
+}
+
+#left_address
+{
+	font-family:"ITC American Typwriter", Times, serif;
+	font-size: 12pt;
+	background-color : #AAAAAA;
+	float: left;
+	width: 50%;
+	margin-bottom: 2em;
+}
+
+#right_address
+{
+	font-family:"ITC American Typwriter", Times, serif;
+	text-align: right;
+	font-size: 12pt;
+	background-color : #AAAAAA;
+	float: right;
+	width: 50%;
+	margin-bottom: 2em;
+}
+
+p
+{
+	font-family:"Georgia", Times, serif;
+	margin-left:2em;
+	border: outset #666666;
+}
+
+ul 
+{
+	font-family:Times, serif;
+	margin-left:2em;
+}
+li
+{
+	border: outset #333333;
+}
+
+
+a
+{
+	font-family:"Courier New", Times, serif;
+}
+
+#refences
+{
+	background-color : #666666;
+	color : #000000;
+	text-align:center;
+	font-family:Times, serif;
+	line-height:1.5em;
+	font-size: 14pt;
+	position: absolute;
+	border: outset #333333;
+}
