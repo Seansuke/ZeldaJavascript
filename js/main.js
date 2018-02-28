@@ -6,6 +6,7 @@
 function nextRoom(mapXadd, mapYadd) {
 	mapX += mapXadd;
 	mapY += mapYadd;
+	// TODO - make this work with maps on file for testing.
 	simpleHttpRequest("ajax/map_" + mapX + "" + mapY + ".txt", setTiles);
 }
 
@@ -134,25 +135,32 @@ function changeTunic() {
 	tunic = (tunic + 1) % 7;
 	switch(tunic) {
 		case 0: 
-			p1.imgtag.src = 'gfx/link/link.png';
+			p1.stat.imgSource = 'gfx/link/link.png';
+			p1.imgtag.src = p1.stat.imgSource;
 		break;
 		case 1: 
-			p1.imgtag.src = 'gfx/link/blue.png';
+			p1.stat.imgSource = 'gfx/link/blue.png';
+			p1.imgtag.src = p1.stat.imgSource;
 		break;
 		case 2: 
-			p1.imgtag.src = 'gfx/link/red.png';
+			p1.stat.imgSource = 'gfx/link/red.png';
+			p1.imgtag.src = p1.stat.imgSource;
 		break;
 		case 3: 
-			p1.imgtag.src = 'gfx/link/black.png';
+			p1.stat.imgSource = 'gfx/link/black.png';
+			p1.imgtag.src = p1.stat.imgSource;
 		break;
 		case 4: 
-			p1.imgtag.src = 'gfx/link/purple.png';
+			p1.stat.imgSource = 'gfx/link/purple.png';
+			p1.imgtag.src = p1.stat.imgSource;
 		break;
 		case 5: 
-			p1.imgtag.src = 'gfx/link/pink.png';
+			p1.stat.imgSource = 'gfx/link/pink.png';
+			p1.imgtag.src = p1.stat.imgSource;
 		break;
 		case 6: 
-			p1.imgtag.src = 'gfx/link/classic.png';
+			p1.stat.imgSource = 'gfx/link/classic.png';
+			p1.imgtag.src = p1.stat.imgSource;
 		break;
 	}
 }
@@ -162,17 +170,19 @@ function swordUpgrade() {
 		if(p1.wpn.A == 'wooden_sword') {
 			rupees -= 9;
 			p1.wpn.A = 'white_sword';
+			DisplayConsoleText('Upgraded to White Sword!');
 		}
 		else if(p1.wpn.A == 'white_sword') {
 			rupees -= 9;
 			p1.wpn.A = 'magic_sword';
+			DisplayConsoleText('Upgraded to Magic Sword!');
 		}
 		else {
-			alert('You cannot upgrade further!');
+			DisplayConsoleText('You cannot upgrade further!');
 		}
 	} 
 	else {
-		alert('You do not have enough rupees!');
+		DisplayConsoleText('You do not have enough rupees!');
 	}
 }
 
@@ -181,21 +191,24 @@ function boomerangUpgrade() {
 		if(p1.wpn.B == 'None') {
 			rupees -= 2;
 			p1.wpn.B = 'wooden_boomerang';
+			DisplayConsoleText('Upgraded to Wooden Boomerang!');
 		}
 		else if(p1.wpn.B == 'wooden_boomerang') {
 			rupees -= 2;
 			p1.wpn.B = 'magic_boomerang';
+			DisplayConsoleText('Upgraded to Magic Boomerang!');
 		}
 		else if(p1.wpn.B == 'magic_boomerang') {
 			rupees -= 2;
 			p1.wpn.B = 'fire_boomerang';
+			DisplayConsoleText('Upgraded to Fire Boomerang!');
 		}
 		else {
-			alert('You cannot upgrade further!');
+			DisplayConsoleText('You cannot upgrade further!');
 		}
 	} 
 	else {
-		alert('You do not have enough rupees!');
+		DisplayConsoleText('You do not have enough rupees!');
 	}
 }
 
@@ -204,21 +217,24 @@ function arrowUpgrade() {
 		if(p1.wpn.D == 'None') {
 			rupees -= 6;
 			p1.wpn.D = 'wooden_arrow';
+			DisplayConsoleText('Upgraded to Wooden Arrow!');
 		}
 		else if(p1.wpn.D == 'wooden_arrow') {
 			rupees -= 6;
 			p1.wpn.D = 'silver_arrow';
+			DisplayConsoleText('Upgraded to Silver Boomerang!');
 		}
 		else if(p1.wpn.D == 'silver_arrow') {
 			rupees -= 6;
 			p1.wpn.D = 'light_arrow';
+			DisplayConsoleText('Upgraded to Light Boomerang!');
 		}
 		else {
-			alert('You cannot upgrade further!');
+			DisplayConsoleText('You cannot upgrade further!');
 		}
 	} 
 	else {
-		alert('You do not have enough rupees!');
+		DisplayConsoleText('You do not have enough rupees!');
 	}
 }
 
@@ -227,21 +243,24 @@ function bombUpgrade() {
 		if(p1.wpn.C == 'None') {
 			rupees -= 5;
 			p1.wpn.C = 'blue_bomb';
+			DisplayConsoleText('Upgraded to Blue Bomb!');
 		}
 		else if(p1.wpn.C == 'blue_bomb') {
 			rupees -= 5;
 			p1.wpn.C = 'red_bomb';
+			DisplayConsoleText('Upgraded to Red Bomb!');
 		}
 		else if(p1.wpn.C == 'red_bomb') {
 			rupees -= 5;
 			p1.wpn.C = 'black_bomb';
+			DisplayConsoleText('Upgraded to Black Bomb!');
 		}
 		else {
-			alert('You cannot upgrade further!');
+			DisplayConsoleText('You cannot upgrade further!');
 		}
 	} 
 	else {
-		alert('You do not have enough rupees!');
+		DisplayConsoleText('You do not have enough rupees!');
 	}
 }
 
@@ -253,18 +272,43 @@ function heartUpgrade() {
 			p1.stat.hp += 10;
 			redrawMaxHearts();
 			redrawHearts();
+			DisplayConsoleText('Upgraded Hearts!');
 		}
 		else {
-			alert('You cannot upgrade further!');
+			DisplayConsoleText('You cannot upgrade further!');
 		}
 	} 
 	else {
-		alert('You do not have enough rupees!');
+		DisplayConsoleText('You do not have enough rupees!');
 	}
+}
+
+function DisplayConsoleText(newConsoleText)
+{
+	consoleTag.value = newConsoleText;
+}
+
+// Resets the game upon game over.
+function resetGame(player)
+{
+	// TODO - MAke more maps too.
+	rupees /= 2;
+	player.pos = { x: 20, y: 240 };
+	player.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
+	player.misc = { name: "link", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", respawnTimer: 0 };
+	player.stat.hp = 30;
+	player.imgtag.src = player.stat.imgSource;
+	redrawHearts();
+	resetFoes();
+	mapX = 0;
+	mapY = 0;
+	nextRoom(0, 0);
 }
 
 // Calling this function once will initialize all the resources necessary for the game to run.
 function init( ) {
+	var backgroundMusicTag = document.getElementById("backgroundMusic");
+	backgroundMusicTag.volume = 0.5;
 	rupeeTag = document.getElementById("rupee");
 	itemDrop = new Drop();
 	consoleTag = document.getElementById("console");
@@ -287,6 +331,7 @@ function init( ) {
 		clearInterval(timer);
 	}
 	timer = setInterval("action()", spf);
+	DisplayConsoleText("Enjoy your adventure!");
 }
 
 // This is the main game loop which will run once more every 50 milliseconds.

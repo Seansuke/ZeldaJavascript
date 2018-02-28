@@ -20,3 +20,11 @@ body {
 	height: 488px;
 	overflow: hidden;
 }
+#faster, #slower {
+    background-color: #dfdfdf;
+    display: inline-block;
+    padding: 0.4em;
+    border: 1px solid black;
+    border-radius: 8px;
+    cursor: pointer;
+}

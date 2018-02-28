@@ -14,6 +14,7 @@ function playerWalk(player) {
 		var state = wiiu.remote.update(0);
 	}
 	
+	// TODO - implement these as variables that can be changed.
 	if (control[player.ctrl.left] == true || stateu.hold & 0x00000800 || stateu.hold & 0x40000000 || state.held & 0x00000100) {
 		player.misc.direction = "left";
 		moveObj(player, - player.stat.speed , 0); 
@@ -96,8 +97,19 @@ function playerAttack(player) {
 function playerAction(player) {
 	rupeeTag.value = rupees;
 	if(player.stat.hp <= 0) {
-		player.imgtag.src = "gfx/alpha.png";
-		player.pos.x = -300;
+		if(player.misc.respawnTimer < 0)
+		{
+			DisplayConsoleText("Game Over!  Lost half your rupees.  Respawning...");
+			player.imgtag.src = "gfx/alpha.png";
+			player.misc.respawnTimer = 60;
+			rupees /= 2;
+		}
+		else if(player.misc.respawnTimer == 1)
+		{
+			resetGame(player);
+			DisplayConsoleText("Respawned!");
+		}
+		player.misc.respawnTimer--;
 		return;
 	}
 	boundaryCheck(player);

@@ -4,7 +4,7 @@
 
 //Have a single foe run through it's life cycle
 function foeAction(foe_obj) {
-
+	// TODO - make them smarter.
 	// If the foe's life is <= 0, remove the foe from play
 	if(foe_obj.stat.hp <= 0) {
 
@@ -33,6 +33,7 @@ function foeAction(foe_obj) {
 		randomAction = -1;
 	}
 
+	// TODO - implement brains
 	// A random occurance:  Initiate an attack
 	else if(randomAction == 4 && foe_obj.misc.currentWpn != "none") {
 		foe_obj.misc.attacking = 99;

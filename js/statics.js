@@ -23,6 +23,7 @@ function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 // This will reset every single foe within the array to a random type, position, with mild stat variation.
 function resetFoes() {
 	for(var i = 0;i < MAX_FOES;i++) {
+		// TODO - add more foes.  Also make harder foes spawn at further maps.
 		newName = ( Array('keese','octo','moblin','stalfos','gibdo','darknut','rope') )[ Math.floor(Math.random() * 7) ];
 		foes[i].pos = { x: Math.random() * 640, y: Math.random() * 480 }; 
 		foes[i].stat = { hp: 5 + Math.random() * 15, mhp: 15, attTime: 8,  att: 5, time: 3, force: 12, cool: 10, effect: "none", speed: 2};
@@ -81,7 +82,7 @@ function checkSingleCollision(a, b) {
 
 //  Have object A take damage from object B
 function setDmg(a, b) { 
-
+	
 	// Damage is done to object A if A is not taking damage or on the same team
 	if(a.dmg.cool <= 0 && b.stat.att > 0 && a.misc.team != b.misc.team) {
 		a.dmg.time = b.stat.time; 
@@ -161,7 +162,7 @@ function checkCollision() {
 				if(p2 != 0) {p2.stat.speed += itemDrop.amnt * 0.05;}
 			}
 			redrawHearts();
-			consoleTag.value = "Link gained " + itemDrop.amnt + " " + itemDrop.type + "(s)!";
+			DisplayConsoleText("Link gained " + itemDrop.amnt + " " + itemDrop.type + "(s)!");
 			itemDrop.pos.x = 0;
 			itemDrop.imgtag.src = "gfx/alpha.png";
 		}
@@ -197,11 +198,11 @@ function objDmg(self) {
 		if(self.dmg.att != 0 && self.stat.hp > 0) {
 			self.stat.hp -= self.dmg.att;
 			if(self.misc.name == "link") {
-				consoleTag.value = "Link took " + Math.round(self.dmg.att) + " damage!";
+				DisplayConsoleText("Link took " + Math.round(self.dmg.att) + " damage!");
 				redrawHearts();
 			}
 			else {
-				consoleTag.value = self.misc.name + " took " + Math.round(self.dmg.att) + " damage!";
+				DisplayConsoleText(self.misc.name + " took " + Math.round(self.dmg.att) + " damage!");
 			}
 		}
 	}

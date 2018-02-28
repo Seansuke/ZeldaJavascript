@@ -38,7 +38,7 @@
 		</div>
 		<div id="gui">
 			<!-- AUDIO -->
-			<audio autoplay="autoplay" loop="loop" >
+			<audio id="backgroundMusic" autoplay="autoplay" loop="loop" >
 				<source src="bgm/overworld.ogg" type="audio/ogg" />
 				<source src="bgm/overworld.mp3" type="audio/mpeg" />
 				<source src="bgm/overworld.wav" type="audio/wav" />
@@ -85,26 +85,29 @@
 						spf -= 5;
 						clearInterval(timer);
 						timer = setInterval('action()',spf);
+						DisplayConsoleText('Increased game speed to ' + spf);
 					"
 				>
-					&gt;&gt;
+					Increase Game Speed
 				</div>
 				<div
 					id = "slower" 
 					onclick = "
+						// TODO - port these to functions
 						spf += 5;
 						clearInterval(timer);
 						timer = setInterval('action()',spf);
+						DisplayConsoleText('Decreased game speed to ' + spf);
 					"
 				>
-					&lt;&lt;
+					Decrease Game Speed
 				</button>
 			</div>
 
 			<button 
 				id = "swordUpgrade"
 				type = "button" 
-				onclick = "swordUpgrade();"
+				onclick = "swordUpgrade();// TODO - Port these to NPCs"
 			>
 				Upgrade Sword -9
 			</button>
@@ -132,7 +135,7 @@
 			<button 
 				id = "heartsUpgrade"
 				type = "button" 
-				onclick = "heartUpgrade();"
+				onclick = "heartUpgrade(); // TODO - Create recurring NPC to do this for you.  And one that offers to heal for rupees."
 			>
 				Up Max Hearts -9
 			</button>

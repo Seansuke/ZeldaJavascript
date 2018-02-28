@@ -10,6 +10,7 @@ document.onkeydown=function(e) {
 		control[e.keyCode] = true;
 	}
 }
+// TODO - Implement Gamepad.
 document.onkeyup=function(e) {
 	e = window.event || e; 
 	if(e.which != undefined) { 
@@ -41,7 +42,7 @@ function setKey() {
 
 // Set up the custom controls
 function controlSet() {
-	consoleTag.value = "Press " + keys[current];
+	DisplayConsoleText("Press " + keys[current]);
 	setKey();
 	if(keys[current] != "END") {
 		setTimeout("controlSet()", 10);
