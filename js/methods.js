@@ -10,20 +10,37 @@ function placeFree(x,y) {
 		return false;
 	}
 
+	var passableTileList = [
+		"0", "6", "", " "
+	];
+
 	// Check for Tiles
-	if(tileSet[Math.round(x / 16) ][ Math.round(y / 16)] != 0) { 
+	var centerX = Math.round(x / 16);
+	var leftX = Math.round((x - 4) / 16);
+	var rightX = Math.round((x + 4) / 16);
+	var centerY = Math.round(y / 16);
+	var topY = Math.round((y - 4) / 16);
+	var bottomY = Math.round((y + 4) / 16);
+	var centerTile = tileSet[centerX][centerY].toString();
+	var leftTopTile = tileSet[leftX][topY].toString();
+	var rightTopTile = tileSet[rightX][topY].toString();
+	var leftBottomTile = tileSet[leftX][bottomY].toString();
+	var rightBottomTile = tileSet[rightX][bottomY].toString();
+
+	// Actually check for the tiles.
+	if(passableTileList.indexOf(centerTile) == -1) { 
 		return false;
 	}
-	if(tileSet[ Math.round((x - 4) / 16) ][ Math.round((y - 4) / 16)] != 0) {
+	if(passableTileList.indexOf(leftTopTile) == -1) {
 		return false;
 	}
-	if(tileSet[ Math.round((x + 4) / 16) ][ Math.round((y - 4) / 16)] != 0) {
+	if(passableTileList.indexOf(rightTopTile) == -1) {
 		return false;
 	}
-	if(tileSet[ Math.round((x - 4) / 16) ][ Math.round((y + 4) / 16)] != 0) {
+	if(passableTileList.indexOf(leftBottomTile) == -1) {
 		return false;
 	}
-	if(tileSet[ Math.round((x + 4) / 16) ][ Math.round((y + 4) / 16)] != 0) {
+	if(passableTileList.indexOf(rightBottomTile) == -1) {
 		return false;
 	}
 	return true; 

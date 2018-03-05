@@ -2,8 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title> 
-			The Legend of Zelda - JavaScript Edition - v1.3
+			The Legend of Zelda - JavaScript Edition - v0.1.5
 		</title>
+		<meta charset="utf-8"/>
 		<link 
 			rel = "stylesheet" 
 			type = "text/css" 
@@ -37,6 +38,7 @@
 			</div>
 		</div>
 		<div id="gui">
+
 			<!-- AUDIO -->
 			<audio id="backgroundMusic" autoplay="autoplay" loop="loop" >
 				<source src="bgm/overworld.ogg" type="audio/ogg" />
@@ -51,11 +53,10 @@
 				readonly="readonly"
 			/>
 
-			<div id = "heart"></div>
 
-			<div 
-				id = "rupeeWrapper"
-			>
+			<div id="optionsToggle" onclick="optionsToggle();">Display/Hide Options</div>
+
+			<div id = "rupeeWrapper">
 				<img src="gfx/drop/rupee.png" />
 				<input 
 					id = "rupee" 
@@ -68,96 +69,109 @@
 				/>
 			</div>
 
-			<img 
-				id = "tunicColors"
-				alt = "Credit: CukeMan from PureZC.com and Nintendo"
-				src = "gfx/gui/change-tunic.png"
-				onclick = "changeTunic();"
-			/>
+			<div id = "heartWrapper"></div>
 
-			<!-- Frame Skip Button -->
-			<div
-				id="fps"
-			>
-				<div
-					id = "faster"
-					onclick = "
-						spf -= 5;
-						clearInterval(timer);
-						timer = setInterval('action()',spf);
-						DisplayConsoleText('Increased game speed to ' + spf);
-					"
-				>
+
+			<div id="options" style="display: none;">
+				<img 
+					id = "tunicColors"
+					alt = "Credit: CukeMan from PureZC.com and Nintendo"
+					src = "gfx/gui/change-tunic.png"
+					onclick = "changeTunic();"
+				/>
+
+				<img 
+					id = "addPlayer2"  
+					alt = "Add Player 2"  
+					src = "gfx/gui/add-player-2.png"  
+					onclick = "addPlayer2();"
+				/>
+				
+				<!-- Frame Skip Button -->
+				<button id = "faster" 
+					type = "button" onclick = "increaseGameSpeed();">
 					Increase Game Speed
-				</div>
-				<div
-					id = "slower" 
-					onclick = "
-						// TODO - port these to functions
-						spf += 5;
-						clearInterval(timer);
-						timer = setInterval('action()',spf);
-						DisplayConsoleText('Decreased game speed to ' + spf);
-					"
-				>
+				</button>
+				<button id = "slower" 
+					type = "button" onclick = "decreaseGameSpeed();">
 					Decrease Game Speed
 				</button>
-			</div>
 
-			<button 
-				id = "swordUpgrade"
-				type = "button" 
-				onclick = "swordUpgrade();// TODO - Port these to NPCs"
-			>
-				Upgrade Sword -9
-			</button>
-			<button 
-				id = "boomerangUpgrade"
-				type = "button" 
-				onclick = "boomerangUpgrade();"
-			>
-				Buy/Up Boomerang -2
-			</button>
-			<button 
-				id = "bombUpgrade"
-				type = "button" 
-				onclick = "bombUpgrade();"
-			>
-				Buy/Up Bomb -5
-			</button>
-			<button 
-				id = "arrowUpgrade"
-				type = "button" 
-				onclick = "arrowUpgrade();"
-			>
-				Buy/Up Arrow -6
-			</button>
-			<button 
-				id = "heartsUpgrade"
-				type = "button" 
-				onclick = "heartUpgrade(); // TODO - Create recurring NPC to do this for you.  And one that offers to heal for rupees."
-			>
-				Up Max Hearts -9
-			</button>
+				<button 
+					id = "swordUpgrade"
+					type = "button" 
+					onclick = "swordUpgrade();// TODO - Port these to NPCs"
+				>
+					Upgrade Sword -9
+				</button>
+				<button 
+					id = "boomerangUpgrade"
+					type = "button" 
+					onclick = "boomerangUpgrade();"
+				>
+					Buy/Up Boomerang -2
+				</button>
+				<button 
+					id = "bombUpgrade"
+					type = "button" 
+					onclick = "bombUpgrade();"
+				>
+					Buy/Up Bomb -5
+				</button>
+				<button 
+					id = "arrowUpgrade"
+					type = "button" 
+					onclick = "arrowUpgrade();"
+				>
+					Buy/Up Arrow -6
+				</button>
+				<button 
+					id = "heartsUpgrade"
+					type = "button" 
+					onclick = "heartUpgrade(); // TODO - Create recurring NPC to do this for you.  And one that offers to heal for rupees."
+				>
+					Buy/Up Max Hearts -9
+				</button>
+				<button 
+					id = "lensOfTruthUpgrade"
+					type = "button" 
+					onclick = "lensOfTruthUpgrade();"
+				>
+					Buy/Up Lens of Truth -16
+				</button>
 
-			<div id = "helpGui">
-				<div>Default Controls:</div>
-				<div>WASD: Move</div>
-				<div>H: Sword</div>
-				<div>J: Boomerang</div>
-				<div>K: Bomb</div>
-				<div>L: Arrow</div>
-				<div>
-					Click 
-					<img 
-						id = "ctrslBtn"  
-						alt = "Controls"  
-						src = "gfx/controls.png"  
-						onclick = "controlSet()"  
-					/>
-				 	to change controls.
-			 	</div>
-			</div>
-		</div>
+
+				<div id = "helpGui">
+					<div>Default Controls:</div>
+					<div>WASD: Move</div>
+					<div>H: Sword</div>
+					<div>J: Boomerang</div>
+					<div>K: Bomb</div>
+					<div>L: Arrow</div>
+					<div>
+						Click 
+						<img 
+							id = "ctrslBtn"  
+							alt = "Controls"  
+							src = "gfx/controls.png"  
+							onclick = "controlSet(1);"  
+						/>
+					 	to change player 1's controls.
+				 	</div>
+					<div>
+						Click 
+						<img 
+							id = "ctrslBtn"  
+							alt = "Controls"  
+							src = "gfx/controls.png"  
+							onclick = "controlSet(2);"  
+						/>
+					 	to change player 2's controls.
+				 	</div>
+				</div><!-- #helpGui -->
+
+			</div><!-- #options -->
+
+		</div><!-- #gui -->
 	</body>
 </html>

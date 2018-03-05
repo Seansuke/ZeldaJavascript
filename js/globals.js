@@ -7,7 +7,7 @@ var horizontalTileCount = 40;
 var verticalTileCount = 30;
 
 // This section mostly contains GUI variables and DOM nodes.
-var hearts = new Array();
+var heartList = new Array();
 var itemDrop = 0;
 var rupees = 0;
 var rupeeTag = 0;

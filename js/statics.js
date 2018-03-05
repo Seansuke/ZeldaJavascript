@@ -24,24 +24,42 @@ function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 function resetFoes() {
 	for(var i = 0;i < MAX_FOES;i++) {
 		// TODO - add more foes.  Also make harder foes spawn at further maps.
-		newName = ( Array('keese','octo','moblin','stalfos','gibdo','darknut','rope') )[ Math.floor(Math.random() * 7) ];
-		foes[i].pos = { x: Math.random() * 640, y: Math.random() * 480 }; 
+		var distanceFromStart = mapX + mapY;
+		var minimumFoeDifficulty = 0;
+		var maximumFoeDifficulty = 7;
+		if(Math.abs(distanceFromStart) < 3)
+		{
+			minimumFoeDifficulty = 0;
+			maximumFoeDifficulty = 3;
+		}
+		else if(Math.abs(distanceFromStart) < 6)
+		{
+			minimumFoeDifficulty = 0;
+			maximumFoeDifficulty = 6;
+		}
+		newName = ( Array('keese','octo','rope','moblin','stalfos','gibdo','darknut') )[ minimumFoeDifficulty + Math.floor(Math.random() * maximumFoeDifficulty) ];
+		foes[i].pos = { x: 60 + Math.random() * 320, y: 60 + Math.random() * 360 }; 
 		foes[i].stat = { hp: 5 + Math.random() * 15, mhp: 15, attTime: 8,  att: 5, time: 3, force: 12, cool: 10, effect: "none", speed: 2};
 		foes[i].dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
 		foes[i].misc = { name: newName, box:8, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"enemy", xp:1 };
 		foes[i].imgtag.src = "gfx/foe/" + foes[i].misc.name + ".png";
 		foes[i].imgtag.style.opacity = "1";
 		foes[i].attackElem.pos.x = -300;
+		if(newName == "keese") {
+			foes[i].stat.mhp = 1 + Math.random() * 2;
+			foes[i].stat.att = 1 + Math.random() * 2;
+			foes[i].stat.speed = 6;
+		}
+		if(newName == "rope") {
+			foes[i].stat.mhp = 3 + Math.random() * 5;
+			foes[i].stat.att = 3 + Math.random() * 5;
+			foes[i].stat.speed = 5;
+		}
 		if(newName == "moblin") {
 			foes[i].stat.mhp = 10 + Math.random() * 5;
 			foes[i].stat.att = 7 + Math.random() * 3;
 			foes[i].misc.currentWpn = "wooden_boomerang";
 			foes[i].misc.xp = 3;
-		}
-		if(newName == "keese") {
-			foes[i].stat.mhp = 1 + Math.random() * 2;
-			foes[i].stat.att = 1 + Math.random() * 2;
-			foes[i].stat.speed = 6;
 		}
 		if(newName == "stalfos") {
 			foes[i].stat.mhp = 13 + Math.random() * 8;
@@ -60,11 +78,6 @@ function resetFoes() {
 			foes[i].stat.att = 15 + Math.random() * 5;
 			foes[i].stat.speed = 3;
 			foes[i].misc.xp = 5;
-		}
-		if(newName == "rope") {
-			foes[i].stat.mhp = 3 + Math.random() * 5;
-			foes[i].stat.att = 15 + Math.random() * 5;
-			foes[i].stat.speed = 5;
 		}
 		foes[i].stat.hp = foes[i].stat.mhp;
 	}	
@@ -130,7 +143,7 @@ function checkCollision() {
 		}
 
 		// Expect p2 to exist before we compare damaging it
-		if(p2 != 0) {
+		if(p2 !== null) {
 			// Check if player is colliding with any foe
 			if( checkSingleCollision(p2, foes[i]) == true) {
 				setDmg(p2, foes[i]);
@@ -153,16 +166,24 @@ function checkCollision() {
 		if(itemDrop.pos.x != 0) {
 			if(itemDrop.type == "heart") {
 				p1.stat.hp += itemDrop.amnt * 2;
+				if(p2 !== null) {p2.stat.hp += itemDrop.amnt * 2;}
 			}
 			else if(itemDrop.type == "rupee") {
 				rupees += itemDrop.amnt;
 			}
 			else if(itemDrop.type == "speed") {
 				p1.stat.speed += itemDrop.amnt * 0.05;
-				if(p2 != 0) {p2.stat.speed += itemDrop.amnt * 0.05;}
+				if(p2 !== null) {p2.stat.speed += itemDrop.amnt * 0.05;}
 			}
 			redrawHearts();
-			DisplayConsoleText("Link gained " + itemDrop.amnt + " " + itemDrop.type + "(s)!");
+			if(p1.stat.lensOfTruth > 0)
+			{
+				DisplayConsoleText("Link gained " + itemDrop.amnt + " " + itemDrop.type + "(s)!");
+			}
+			else
+			{
+				DisplayConsoleText(`Link gained ${itemDrop.type}(s)!`);
+			}
 			itemDrop.pos.x = 0;
 			itemDrop.imgtag.src = "gfx/alpha.png";
 		}
@@ -198,11 +219,30 @@ function objDmg(self) {
 		if(self.dmg.att != 0 && self.stat.hp > 0) {
 			self.stat.hp -= self.dmg.att;
 			if(self.misc.name == "link") {
-				DisplayConsoleText("Link took " + Math.round(self.dmg.att) + " damage!");
+				if(self.stat.lensOfTruth > 0)
+				{
+					DisplayConsoleText(`Link took ${Math.round(self.dmg.att)} damage!  ${Math.floor(self.stat.hp)} / ${Math.floor(self.stat.mhp)} Health Remains.`);
+				}
+				else
+				{
+					DisplayConsoleText("Link took damage!");
+				}
 				redrawHearts();
 			}
 			else {
-				DisplayConsoleText(self.misc.name + " took " + Math.round(self.dmg.att) + " damage!");
+				if(p1.stat.lensOfTruth == 2)
+				{
+					DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage!  ${Math.floor(self.stat.hp)} / ${Math.floor(self.stat.mhp)} Health Remains.`);
+				}
+				else if(p1.stat.lensOfTruth == 1)
+				{
+					DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage!`);
+				}
+				else
+				{
+					DisplayConsoleText(`${self.misc.name} took damage!`);
+				}
+				
 			}
 		}
 	}
@@ -216,8 +256,8 @@ function boundaryCheck(self) {
 
 	// If the object is "stuck" on a tile, randomly teleport elsewhere
 	if(placeFree(self.pos.x, self.pos.y) == false && self.stat.hp > 0) {
-		self.pos.x = Math.random() * 640;
-		self.pos.y = Math.random() * 480;
+		self.pos.x = 60 + Math.random() * 320
+		self.pos.y = 60 + Math.random() * 360
 	}
 }
 
@@ -225,13 +265,13 @@ function boundaryCheck(self) {
 function redrawHearts() { 
 	for(var i = 0;i * 10 < p1.stat.mhp;i++) {
 		if(p1.stat.hp >= (i)*10 + 5) { 
-			hearts[i].src = "gfx/gui/heart_full.png"; 
+			heartList[i].src = "gfx/gui/heart_full.png"; 
 		}
 		else if(p1.stat.hp >= (i)*10) { 
-			hearts[i].src = "gfx/gui/heart_half.png"; 
+			heartList[i].src = "gfx/gui/heart_half.png"; 
 		}
 		else { 
-			hearts[i].src = "gfx/gui/heart_empty.png"; 
+			heartList[i].src = "gfx/gui/heart_empty.png"; 
 		}
 	}
 }
@@ -245,3 +285,214 @@ function randomDrop(x,y) {
 	itemDrop.amnt = Math.ceil(Math.random() * 5);
 	drawSprite(itemDrop.imgtag, itemDrop);
 }
+
+
+
+function TryParseInt(str,defaultValue) {
+     var retValue = defaultValue;
+     if(str !== null) {
+         if(str.length > 0) {
+             if (!isNaN(str)) {
+                 retValue = parseInt(str);
+             }
+         }
+     }
+     return retValue;
+}
+
+// Request from the server an adjacent map to be drawn.
+function nextRoom(mapXadd, mapYadd) {
+	mapX += mapXadd;
+	mapY += mapYadd;
+	// TODO - make this work with maps on file for testing.
+	var mapFileName = "ajax/map_" + mapX + "" + mapY + ".txt";
+	var fullMapFileName = mapFileName;
+	var currentFilePath = window.location.href;
+	if(window.location.protocol == "file:")
+	{
+		var lastIndexOfSlash = currentFilePath.lastIndexOf("/");
+		var currentFilePath = currentFilePath.substring(0, lastIndexOfSlash + 1);
+		var fullMapFileName = `${currentFilePath}${mapFileName}`;
+	}
+	simpleHttpRequest(fullMapFileName, setTiles);
+}
+
+// Request the player's life to be redrawn.
+function redrawMaxHearts() {
+	while(heartList.length > 0)
+	{
+		heartList.pop();
+	}
+	while(document.getElementsByClassName("heart").length > 0) { 
+		document.getElementsByClassName("heart")[0].remove();
+	}
+	for(var i = 0;i * 10 < p1.stat.mhp;i++) {
+		var newHeartImageTag = document.createElement('img');
+		newHeartImageTag.classList.add("heart");
+		newHeartImageTag.src = "gfx/gui/heart_full.png";
+		newHeartImageTag.style.left = (80 + i * 16) + "px";
+		newHeartImageTag.style.top = (-40) + "px"; 
+		var heartWrapperDivTag = document.getElementById('heartWrapper');
+		var appendedHeartImageTag = heartWrapperDivTag.appendChild(newHeartImageTag);
+		heartList.push(appendedHeartImageTag);
+	}
+}
+
+// Example code from Professor Johnson
+function makeHttpObject() {
+	try {
+		return new XMLHttpRequest();
+	}
+	catch (error) {}
+	try {
+		return new ActiveXObject("Msxml2.XMLHTTP");
+	}
+	catch (error) {}
+	try {
+		return new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	catch (error) {}
+	throw new Error("Could not create HTTP request object.");
+}
+
+// Example code from Professor Johnson
+function simpleHttpRequest(url, callbackFunction) {
+
+	// Generate random tiles first.
+	setTiles(""); 
+
+	// Attempt to make the HTTP Object
+	var request = makeHttpObject();
+
+	// Assuming the creation of the request object succeeded, use it.
+	if( request ) {
+
+		// An invoked function 
+		request.onreadystatechange = function()  {
+
+			// Request finshed and response is ready
+			if (request.readyState == 4)  {
+
+				// The server responded with OK
+				if (request.status == 200 || request.status == 0) { 
+
+					// Setup the response data with the callback function
+					callbackFunction(request.responseText, false); 
+				}
+			}
+		}
+ 
+		var useAsync = true;
+
+		// Setup the request to the server
+		request.open("GET", url, useAsync);
+
+		// Send the request to the server
+		request.send(null);
+	}
+}
+
+// A single addition of a tile will be made on position i,j.
+function addTile(i, j, tileNum) {
+	tileSet[i][j] = tileNum; 
+	var tileNum = tileSet[i][j];
+	tileTags.push(document.getElementById("tiles").appendChild(document.createElement('img')));
+	tileTags[tileTags.length - 1].src = "gfx/tileset.png";
+	tileTags[tileTags.length - 1].style.left = (i * 16 - tileNum * 16 - 8) + "px";
+	tileTags[tileTags.length - 1].style.top = (j * 16 - 16) + "px"; 
+
+	//Rectangle Clip's parameters: (top, right, bottom, left)
+	tileTags[tileTags.length - 1].style.clip = "rect(0px," + String( tileNum * 16 + 16 ) + "px, 16px," + String( tileNum * 16 ) + "px)"; 
+}
+
+//Based on your options (and internet connectivity), a map will be loaded.
+function setTiles(responseText) {
+
+	// Ensure all the tiles have been removed from the tiles div tag
+	while(tileTags.length > 0) { 
+
+		// Remove them, one by one, off of the 2D Array
+		document.getElementById("tiles").removeChild( tileTags.pop()); 
+	} 
+
+	if(responseText.length < horizontalTileCount * verticalTileCount) {
+		// Create a random map if the length of the response does not match the intended tile count.
+		for(var i = 0;i < horizontalTileCount;i++) {
+			for(var j = 0;j < verticalTileCount;j++) {
+				if(Math.random() < 0.15 
+					&& i > 2 
+					&& i < horizontalTileCount - 2 
+					&& j > 2 
+					&& j < verticalTileCount - 2
+					) {
+					addTile(i, j, 1 + Math.floor(Math.random() * 5)); 
+				}
+				else {
+					tileSet[i][j] = 0; 
+				}
+			}
+		}
+	}
+	else {
+		// The file has been received, now to take the text and make turn each character into a tile.
+		var i = 0;
+		var j = 0;
+		var openRootNode = `<root><![CDATA[`;
+		var endRootNode = `]]></root>`;
+		var carriageReturn = `\r`;
+		var newline = `\n`;
+		responseText = responseText.replace(openRootNode, "");
+		responseText = responseText.replace(endRootNode, "");
+		responseText = responseText.replace(carriageReturn, "");
+		responseText = responseText.replace(newline, "");
+		var characterToTileNumberBook = {
+			" ": 0,
+			"@": 1,
+			"W": 2,
+			"T": 3,
+			"&": 4,
+			"#": 5,
+			"_": 6
+		};
+		while(responseText.length > 0) {
+			var currentTileCharacter = responseText.substring(0,1);
+			var currentTileNumber = 0;
+			currentTileNumber = TryParseInt(currentTileCharacter, -1)
+			if(currentTileNumber == -1)
+			{
+				currentTileNumber = characterToTileNumberBook[currentTileCharacter];
+			}
+			if(isNaN(currentTileNumber))
+			{
+				currentTileNumber = 0;
+			}
+			addTile(i, j, currentTileNumber);
+			responseText = responseText.substring(1);
+			i++;
+			if(i > 640 / 16) {
+				responseText = responseText.substring(2);
+				i = 0;
+				j++;
+			}
+		}
+	}
+}
+
+
+// Resets the game upon game over.
+function resetGame(player)
+{
+	// TODO - MAke more maps too.
+	player.pos = { x: 20, y: 240 };
+	player.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
+	player.misc = { name: "link", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", respawnTimer: 0 };
+	player.stat.hp = 30;
+	player.imgtag.src = player.stat.imgSource;
+	player.imgtag.style.opacity = "1";
+	redrawHearts();
+	resetFoes();
+	mapX = 0;
+	mapY = 0;
+	nextRoom(0, 0);
+}
+

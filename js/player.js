@@ -102,7 +102,7 @@ function playerAction(player) {
 			DisplayConsoleText("Game Over!  Lost half your rupees.  Respawning...");
 			player.imgtag.src = "gfx/alpha.png";
 			player.misc.respawnTimer = 60;
-			rupees /= 2;
+			rupees = Math.ceil(rupees / 2);
 		}
 		else if(player.misc.respawnTimer == 1)
 		{

@@ -22,16 +22,30 @@ document.onkeyup=function(e) {
 }
 
 // Check which keyboard key is being held down and sets player one's key to such
-function setKey() {
+function setKey(playerNumber) {
 	for(var i = 0;i < 512;i++) {
 		if(control[i] == true) {
 			if(current == 0) {
-				p1.ctrl[(keys[current])] = i;
+				if(playerNumber == 1)
+				{
+					p1.ctrl[(keys[current])] = i;
+				}
+				else
+				{
+					p2.ctrl[(keys[current])] = i;	
+				}
 				current += 1;
 				return i; 
 			}
 			else if(p1.ctrl[(keys[(current - 1)])] != i) {
-				p1.ctrl[(keys[current])] = i;
+				if(playerNumber == 1)
+				{
+					p1.ctrl[(keys[current])] = i;
+				}
+				else
+				{
+					p2.ctrl[(keys[current])] = i;	
+				}
 				current += 1;
 				return i; 
 			}
@@ -41,15 +55,15 @@ function setKey() {
 }
 
 // Set up the custom controls
-function controlSet() {
+function controlSet(playerNumber) {
 	DisplayConsoleText("Press " + keys[current]);
-	setKey();
+	setKey(playerNumber);
 	if(keys[current] != "END") {
-		setTimeout("controlSet()", 10);
+		setTimeout(`controlSet(${playerNumber})`, 10);
 	}
 	else {
 		current = 0;
 		consoleTag.value = "All Set!";
-		clearTimeout("controlSet()");
+		clearTimeout(`controlSet(${playerNumber})`);
 	}
 }

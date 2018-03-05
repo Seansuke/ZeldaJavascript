@@ -17,14 +17,26 @@ body {
 
 #gameWindow {
 	width: 656px;
-	height: 488px;
+	height: 472px;
 	overflow: hidden;
 }
-#faster, #slower {
+#tunicColors, #optionsToggle, #faster, #slower, #addPlayer2 {
     background-color: #dfdfdf;
     display: inline-block;
     padding: 0.4em;
     border: 1px solid black;
     border-radius: 8px;
     cursor: pointer;
+}
+#rupeeWrapper
+{
+	display: inline-block;
+    padding: 0em 1em;
+}
+#heartWrapper {
+    display: inline-block;
+    padding: 0em 1em;
+}
+#gui * {
+	vertical-align: top;
 }
