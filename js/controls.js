@@ -37,6 +37,7 @@ function setKey(playerNumber) {
 				current += 1;
 				return i; 
 			}
+			// TODO: fix this line for player 2.
 			else if(p1.ctrl[(keys[(current - 1)])] != i) {
 				if(playerNumber == 1)
 				{

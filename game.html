@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title> 
-			The Legend of Zelda - JavaScript Edition - v0.1.5
+			The Legend of Zelda - JavaScript Edition - v0.1.6
 		</title>
 		<meta charset="utf-8"/>
 		<link 
@@ -10,16 +10,9 @@
 			type = "text/css" 
 			href = "css/defaultStyle.css" 
 		/>
-		<script type = "text/javascript" src = "js/globals.js" ></script>
-		<script type = "text/javascript" src = "js/classes.js" ></script>
-		<script type = "text/javascript" src = "js/methods.js" ></script>
-		<script type = "text/javascript" src = "js/controls.js" ></script>
-		<script type = "text/javascript" src = "js/statics.js" ></script>
-		<script type = "text/javascript" src = "js/player.js" ></script>
-		<script type = "text/javascript" src = "js/foe.js" ></script>
-		<script type = "text/javascript" src = "js/main.js" ></script>
 	</head>
 	<body onload="init()">
+
 		<div id="gameWindow">
 			<!-- TILES SECTION -->
 			<div id = "tiles">
@@ -37,6 +30,7 @@
 			<div id = "drops">
 			</div>
 		</div>
+
 		<div id="gui">
 
 			<!-- AUDIO -->
@@ -46,13 +40,8 @@
 				<source src="bgm/overworld.wav" type="audio/wav" />
 			</audio>
 
-			<input
-				id = "console" 
-				type = "text"
-				value = "Message Box" 
-				readonly="readonly"
-			/>
-
+			<div id = "console" >
+			</div>
 
 			<div id="optionsToggle" onclick="optionsToggle();">Display/Hide Options</div>
 
@@ -63,9 +52,6 @@
 					type = "text" 
 					value = "0" 
 					readonly="readonly"
-					style = "
-						width: 4em;
-					"
 				/>
 			</div>
 
@@ -173,5 +159,16 @@
 			</div><!-- #options -->
 
 		</div><!-- #gui -->
+		<footer>
+			<script type = "text/javascript" src = "js/globals.js" ></script>
+			<script type = "text/javascript" src = "js/classes.js" ></script>
+			<script type = "text/javascript" src = "js/methods.js" ></script>
+			<script type = "text/javascript" src = "js/controls.js" ></script>
+			<script type = "text/javascript" src = "js/statics.js" ></script>
+			<script type = "text/javascript" src = "js/player.js" ></script>
+			<script type = "text/javascript" src = "js/foe.js" ></script>
+			<script type = "text/javascript" src = "js/main.js" ></script>
+		</footer>
 	</body>
+		
 </html>

@@ -11,8 +11,11 @@ body {
 }
 
 #console {
-	width: 656px;
-	display: block;
+    width: 654px;
+    height: 1.5em;
+    background-color: white;
+    border: 1px solid black;
+    display: block;
 }
 
 #gameWindow {
@@ -20,6 +23,7 @@ body {
 	height: 472px;
 	overflow: hidden;
 }
+
 #tunicColors, #optionsToggle, #faster, #slower, #addPlayer2 {
     background-color: #dfdfdf;
     display: inline-block;
@@ -28,15 +32,22 @@ body {
     border-radius: 8px;
     cursor: pointer;
 }
+
 #rupeeWrapper
 {
 	display: inline-block;
     padding: 0em 1em;
 }
+
 #heartWrapper {
     display: inline-block;
     padding: 0em 1em;
 }
+
 #gui * {
 	vertical-align: top;
+}
+
+#rupee {
+	width: 4em;
 }

@@ -55,6 +55,14 @@ function swordUpgrade() {
 	else {
 		DisplayConsoleText('You do not have enough rupees!');
 	}
+
+	// Refresh all weapons
+	if(p2 !== null) {
+		p2.wpn.A = p1.wpn.A;
+		p2.wpn.B = p1.wpn.B;
+		p2.wpn.C = p1.wpn.C;
+		p2.wpn.D = p1.wpn.D;
+	}
 }
 
 function boomerangUpgrade() {
@@ -80,6 +88,14 @@ function boomerangUpgrade() {
 	} 
 	else {
 		DisplayConsoleText('You do not have enough rupees!');
+	}
+
+	// Refresh all weapons
+	if(p2 !== null) {
+		p2.wpn.A = p1.wpn.A;
+		p2.wpn.B = p1.wpn.B;
+		p2.wpn.C = p1.wpn.C;
+		p2.wpn.D = p1.wpn.D;
 	}
 }
 
@@ -107,6 +123,14 @@ function arrowUpgrade() {
 	else {
 		DisplayConsoleText('You do not have enough rupees!');
 	}
+
+	// Refresh all weapons
+	if(p2 !== null) {
+		p2.wpn.A = p1.wpn.A;
+		p2.wpn.B = p1.wpn.B;
+		p2.wpn.C = p1.wpn.C;
+		p2.wpn.D = p1.wpn.D;
+	}
 }
 
 function bombUpgrade() {
@@ -133,6 +157,14 @@ function bombUpgrade() {
 	else {
 		DisplayConsoleText('You do not have enough rupees!');
 	}
+
+	// Refresh all weapons
+	if(p2 !== null) {
+		p2.wpn.A = p1.wpn.A;
+		p2.wpn.B = p1.wpn.B;
+		p2.wpn.C = p1.wpn.C;
+		p2.wpn.D = p1.wpn.D;
+	}
 }
 
 function heartUpgrade() {
@@ -151,6 +183,11 @@ function heartUpgrade() {
 	} 
 	else {
 		DisplayConsoleText('You do not have enough rupees!');
+	}
+
+	// Refresh all weapons
+	if(p2 !== null) {
+		p2.stat.mhp = p1.stat.mhp;
 	}
 }
 
@@ -177,7 +214,7 @@ function lensOfTruthUpgrade() {
 
 function DisplayConsoleText(newConsoleText)
 {
-	consoleTag.value = newConsoleText;
+	consoleTag.innerText = newConsoleText;
 }
 
 function increaseGameSpeed()
@@ -220,6 +257,7 @@ function addPlayer2(){
 	p2.ctrl = { up: 101, right: 99, down: 98, left: 97, attA: 103, attB: 104, attC: 105, attD: 102 };	
 	p2.pos.x = p1.pos.x;
 	p2.pos.y = p1.pos.y;
+	// TODO : setting p2's controls doesn't work properly on AttB and AttC
 }
 
 // Calling this function once will initialize all the resources necessary for the game to run.

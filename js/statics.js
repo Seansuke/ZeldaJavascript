@@ -161,12 +161,23 @@ function checkCollision() {
 		}
 	}
 
+// TODO: Player 2 should collide with item as well.
+// TODO: make game saving
 	// Check if player is colliding with an item
 	if( checkSingleCollision(p1, itemDrop) == true ) {
 		if(itemDrop.pos.x != 0) {
 			if(itemDrop.type == "heart") {
 				p1.stat.hp += itemDrop.amnt * 2;
-				if(p2 !== null) {p2.stat.hp += itemDrop.amnt * 2;}
+				if(p1.stat.hp > p1.stat.mhp) {
+					p1.stat.hp = p1.stat.mhp;
+				}
+				if(p2 !== null) {
+					p2.stat.hp += itemDrop.amnt * 2;
+					
+					if(p2.stat.hp > p2.stat.mhp) {
+						p2.stat.hp = p2.stat.mhp;
+					}
+				}
 			}
 			else if(itemDrop.type == "rupee") {
 				rupees += itemDrop.amnt;
@@ -305,6 +316,7 @@ function nextRoom(mapXadd, mapYadd) {
 	mapX += mapXadd;
 	mapY += mapYadd;
 	// TODO - make this work with maps on file for testing.
+	// TODO - move player 2 as well.
 	var mapFileName = "ajax/map_" + mapX + "" + mapY + ".txt";
 	var fullMapFileName = mapFileName;
 	var currentFilePath = window.location.href;
@@ -482,11 +494,13 @@ function setTiles(responseText) {
 // Resets the game upon game over.
 function resetGame(player)
 {
+	// TODO - save progress.
+	// TODO - reset for player 2.
 	// TODO - MAke more maps too.
 	player.pos = { x: 20, y: 240 };
 	player.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
 	player.misc = { name: "link", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", respawnTimer: 0 };
-	player.stat.hp = 30;
+	player.stat.hp = player.stat.mhp;
 	player.imgtag.src = player.stat.imgSource;
 	player.imgtag.style.opacity = "1";
 	redrawHearts();
