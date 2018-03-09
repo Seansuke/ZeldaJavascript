@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title> 
-			The Legend of Zelda - JavaScript Edition - v0.1.6
+			The Legend of Zelda - JavaScript Edition - v0.1.7
 		</title>
 		<meta charset="utf-8"/>
 		<link 
@@ -43,19 +43,17 @@
 			<div id = "console" >
 			</div>
 
-			<div id="optionsToggle" onclick="optionsToggle();">Display/Hide Options</div>
+			<div id="optionsToggle" class="clickable-button" onclick="optionsToggle();">Display/Hide Options</div>
 
 			<div id = "rupeeWrapper">
-				<img src="gfx/drop/rupee.png" />
-				<input 
-					id = "rupee" 
-					type = "text" 
-					value = "0" 
-					readonly="readonly"
-				/>
+				<img id="rupeeIcon" src="gfx/drop/rupee.png" />
+				<div id = "rupee">0</div>
 			</div>
 
-			<div id = "heartWrapper"></div>
+			<div id="heartWrapperWrapper">
+				<div id = "heartWrapper"><span>P1:</span></div>
+				<div id = "heartWrapperP2"><span>P2:</span></div>
+			</div>
 
 
 			<div id="options" style="display: none;">
@@ -63,96 +61,96 @@
 					id = "tunicColors"
 					alt = "Credit: CukeMan from PureZC.com and Nintendo"
 					src = "gfx/gui/change-tunic.png"
-					onclick = "changeTunic();"
+					 class="clickable-button"
+					onclick = "changeTunic(1);"
+				/>
+
+				<img 
+					id = "tunicColorsP2"
+					alt = "Credit: CukeMan from PureZC.com and Nintendo"
+					src = "gfx/gui/change-tunic-2.png"
+					 class="clickable-button"
+					onclick = "changeTunic(2);"
 				/>
 
 				<img 
 					id = "addPlayer2"  
 					alt = "Add Player 2"  
-					src = "gfx/gui/add-player-2.png"  
+					src = "gfx/gui/add-player-2.png"
+					 class="clickable-button"  
 					onclick = "addPlayer2();"
 				/>
 				
 				<!-- Frame Skip Button -->
-				<button id = "faster" 
+				<div id = "faster"  class="clickable-button"
 					type = "button" onclick = "increaseGameSpeed();">
 					Increase Game Speed
-				</button>
-				<button id = "slower" 
+				</div>
+				<div id = "slower"  class="clickable-button"
 					type = "button" onclick = "decreaseGameSpeed();">
 					Decrease Game Speed
-				</button>
+				</div>
 
-				<button 
-					id = "swordUpgrade"
-					type = "button" 
+				<div 
+					id = "swordUpgrade" class="clickable-button"
 					onclick = "swordUpgrade();// TODO - Port these to NPCs"
-				>
-					Upgrade Sword -9
-				</button>
-				<button 
-					id = "boomerangUpgrade"
-					type = "button" 
+				>Upgrade Sword -[cost]</div>
+				<div 
+					id = "boomerangUpgrade" class="clickable-button"
 					onclick = "boomerangUpgrade();"
-				>
-					Buy/Up Boomerang -2
-				</button>
-				<button 
-					id = "bombUpgrade"
-					type = "button" 
+				>Buy/Up Boomerang -[cost]</div>
+				<div 
+					id = "bombUpgrade" class="clickable-button"
 					onclick = "bombUpgrade();"
-				>
-					Buy/Up Bomb -5
-				</button>
-				<button 
-					id = "arrowUpgrade"
-					type = "button" 
+				>Buy/Up Bomb -[cost]</div>
+				<div 
+					id = "arrowUpgrade" class="clickable-button"
 					onclick = "arrowUpgrade();"
-				>
-					Buy/Up Arrow -6
-				</button>
-				<button 
-					id = "heartsUpgrade"
-					type = "button" 
+				>Buy/Up Arrow -[cost]</div>
+				<div 
+					id = "heartsUpgrade" class="clickable-button"
 					onclick = "heartUpgrade(); // TODO - Create recurring NPC to do this for you.  And one that offers to heal for rupees."
-				>
-					Buy/Up Max Hearts -9
-				</button>
-				<button 
-					id = "lensOfTruthUpgrade"
-					type = "button" 
+				>Buy/Up Max Hearts -[cost]</div>
+				<div 
+					id = "lensOfTruthUpgrade" class="clickable-button"
 					onclick = "lensOfTruthUpgrade();"
-				>
-					Buy/Up Lens of Truth -16
-				</button>
+				>Buy/Up Lens of Truth -[cost]</div>
 
+				<div id="loadFile" class="clickable-button"
+					onclick = "loadFile();"
+				>Load File</div>
+
+				<input id="loadFileUpload" type="file" value="Browse for Save File"/>
+        
+				<div id="saveFile" class="clickable-button"
+				>Save File</div>
 
 				<div id = "helpGui">
-					<div>Default Controls:</div>
-					<div>WASD: Move</div>
-					<div>H: Sword</div>
-					<div>J: Boomerang</div>
-					<div>K: Bomb</div>
-					<div>L: Arrow</div>
-					<div>
-						Click 
+					<div id="defaultControls">
+						<div>Default Controls:</div>
+						<div>WASD: Move</div>
+						<div>H: Sword</div>
+						<div>J: Boomerang</div>
+						<div>K: Bomb</div>
+						<div>L: Arrow</div>
+					</div>
+					<div class="controls clickable-button">
 						<img 
 							id = "ctrslBtn"  
 							alt = "Controls"  
 							src = "gfx/controls.png"  
 							onclick = "controlSet(1);"  
 						/>
-					 	to change player 1's controls.
+					 	Change player 1's controls.
 				 	</div>
-					<div>
-						Click 
+					<div class="controls clickable-button">
 						<img 
-							id = "ctrslBtn"  
+							id = "ctrslBtnP2"  
 							alt = "Controls"  
 							src = "gfx/controls.png"  
 							onclick = "controlSet(2);"  
 						/>
-					 	to change player 2's controls.
+					 	Change player 2's controls.
 				 	</div>
 				</div><!-- #helpGui -->
 

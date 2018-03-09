@@ -6,8 +6,8 @@ body {
 
 #gameWindow img {
 	position : absolute;
-	margin-left: 8px;
-	margin-top: 8px;
+    margin-left: 12px;
+    margin-top: 24px;
 }
 
 #console {
@@ -19,12 +19,12 @@ body {
 }
 
 #gameWindow {
-	width: 656px;
-	height: 472px;
+    width: 668px;
+    height: 494px;
 	overflow: hidden;
 }
 
-#tunicColors, #optionsToggle, #faster, #slower, #addPlayer2 {
+.clickable-button {
     background-color: #dfdfdf;
     display: inline-block;
     padding: 0.4em;
@@ -39,8 +39,7 @@ body {
     padding: 0em 1em;
 }
 
-#heartWrapper {
-    display: inline-block;
+#heartWrapper, #heartWrapperP2 {
     padding: 0em 1em;
 }
 
@@ -49,5 +48,30 @@ body {
 }
 
 #rupee {
-	width: 4em;
+    width: 4em;
+    height: 30px;
+    background-color: white;
+    border: 1px solid black;
+    font-size: 22px;
+    display: inline-block;
+    padding: 0px 0.3em;
+}
+
+#rupeeIcon {
+    height: 32px;
+}
+#heartWrapperWrapper {
+    display: inline-block;
+}
+
+#defaultControls {
+    font-size: 14px;
+    display: inline-block;
+    padding: 0.5em;
+    background-color: white;
+    margin: 0.5em;
+}
+
+.controls {
+    display: inline-block;
 }

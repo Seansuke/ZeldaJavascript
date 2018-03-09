@@ -4,7 +4,6 @@
 
 //Have a single foe run through it's life cycle
 function foeAction(foe_obj) {
-	// TODO - make them smarter.
 	// If the foe's life is <= 0, remove the foe from play
 	if(foe_obj.stat.hp <= 0) {
 
@@ -18,7 +17,7 @@ function foeAction(foe_obj) {
 			return;
 		}
 	}
-	var randomAction = Math.floor(Math.random() * 9);
+	var randomAction = Math.floor(Math.random() * 8);
 	boundaryCheck(foe_obj);
 
 	// If the foe if hurt, then the foe is temporarily stunned
@@ -27,15 +26,22 @@ function foeAction(foe_obj) {
 		randomAction = -1; 
 	} 
 
+	var initiateAttackLogic = randomAction == 4 && foe_obj.misc.currentWpn != "none";
+	if(foe_obj.stat.hp != foe_obj.stat.mhp && randomAction >= 4 && randomAction <= 6 && foe_obj.misc.currentWpn != "none")
+	{
+		// Attack far more frequently if you've taken damage.
+		initiateAttackLogic = true;
+	}
+
 	// If the foe is attacking, follow through the attack
 	if(foe_obj.misc.attacking > 0 && foe_obj.misc.currentWpn != "none") {
 		actionPerformAttack(foe_obj);
 		randomAction = -1;
 	}
 
-	// TODO - implement brains
+	// TODO - implement enemy brains
 	// A random occurance:  Initiate an attack
-	else if(randomAction == 4 && foe_obj.misc.currentWpn != "none") {
+	else if(initiateAttackLogic) {
 		foe_obj.misc.attacking = 99;
 		randomAction = -1;
 	}

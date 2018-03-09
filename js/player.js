@@ -15,6 +15,7 @@ function playerWalk(player) {
 	}
 	
 	// TODO - implement these as variables that can be changed.
+	// TODO - implement touch controls.
 	if (control[player.ctrl.left] == true || stateu.hold & 0x00000800 || stateu.hold & 0x40000000 || state.held & 0x00000100) {
 		player.misc.direction = "left";
 		moveObj(player, - player.stat.speed , 0); 
@@ -36,21 +37,49 @@ function playerWalk(player) {
 	// Check all boundaries
 	if(player.pos.x > 630) {
 		player.pos.x = 15;
+		p1.pos.x = player.pos.x;
+		p1.pos.y = player.pos.y;
+		if(p2 !== null)
+		{
+			p2.pos.x = player.pos.x;
+			p2.pos.y = player.pos.y;
+		}
 		nextRoom(1,0);
 		resetFoes();
 	}
 	else if(player.pos.x < 10) {
 		player.pos.x = 630;
+		p1.pos.x = player.pos.x;
+		p1.pos.y = player.pos.y;
+		if(p2 !== null)
+		{
+			p2.pos.x = player.pos.x;
+			p2.pos.y = player.pos.y;
+		}
 		nextRoom(-1,0);
 		resetFoes();
 	}
 	else if(player.pos.y > 470) {
 		player.pos.y = 15;
+		p1.pos.x = player.pos.x;
+		p1.pos.y = player.pos.y;
+		if(p2 !== null)
+		{
+			p2.pos.x = player.pos.x;
+			p2.pos.y = player.pos.y;
+		}
 		nextRoom(0,1);
 		resetFoes();
 	}
 	else if(player.pos.y < 10) {
 		player.pos.y = 470;
+		p1.pos.x = player.pos.x;
+		p1.pos.y = player.pos.y;
+		if(p2 !== null)
+		{
+			p2.pos.x = player.pos.x;
+			p2.pos.y = player.pos.y;
+		}
 		nextRoom(0,-1);
 		resetFoes();
 	}
@@ -95,14 +124,12 @@ function playerAttack(player) {
 
 // The player's life cycle, from 
 function playerAction(player) {
-	rupeeTag.value = rupees;
 	if(player.stat.hp <= 0) {
 		if(player.misc.respawnTimer < 0)
 		{
-			DisplayConsoleText("Game Over!  Lost half your rupees.  Respawning...");
+			DisplayConsoleText("Game Over!  Respawning...");
 			player.imgtag.src = "gfx/alpha.png";
 			player.misc.respawnTimer = 60;
-			rupees = Math.ceil(rupees / 2);
 		}
 		else if(player.misc.respawnTimer == 1)
 		{

@@ -23,32 +23,46 @@ document.onkeyup=function(e) {
 
 // Check which keyboard key is being held down and sets player one's key to such
 function setKey(playerNumber) {
-	for(var i = 0;i < 512;i++) {
-		if(control[i] == true) {
-			if(current == 0) {
+	// Iterate through all keys pressed to find what is being pressed and set it.
+	for(var keyCode = 0;keyCode < 512;keyCode++) {
+		var currentKeyName = keys[currentKeyIndex];
+		var previousKeyName = keys[currentKeyIndex - 1];
+		var isKeyCodePressed = control[keyCode];
+		if(isKeyCodePressed == true) {
+			if(currentKeyIndex == 0) {
 				if(playerNumber == 1)
 				{
-					p1.ctrl[(keys[current])] = i;
+					p1.ctrl[currentKeyName] = keyCode;
 				}
 				else
 				{
-					p2.ctrl[(keys[current])] = i;	
+					p2.ctrl[currentKeyName] = keyCode;	
 				}
-				current += 1;
-				return i; 
+				currentKeyIndex += 1;
+				return keyCode; 
 			}
-			// TODO: fix this line for player 2.
-			else if(p1.ctrl[(keys[(current - 1)])] != i) {
+			else 
+			{
 				if(playerNumber == 1)
 				{
-					p1.ctrl[(keys[current])] = i;
+					// Only set this new key as long as it doesn't match the previous key exactly.
+					if(p1.ctrl[previousKeyName] != keyCode) 
+					{
+						p1.ctrl[currentKeyName] = keyCode;
+						currentKeyIndex += 1;
+						return keyCode;
+					} 
 				}
 				else
 				{
-					p2.ctrl[(keys[current])] = i;	
+					// Only set this new key as long as it doesn't match the previous key exactly.
+					if(p2.ctrl[previousKeyName] != keyCode) 
+					{
+						p2.ctrl[currentKeyName] = keyCode;
+						currentKeyIndex += 1;
+						return keyCode;
+					}
 				}
-				current += 1;
-				return i; 
 			}
 		}
 	}
@@ -57,14 +71,18 @@ function setKey(playerNumber) {
 
 // Set up the custom controls
 function controlSet(playerNumber) {
-	DisplayConsoleText("Press " + keys[current]);
+	if(p2 === null && playerNumber == 2)
+	{
+		addPlayer2();
+	}
+	DisplayConsoleText("Press " + keys[currentKeyIndex] + " for player " + playerNumber);
 	setKey(playerNumber);
-	if(keys[current] != "END") {
+	if(keys[currentKeyIndex] != "END") {
 		setTimeout(`controlSet(${playerNumber})`, 10);
 	}
 	else {
-		current = 0;
-		consoleTag.value = "All Set!";
+		currentKeyIndex = 0;
+		DisplayConsoleText("Controls are set complete for player " + playerNumber);
 		clearTimeout(`controlSet(${playerNumber})`);
 	}
 }

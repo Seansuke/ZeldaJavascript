@@ -23,7 +23,7 @@ function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 // This will reset every single foe within the array to a random type, position, with mild stat variation.
 function resetFoes() {
 	for(var i = 0;i < MAX_FOES;i++) {
-		// TODO - add more foes.  Also make harder foes spawn at further maps.
+		// TODO - add more foes.
 		var distanceFromStart = mapX + mapY;
 		var minimumFoeDifficulty = 0;
 		var maximumFoeDifficulty = 7;
@@ -161,10 +161,12 @@ function checkCollision() {
 		}
 	}
 
-// TODO: Player 2 should collide with item as well.
-// TODO: make game saving
 	// Check if player is colliding with an item
-	if( checkSingleCollision(p1, itemDrop) == true ) {
+	var didPlayer2Collide = false;
+	if( p2 !== null) {
+		didPlayer2Collide = checkSingleCollision(p2, itemDrop);
+	}
+	if( checkSingleCollision(p1, itemDrop) == true || didPlayer2Collide) {
 		if(itemDrop.pos.x != 0) {
 			if(itemDrop.type == "heart") {
 				p1.stat.hp += itemDrop.amnt * 2;
@@ -272,21 +274,6 @@ function boundaryCheck(self) {
 	}
 }
 
-// Redraw the hearts on the screen
-function redrawHearts() { 
-	for(var i = 0;i * 10 < p1.stat.mhp;i++) {
-		if(p1.stat.hp >= (i)*10 + 5) { 
-			heartList[i].src = "gfx/gui/heart_full.png"; 
-		}
-		else if(p1.stat.hp >= (i)*10) { 
-			heartList[i].src = "gfx/gui/heart_half.png"; 
-		}
-		else { 
-			heartList[i].src = "gfx/gui/heart_empty.png"; 
-		}
-	}
-}
-
 // Have a random drop appear in the location (x, y)
 function randomDrop(x,y) {
 	itemDrop.pos.x = x;
@@ -316,7 +303,6 @@ function nextRoom(mapXadd, mapYadd) {
 	mapX += mapXadd;
 	mapY += mapYadd;
 	// TODO - make this work with maps on file for testing.
-	// TODO - move player 2 as well.
 	var mapFileName = "ajax/map_" + mapX + "" + mapY + ".txt";
 	var fullMapFileName = mapFileName;
 	var currentFilePath = window.location.href;
@@ -329,6 +315,36 @@ function nextRoom(mapXadd, mapYadd) {
 	simpleHttpRequest(fullMapFileName, setTiles);
 }
 
+// Redraw the hearts on the screen
+function redrawHearts() { 
+	for(var i = 0;i * 10 < p1.stat.mhp;i++) {
+		if(p1.stat.hp >= (i)*10 + 5) { 
+			heartList[i].src = "gfx/gui/heart_full.png"; 
+		}
+		else if(p1.stat.hp >= (i)*10) { 
+			heartList[i].src = "gfx/gui/heart_half.png"; 
+		}
+		else { 
+			heartList[i].src = "gfx/gui/heart_empty.png"; 
+		}
+	}
+	if(p2 !== null)
+	{
+
+		for(var i = 0;i * 10 < p2.stat.mhp;i++) {
+			if(p2.stat.hp >= (i)*10 + 5) { 
+				heartListP2[i].src = "gfx/gui/heart_full.png"; 
+			}
+			else if(p2.stat.hp >= (i)*10) { 
+				heartListP2[i].src = "gfx/gui/heart_half.png"; 
+			}
+			else { 
+				heartListP2[i].src = "gfx/gui/heart_empty.png"; 
+			}
+		}
+	}
+}
+
 // Request the player's life to be redrawn.
 function redrawMaxHearts() {
 	while(heartList.length > 0)
@@ -337,16 +353,33 @@ function redrawMaxHearts() {
 	}
 	while(document.getElementsByClassName("heart").length > 0) { 
 		document.getElementsByClassName("heart")[0].remove();
-	}
+	3}
+	var heartWrapperDivTag = document.getElementById('heartWrapper');
 	for(var i = 0;i * 10 < p1.stat.mhp;i++) {
 		var newHeartImageTag = document.createElement('img');
 		newHeartImageTag.classList.add("heart");
 		newHeartImageTag.src = "gfx/gui/heart_full.png";
-		newHeartImageTag.style.left = (80 + i * 16) + "px";
-		newHeartImageTag.style.top = (-40) + "px"; 
-		var heartWrapperDivTag = document.getElementById('heartWrapper');
 		var appendedHeartImageTag = heartWrapperDivTag.appendChild(newHeartImageTag);
 		heartList.push(appendedHeartImageTag);
+	}
+	if(p2 !== null)
+	{
+		while(heartListP2.length > 0)
+		{
+			heartListP2.pop();
+		}
+		while(document.getElementsByClassName("heartP2").length > 0) { 
+			document.getElementsByClassName("heartP2")[0].remove();
+		}
+		var heartWrapperP2DivTag = document.getElementById('heartWrapperP2');
+		for(var i = 0;i * 10 < p2.stat.mhp;i++) {
+			var newHeartImageTag = document.createElement('img');
+			newHeartImageTag.classList.add("heartP2");
+			newHeartImageTag.src = "gfx/gui/heart_full.png";
+			var appendedHeartImageTag = heartWrapperP2DivTag.appendChild(newHeartImageTag);
+			heartListP2.push(appendedHeartImageTag);
+		}
+
 	}
 }
 
@@ -458,13 +491,13 @@ function setTiles(responseText) {
 		responseText = responseText.replace(carriageReturn, "");
 		responseText = responseText.replace(newline, "");
 		var characterToTileNumberBook = {
-			" ": 0,
-			"@": 1,
-			"W": 2,
-			"T": 3,
-			"&": 4,
-			"#": 5,
-			"_": 6
+			" ": 0, // dirt  - passable
+			"@": 1, // rock
+			"W": 2, // water
+			"T": 3, // tree
+			"&": 4, // green rock
+			"#": 5, // rock wall
+			"_": 6  // grass  - passable
 		};
 		while(responseText.length > 0) {
 			var currentTileCharacter = responseText.substring(0,1);
@@ -494,15 +527,29 @@ function setTiles(responseText) {
 // Resets the game upon game over.
 function resetGame(player)
 {
-	// TODO - save progress.
-	// TODO - reset for player 2.
-	// TODO - MAke more maps too.
+
 	player.pos = { x: 20, y: 240 };
+	p1.pos.x = player.pos.x;
+	p1.pos.y = player.pos.y;
+	if(p2 !== null)
+	{
+		p2.pos.x = player.pos.x;
+		p2.pos.y = player.pos.y;
+	}
+
 	player.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
 	player.misc = { name: "link", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", respawnTimer: 0 };
-	player.stat.hp = player.stat.mhp;
+
+	// Reset player HP to max.
+	p1.stat.hp = p1.stat.mhp;
+	if(p2 !== null)
+	{
+		p2.stat.hp = p2.stat.mhp;
+	}
+
 	player.imgtag.src = player.stat.imgSource;
 	player.imgtag.style.opacity = "1";
+	redrawMaxHearts();
 	redrawHearts();
 	resetFoes();
 	mapX = 0;
