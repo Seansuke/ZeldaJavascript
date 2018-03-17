@@ -34,6 +34,12 @@ function playerWalk(player) {
 	}
 	player.misc.subimg = Math.round(player.misc.subimg);
 
+	// Reduce the temporary speed buff.
+	if(player.stat.speed > 4)
+	{
+		player.stat.speed -= 0.01;
+	}
+
 	// Check all boundaries
 	if(player.pos.x > 630) {
 		player.pos.x = 15;
@@ -159,6 +165,7 @@ function playerAction(player) {
 	drawSprite(player.imgtag, player);
 	drawSprite(player.attackElem.imgtag, player.attackElem);
 }
+
 /* =============================================================================================================================== */
 /* ====================================================Attack functions=========================================================== */
 /* =============================================================================================================================== */
@@ -287,31 +294,41 @@ function actionArrow(player) {
 
 	// When player's attacking time == 99, initialize the attack, and set the REAL attacking time to the proper amount
 	if(player.misc.attacking == 99) {
-		player.stat.attTime = 10;
-		player.misc.attacking = player.stat.attTime;
-
-		//Creates a new attack with the following stats (player, DMG, TIME, FORCE, COOL, "effect")
-		setAttack(player, 2 , player.stat.attTime,0,2,  "none");
-		player.attackElem.imgtag.src = "gfx/wpn/" + player.attackElem.misc.currentWpn +  ".png";
+		player.stat.attTime = 18;
 
 		// The light_arrow is stronger than the silver_arrow and in turn the wooden_arrow
 		if(player.attackElem.misc.currentWpn.search("silver_") != -1) {
-			player.attackElem.stat.att = 3;
+			player.stat.attTime = 17;
 		}
 		else if(player.attackElem.misc.currentWpn.search("light_") != -1) {
-			player.attackElem.stat.att = 4;
+			player.stat.attTime = 16;
 		}
+
+		player.misc.attacking = player.stat.attTime;
 	}
+
 	player.attackElem.misc.subimg += 1;
 	player.misc.attacking--;
 
+	if(player.misc.attacking == 13)
+	{
+		//Creates a new attack with the following stats (player, DMG, TIME, FORCE, COOL, "effect")
+		setAttack(player, 1 , player.stat.attTime,0,2,  "none");
+		player.attackElem.imgtag.src = "gfx/wpn/" + player.attackElem.misc.currentWpn +  ".png";
+
+		// The light_arrow is stronger than the silver_arrow and in turn the wooden_arrow
+		if(player.attackElem.misc.currentWpn.search("light_") != -1) {
+			player.attackElem.stat.att = 2;
+		}
+	}
 	// The arrow arches forward until removal time
-	if(player.misc.attacking > 0) { 
+	else if(player.misc.attacking > 7 && player.misc.attacking <= 12) { 
 		movePassable(player.attackElem, 32); 
 	}
 
+
 	// Remove weapon from the screen at time == 0%
-	else if(player.misc.attacking == 0) {
+	else if(player.misc.attacking <= 7) {
 		player.attackElem.pos.x = -300;
 		player.attackElem.imgtag.src = "gfx/alpha.png";
 	}

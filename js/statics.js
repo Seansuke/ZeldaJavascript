@@ -185,8 +185,8 @@ function checkCollision() {
 				rupees += itemDrop.amnt;
 			}
 			else if(itemDrop.type == "speed") {
-				p1.stat.speed += itemDrop.amnt * 0.05;
-				if(p2 !== null) {p2.stat.speed += itemDrop.amnt * 0.05;}
+				p1.stat.speed += itemDrop.amnt * 0.5;
+				if(p2 !== null) {p2.stat.speed += itemDrop.amnt * 0.5;}
 			}
 			redrawHearts();
 			if(p1.stat.lensOfTruth > 0)
@@ -527,7 +527,18 @@ function setTiles(responseText) {
 // Resets the game upon game over.
 function resetGame(player)
 {
-
+	// TODO - make multiple drops available.
+	// TODO - do not pick up hearts if full. 
+	// TODO - MAke more maps too.
+	// POLS VOICE + 
+	// MORE MAPS + 
+	// PLAYABLE ZELDA + 
+	// OLD MAN IN ROCK WALLS THAT YOU BUY EQUIPMENT FROM.
+	// CHU CHUS
+	// make a money bag/ e.g. bunch of rupees.
+	// make temples.
+	// make temple music.
+	// make bosses.
 	player.pos = { x: 20, y: 240 };
 	p1.pos.x = player.pos.x;
 	p1.pos.y = player.pos.y;
