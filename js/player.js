@@ -326,6 +326,16 @@ function actionArrow(player) {
 	if(player.misc.attacking == 99) {
 		player.stat.attTime = 18;
 
+
+		//Creates a new attack with the following stats (player, DMG, TIME, FORCE, COOL, "effect")
+		setAttack(player, 2 , player.stat.attTime,0,2,  "none");
+		player.attackElem.imgtag.src = "gfx/wpn/" + player.attackElem.misc.currentWpn +  ".png";
+
+
+		//Creates a new attack with the following stats (player, DMG, TIME, FORCE, COOL, "effect")
+		setAttack(player, 2 , player.stat.attTime,0,2,  "none");
+		player.attackElem.imgtag.src = "gfx/wpn/" + player.attackElem.misc.currentWpn +  ".png";
+
 		// The light_arrow is stronger than the silver_arrow and in turn the wooden_arrow
 		if(player.attackElem.misc.currentWpn.search("silver_") != -1) {
 			player.stat.attTime = 17;
@@ -352,7 +362,8 @@ function actionArrow(player) {
 		}
 	}
 	// The arrow arches forward until removal time
-	else if(player.misc.attacking > 7 && player.misc.attacking <= 12) { 
+	else if (player.misc.attacking > 7 && player.misc.attacking <= 12) {
+		// Break the fast movement into two calls to make sure it can't go through blocks.
 		moveImpassable(player.attackElem, player.misc.direction, 11); 
 		moveImpassable(player.attackElem, player.misc.direction, 11); 
 		if(player.misc.attackType) {
