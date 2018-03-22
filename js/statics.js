@@ -201,6 +201,29 @@ function checkCollision() {
 			itemDrop.imgtag.src = "gfx/alpha.png";
 		}
 	}
+
+	// Check if player is colliding with an item
+	didPlayer2Collide = false;
+	if( p2 !== null) {
+		didPlayer2Collide = checkSingleCollision(p2, nonPlayerCharacter);
+	}
+	if( checkSingleCollision(p1, nonPlayerCharacter) == true || didPlayer2Collide) {
+		if(nonPlayerCharacter.cost > 0)
+		{
+			switch(nonPlayerCharacter.productCode){
+				case "L":
+					lensOfTruthUpgrade();
+				break;
+			}
+			nonPlayerCharacter.pos.x = -999;
+			nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
+			nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+		}
+		if(nonPlayerCharacter.text != "")
+		{
+			DisplayConsoleText(nonPlayerCharacter.text);
+		}
+	}
 }
 
 // Have an object follow through it's damaged state
@@ -284,8 +307,6 @@ function randomDrop(x,y) {
 	drawSprite(itemDrop.imgtag, itemDrop);
 }
 
-
-
 function TryParseInt(str,defaultValue) {
      var retValue = defaultValue;
      if(str !== null) {
@@ -308,9 +329,9 @@ function nextRoom(mapXadd, mapYadd) {
 	var currentFilePath = window.location.href;
 	if(window.location.protocol == "file:")
 	{
-		var lastIndexOfSlash = currentFilePath.lastIndexOf("/");
-		var currentFilePath = currentFilePath.substring(0, lastIndexOfSlash + 1);
-		var fullMapFileName = `${currentFilePath}${mapFileName}`;
+		//fullMapFileName = `http://foxweb.marist.edu/users/sean.higgins1/${mapFileName}`;
+		setTiles("random"); 
+		return;
 	}
 	simpleHttpRequest(fullMapFileName, setTiles);
 }
@@ -330,7 +351,6 @@ function redrawHearts() {
 	}
 	if(p2 !== null)
 	{
-
 		for(var i = 0;i * 10 < p2.stat.mhp;i++) {
 			if(p2.stat.hp >= (i)*10 + 5) { 
 				heartListP2[i].src = "gfx/gui/heart_full.png"; 
@@ -404,7 +424,7 @@ function makeHttpObject() {
 function simpleHttpRequest(url, callbackFunction) {
 
 	// Generate random tiles first.
-	setTiles(""); 
+	setTiles("random"); 
 
 	// Attempt to make the HTTP Object
 	var request = makeHttpObject();
@@ -452,6 +472,16 @@ function addTile(i, j, tileNum) {
 
 //Based on your options (and internet connectivity), a map will be loaded.
 function setTiles(responseText) {
+	
+	if(responseText == "")
+	{
+		return;
+	}
+	
+	if(responseText == "random")
+	{
+		responseText = "";
+	}
 
 	// Ensure all the tiles have been removed from the tiles div tag
 	while(tileTags.length > 0) { 
@@ -470,10 +500,10 @@ function setTiles(responseText) {
 					&& j > 2 
 					&& j < verticalTileCount - 2
 					) {
-					addTile(i, j, 1 + Math.floor(Math.random() * 5)); 
+					addTile(i, j, Math.floor(Math.random() * 7)); 
 				}
 				else {
-					tileSet[i][j] = 0; 
+					addTile(i, j, 0); 
 				}
 			}
 		}
@@ -491,6 +521,7 @@ function setTiles(responseText) {
 		responseText = responseText.replace(carriageReturn, "");
 		responseText = responseText.replace(newline, "");
 		var characterToTileNumberBook = {
+			"L": 0, // dirt  - passable - NPC
 			" ": 0, // dirt  - passable
 			"@": 1, // rock
 			"W": 2, // water
@@ -499,12 +530,14 @@ function setTiles(responseText) {
 			"#": 5, // rock wall
 			"_": 6  // grass  - passable
 		};
+		RemoveNonPlayerCharacter();
 		while(responseText.length > 0) {
 			var currentTileCharacter = responseText.substring(0,1);
 			var currentTileNumber = 0;
 			currentTileNumber = TryParseInt(currentTileCharacter, -1)
 			if(currentTileNumber == -1)
 			{
+				CreateNonPlayerCharacter(currentTileCharacter, i, j);
 				currentTileNumber = characterToTileNumberBook[currentTileCharacter];
 			}
 			if(isNaN(currentTileNumber))
@@ -523,6 +556,43 @@ function setTiles(responseText) {
 	}
 }
 
+function RemoveNonPlayerCharacter()
+{
+	nonPlayerCharacter.pos = { x: -999, y: -999 };
+	nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
+	nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+}
+
+function CreateNonPlayerCharacter(currentTileCharacter, i, j)
+{
+	switch(currentTileCharacter)
+	{
+		case "L":
+			nonPlayerCharacter.pos = { x: i*16, y: j*16 };
+			nonPlayerCharacter.imgtag.style.left = nonPlayerCharacter.pos.x;
+			nonPlayerCharacter.imgtag.style.top = nonPlayerCharacter.pos.y;
+			nonPlayerCharacter.productImgTag.style.left = nonPlayerCharacter.pos.x;
+			nonPlayerCharacter.productImgTag.style.top = nonPlayerCharacter.pos.y + 16;
+			nonPlayerCharacter.productCode = currentTileCharacter;
+			nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
+			nonPlayerCharacter.productImgTag.src = "gfx/wpn/lensOfTruth.png";
+			nonPlayerCharacter.cost = upgradeLensCost;
+			nonPlayerCharacter.text = "";
+		break;
+		case "g":
+			nonPlayerCharacter.pos = { x: i*16, y: j*16 };
+			nonPlayerCharacter.imgtag.style.left = nonPlayerCharacter.pos.x;
+			nonPlayerCharacter.imgtag.style.top = nonPlayerCharacter.pos.y;
+			nonPlayerCharacter.productImgTag.style.left = nonPlayerCharacter.pos.x;
+			nonPlayerCharacter.productImgTag.style.top = nonPlayerCharacter.pos.y + 16;
+			nonPlayerCharacter.productCode = currentTileCharacter;
+			nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
+			nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+			nonPlayerCharacter.cost = 0;
+			nonPlayerCharacter.text = `Old Man: "Turn around and leave this cold oppressed island while you can."`;
+		break;
+	}
+}
 
 // Resets the game upon game over.
 function resetGame(player)

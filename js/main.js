@@ -53,7 +53,8 @@ function refreshPlayer2Equipment()
 }
 
 function swordUpgrade() {
-	if(rupees >= upgradeSwordCost) {
+	var amountRequired = upgradeSwordCost;
+	if(rupees >= amountRequired) {
 		if(p1.wpn.A == 'wooden_sword') {
 			rupees -= upgradeSwordCost;
 			p1.wpn.A = 'white_sword';
@@ -69,14 +70,15 @@ function swordUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText('You do not have enough rupees!');
+		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
 
 function boomerangUpgrade() {
-	if(rupees >= upgradeBoomerangCost) {
+	var amountRequired = upgradeBoomerangCost;
+	if(rupees >= amountRequired) {
 		if(p1.wpn.B == 'None') {
 			rupees -= upgradeBoomerangCost;
 			p1.wpn.B = 'wooden_boomerang';
@@ -97,14 +99,15 @@ function boomerangUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText('You do not have enough rupees!');
+		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
 
 function arrowUpgrade() {
-	if(rupees >= upgradeArrowCost) {
+	var amountRequired = upgradeArrowCost;
+	if(rupees >= amountRequired) {
 		if(p1.wpn.D == 'None') {
 			rupees -= upgradeArrowCost;
 			p1.wpn.D = 'wooden_arrow';
@@ -125,14 +128,15 @@ function arrowUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText('You do not have enough rupees!');
+		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
 
 function bombUpgrade() {
-	if(rupees >= upgradeBombCost) {
+	var amountRequired = upgradeBombCost;
+	if(rupees >= amountRequired) {
 		if(p1.wpn.C == 'None') {
 			rupees -= upgradeBombCost;
 			p1.wpn.C = 'blue_bomb';
@@ -153,14 +157,15 @@ function bombUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText('You do not have enough rupees!');
+		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
 
 function heartUpgrade() {
-	if(rupees >= upgradeHeartCost) {
+	var amountRequired = upgradeHeartCost;
+	if(rupees >= amountRequired) {
 		if(p1.stat.mhp < 100) {
 			rupees -= upgradeHeartCost;
 			p1.stat.mhp += 10;
@@ -176,7 +181,7 @@ function heartUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText('You do not have enough rupees!');
+		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
@@ -186,14 +191,15 @@ function heartUpgrade() {
 }
 
 function lensOfTruthUpgrade() {
-	if(rupees >= upgradeLensCost) {
+	var amountRequired = upgradeLensCost;
+	if(rupees >= amountRequired) {
 		if(p1.stat.lensOfTruth == 0) {
-			rupees -= upgradeLensCost;
+			rupees -= amountRequired;
 			p1.stat.lensOfTruth = 1;
 			DisplayConsoleText('Upgraded to Lens Of Truth!');
 		}
 		else if(p1.stat.lensOfTruth == 1) {
-			rupees -= upgradeLensCost;
+			rupees -= amountRequired;
 			p1.stat.lensOfTruth = 2;
 			DisplayConsoleText('Upgraded to Eye Of Truth!');
 		}
@@ -202,7 +208,7 @@ function lensOfTruthUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText('You do not have enough rupees!');
+		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
@@ -267,25 +273,26 @@ function addPlayer2(){
 
     if (f) {
       var r = new FileReader();
-      r.onload = function(e) { 
-				var resultText = e.target.result;;
-				var data = JSON.parse(resultText);
-				p1.wpn = data.p1.wpn;
-				p1.ctrl = data.p1.ctrl;
-				p1.stat = data.p1.stat;
-				p1.imgtag.src = data.p1.stat.imgSource;
-				if(data.p2 !== null)
-				{
-					addPlayer2();
-					p2.wpn = data.p2.wpn;
-					p2.ctrl = data.p2.ctrl;
-					p2.stat = data.p2.stat;
-					p2.imgtag.src = data.p2.stat.imgSource;
-				}
-				rupees = data.rupees;
-				resetGame(p1);
-				txt = "File Loaded!";
-    DisplayConsoleText(txt);
+      r.onload = function(e) 
+      { 
+			var resultText = e.target.result;;
+			var data = JSON.parse(resultText);
+			p1.wpn = data.p1.wpn;
+			p1.ctrl = data.p1.ctrl;
+			p1.stat = data.p1.stat;
+			p1.imgtag.src = data.p1.stat.imgSource;
+			if(data.p2 !== null)
+			{
+				addPlayer2();
+				p2.ctrl = data.p2.ctrl;
+				p2.stat = data.p2.stat;
+				p2.imgtag.src = data.p2.stat.imgSource;
+				refreshPlayer2Equipment();
+			}
+			rupees = data.rupees;
+			resetGame(p1);
+			txt = "File Loaded!";
+			DisplayConsoleText(txt);
       }
       r.readAsText(f);
     } else { 
@@ -329,6 +336,7 @@ function init( ) {
 	backgroundMusicTag.volume = 0.5;
 	rupeeTag = document.getElementById("rupee");
 	itemDrop = new Drop();
+	nonPlayerCharacter = new NonPlayerCharacter();
 	consoleTag = document.getElementById("console");
 	p1 = new Player();
 	p2 = null;

@@ -21,7 +21,7 @@ function playerWalk(player) {
 		moveObj(player, - player.stat.speed , 0); 
 	}
 	else if (control[player.ctrl.right] == true || stateu.hold & 0x00000400 || stateu.hold & 0x20000000  || state.held & 0x00000200) {
-		player.misc.direction = "right"; 
+		player.misc.direction = "right"; 	
 		moveObj(player, player.stat.speed , 0);
 	}
 	if (control[player.ctrl.up] == true || stateu.hold & 0x00000200 || stateu.hold & 0x10000000  || state.held & 0x00000800) {
@@ -37,12 +37,12 @@ function playerWalk(player) {
 	// Reduce the temporary speed buff.
 	if(player.stat.speed > 4)
 	{
-		player.stat.speed -= 0.01;
+		player.stat.speed -= 0.005;
 	}
 
 	// Check all boundaries
-	if(player.pos.x > 630) {
-		player.pos.x = 15;
+	if(player.pos.x > 635) {
+		player.pos.x = 10;
 		p1.pos.x = player.pos.x;
 		p1.pos.y = player.pos.y;
 		if(p2 !== null)
@@ -53,7 +53,7 @@ function playerWalk(player) {
 		nextRoom(1,0);
 		resetFoes();
 	}
-	else if(player.pos.x < 10) {
+	else if(player.pos.x < 5) {
 		player.pos.x = 630;
 		p1.pos.x = player.pos.x;
 		p1.pos.y = player.pos.y;
@@ -65,8 +65,8 @@ function playerWalk(player) {
 		nextRoom(-1,0);
 		resetFoes();
 	}
-	else if(player.pos.y > 470) {
-		player.pos.y = 15;
+	else if(player.pos.y > 475) {
+		player.pos.y = 10;
 		p1.pos.x = player.pos.x;
 		p1.pos.y = player.pos.y;
 		if(p2 !== null)
@@ -77,7 +77,7 @@ function playerWalk(player) {
 		nextRoom(0,1);
 		resetFoes();
 	}
-	else if(player.pos.y < 10) {
+	else if(player.pos.y < 5) {
 		player.pos.y = 470;
 		p1.pos.x = player.pos.x;
 		p1.pos.y = player.pos.y;

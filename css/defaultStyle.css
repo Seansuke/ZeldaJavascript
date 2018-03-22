@@ -1,6 +1,5 @@
 body {
-	background-image: url("../gfx/bg.png");
-	background-repeat: repeat;
+	background-color: black;
 	margin: 0;
 }
 
@@ -22,6 +21,8 @@ body {
     width: 668px;
     height: 494px;
 	overflow: hidden;
+    background-image: url("../gfx/bg.png");
+    background-repeat: repeat;
 }
 
 .clickable-button {
@@ -58,7 +59,8 @@ body {
 }
 
 #rupeeIcon {
-    height: 32px;
+    height: 24px;
+    margin: 3px;
 }
 #heartWrapperWrapper {
     display: inline-block;

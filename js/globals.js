@@ -10,6 +10,7 @@ var verticalTileCount = 30;
 var heartList = new Array();
 var heartListP2 = new Array();
 var itemDrop = 0;
+var nonPlayerCharacter = undefined;
 var rupeeTag = 0;
 var consoleTag = 0;
 var rupees = 0;
