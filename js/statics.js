@@ -483,6 +483,7 @@ function setTiles(responseText) {
 		responseText = responseText.replace(carriageReturn, "");
 		responseText = responseText.replace(newline, "");
 		var characterToTileNumberBook = {
+			"L": 0, // dirt  - passable - NPC
 			" ": 0, // dirt  - passable
 			"@": 1, // rock
 			"W": 2, // water
