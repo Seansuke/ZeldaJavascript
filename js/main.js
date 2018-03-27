@@ -347,10 +347,20 @@ window.addEventListener("touchmove",function(e){
 		var xDelta = currentTouch.clientX - startTouch.touches[i].clientX;
 		var yDelta = currentTouch.clientY - startTouch.touches[i].clientY;
 		var directionDegrees = (360 + (Math.atan2(-yDelta, -xDelta) * 180 / Math.PI) - 90) % 360;
-		touchControls.up = 325 < directionDegrees || directionDegrees <= 55;
-		touchControls.right = 35 < directionDegrees && directionDegrees <= 145;
-		touchControls.down = 125 < directionDegrees && directionDegrees <= 235;
-		touchControls.left = 215 < directionDegrees && directionDegrees <= 345;
+		if(currentTouch.clientX < visualViewport.width / 2)
+		{
+			touchControls.up = 325 < directionDegrees || directionDegrees <= 55;
+			touchControls.right = 35 < directionDegrees && directionDegrees <= 145;
+			touchControls.down = 125 < directionDegrees && directionDegrees <= 235;
+			touchControls.left = 215 < directionDegrees && directionDegrees <= 345;	
+		}
+		else
+		{
+			touchControls.A = 325 < directionDegrees || directionDegrees <= 55;
+			touchControls.B = 35 < directionDegrees && directionDegrees <= 145;
+			touchControls.C = 125 < directionDegrees && directionDegrees <= 235;
+			touchControls.D = 215 < directionDegrees && directionDegrees <= 345;
+		}
 	}
 });
 

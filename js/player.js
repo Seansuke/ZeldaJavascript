@@ -108,25 +108,25 @@ function playerAttack(player) {
 	}
 
 	// Sword
-	if (control[player.ctrl.attA] == true || stateu.hold & 0x00008000 || state.held & 0x00000002) {
+	if (control[player.ctrl.attA] == true || touchControls.A || stateu.hold & 0x00008000 || state.held & 0x00000002) {
 		player.misc.currentWpn = player.wpn.A; 
 		player.misc.attacking = 99;
 	}
 
 	// Boomerang
-	else if (control[player.ctrl.attB] == true || stateu.hold & 0x00000080 || state.held & 0x00000001) { 
+	else if (control[player.ctrl.attB] == true || touchControls.B ||  stateu.hold & 0x00000080 || state.held & 0x00000001) { 
 		player.misc.currentWpn = player.wpn.B; 
 		player.misc.attacking = 99;
 	}
 
 	// Bomb
-	else if (control[player.ctrl.attC] == true || stateu.hold & 0x00040000 || state.held & 0x00000008) { 
+	else if (control[player.ctrl.attC] == true || touchControls.C ||  stateu.hold & 0x00040000 || state.held & 0x00000008) { 
 		player.misc.currentWpn = player.wpn.C;
 		player.misc.attacking = 99;
 	} 
 
 	// Arrow
-	else if (control[player.ctrl.attD] == true || stateu.hold & 0x00000040 || state.held & 0x00000004) {
+	else if (control[player.ctrl.attD] == true || touchControls.D ||  stateu.hold & 0x00000040 || state.held & 0x00000004) {
 		player.misc.currentWpn = player.wpn.D;
 		player.misc.attacking = 99;
 	} 

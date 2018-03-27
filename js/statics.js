@@ -222,19 +222,19 @@ function checkCollision() {
 			{
 				 case "h":  heal(healHealthCost)
 				 case "H":  upgradeHearts(upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp); break;
-				 case "l":  upgradeLens(0, upgradeLensCost); break;
-				 case "L":  upgradeLens(1, upgradeLensCost); break;
-				 case "b":  upgradeBomb(0, upgradeBlueBombCost); break;
-				 case "B":  upgradeBomb(1, upgradeRedBombCost); break;
-				 case "O":  upgradeBomb(2, upgradeBlackBombCost); break;
-				 case "a":  upgradeArrow(0, upgradeWoodenArrowCost); break;
-				 case "A":  upgradeArrow(1, upgradeSilverArrowCost); break;
-				 case "R":  upgradeArrow(2, upgradeLightArrowCost); break;
-				 case "m":  upgradeBoomerang(0, upgradeWoodenBoomerangCost); break;
-				 case "N":  upgradeBoomerang(1, upgradeMagicBoomerangCost); break;
-				 case "G":  upgradeBoomerang(2, upgradeFireBoomerangCost); break;
-				 case "s":  upgradeSword(1, upgradeWhiteSwordCost); break;
-				 case "S":  upgradeSword(2, upgradeMagicSwordCost); break;
+				 case "l":  lensUpgrade(0, upgradeLensCost); break;
+				 case "L":  lensUpgrade(1, upgradeLensCost); break;
+				 case "b":  bombUpgrade(0, upgradeBlueBombCost); break;
+				 case "B":  bombUpgrade(1, upgradeRedBombCost); break;
+				 case "O":  bombUpgrade(2, upgradeBlackBombCost); break;
+				 case "a":  arrowUpgrade(0, upgradeWoodenArrowCost); break;
+				 case "A":  arrowUpgrade(1, upgradeSilverArrowCost); break;
+				 case "R":  arrowUpgrade(2, upgradeLightArrowCost); break;
+				 case "m":  boomerangUpgrade(0, upgradeWoodenBoomerangCost); break;
+				 case "N":  boomerangUpgrade(1, upgradeMagicBoomerangCost); break;
+				 case "G":  boomerangUpgrade(2, upgradeFireBoomerangCost); break;
+				 case "s":  swordUpgrade(1, upgradeWhiteSwordCost); break;
+				 case "S":  swordUpgrade(2, upgradeMagicSwordCost); break;
 			}
 			nonPlayerCharacter.pos.x = -999;
 			nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
@@ -565,7 +565,6 @@ function setTiles(responseText) {
 		responseText = responseText.replace(carriageReturn, "");
 		responseText = responseText.replace(newline, "");
 		var characterToTileNumberBook = {
-			"L": 0, // dirt  - passable - NPC
 			" ": 0, // dirt  - passable
 			"@": 1, // rock
 			"W": 2, // water
@@ -581,7 +580,7 @@ function setTiles(responseText) {
 			currentTileNumber = TryParseInt(currentTileCharacter, -1)
 			if(currentTileNumber == -1)
 			{
-				CreateNonPlayerCharacter(currentTileCharacter, i, j);
+				CreateNonPlayerCharacter(currentTileCharacter, i, j);0
 				currentTileNumber = characterToTileNumberBook[currentTileCharacter];
 			}
 			if(isNaN(currentTileNumber))
@@ -614,8 +613,8 @@ function CreateNonPlayerCharacter(currentTileCharacter, i, j)
 	var weaponUpdateMap = {
 		"h": ["gfx/gui/heart_full.png", healHealthCost]
 		,"H": ["gfx/drop/heart.png",  upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp]
-		,"l": ["gfx/wpn/lensOfTruth.png",  upgradeLensCost]
-		,"L": ["gfx/wpn/lensOfTruth.png",  upgradeLensCost]
+		,"u": ["gfx/wpn/lensOfTruth.png",  upgradeLensCost]
+		,"U": ["gfx/wpn/lensOfTruth.png",  upgradeLensCost]
 		,"b": ["gfx/wpn/blue_bomb.png",  upgradeBlueBombCost]
 		,"B": ["gfx/wpn/red_bomb.png",  upgradeRedBombCost]
 		,"a": ["gfx/wpn/wooden_arrow.png",  upgradeWoodenArrowCost]
