@@ -483,7 +483,6 @@ function setTiles(responseText) {
 		responseText = responseText.replace(carriageReturn, "");
 		responseText = responseText.replace(newline, "");
 		var characterToTileNumberBook = {
-			"L": 0, // dirt  - passable - NPC
 			" ": 0, // dirt  - passable
 			"@": 1, // rock
 			"W": 2, // water
@@ -500,7 +499,7 @@ function setTiles(responseText) {
 			currentTileNumber = TryParseInt(currentTileCharacter, -1)
 			if(currentTileNumber == -1)
 			{
-				CreateNonPlayerCharacter(currentTileCharacter, i, j);
+				CreateNonPlayerCharacter(currentTileCharacter, i, j);0
 				currentTileNumber = characterToTileNumberBook[currentTileCharacter];
 			}
 			if(isNaN(currentTileNumber))
