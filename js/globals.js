@@ -14,10 +14,9 @@ var nonPlayerCharacter = undefined;
 var rupeeTag = 0;
 var consoleTag = 0;
 var rupees = 0;
-
-// A Class instance in Javascript is just a var with Dictionary data in it
-var p1 = 0;
-var p2 = 0;
+var touchControls = { up: false, right: false, down: false, left: false, A: false, B: false, C: false, D: false};
+var p1 = null;
+var p2 = null;
 var foes = new Array();
 var MAX_FOES = 15;
 
@@ -32,17 +31,21 @@ var spf = 50;
 var control = new Array(512);
 var currentKeyIndex = 0;
 var keys = new Array("up","right","down","left","attA","attB","attC","attD","END");
+var gameStarted = false;
 
 // Costs
-var upgradeSwordCost = 64;
-var upgradeBoomerangCost = 24;
-var upgradeBombCost = 32;
-var upgradeArrowCost = 48;
-var upgradeHeartCost = 64;
+var healHealthCost = 10;
+var upgradeHeartsCostFlatFee = 10;
+var upgradeHeartCostMultiplier = 2;
 var upgradeLensCost = 8;
-document.getElementById("swordUpgrade").innerText = document.getElementById("swordUpgrade").innerText.replace("[cost]", upgradeSwordCost);
-document.getElementById("boomerangUpgrade").innerText = document.getElementById("boomerangUpgrade").innerText.replace("[cost]", upgradeBoomerangCost);
-document.getElementById("bombUpgrade").innerText = document.getElementById("bombUpgrade").innerText.replace("[cost]", upgradeBombCost);
-document.getElementById("arrowUpgrade").innerText = document.getElementById("arrowUpgrade").innerText.replace("[cost]", upgradeArrowCost);
-document.getElementById("heartsUpgrade").innerText = document.getElementById("heartsUpgrade").innerText.replace("[cost]", upgradeHeartCost);
-document.getElementById("lensOfTruthUpgrade").innerText = document.getElementById("lensOfTruthUpgrade").innerText.replace("[cost]", upgradeLensCost);
+var upgradeBlueBombCost = 10;
+var upgradeRedBombCost = 120;
+var upgradeBlackBombCost = 250;
+var upgradeWoodenArrowCost = 10;
+var upgradeSilverArrowCost = 150;
+var upgradeLightArrowCost = 300;
+var upgradeWoodenBoomerangCost = 10;
+var upgradeMagicBoomerangCost = 100;
+var upgradeFireBoomerangCost = 200;
+var upgradeWhiteSwordCost = 200;
+var upgradeMagicSwordCost = 400;

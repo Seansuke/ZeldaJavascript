@@ -22,21 +22,27 @@ function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 
 // This will reset every single foe within the array to a random type, position, with mild stat variation.
 function resetFoes() {
+	var maximumFoeOnScreen = MAX_FOES;
+	var distanceFromStart = mapX + mapY;
+	var minimumFoeDifficulty = 0;
+	var maximumFoeDifficulty = 7;
+	if(Math.abs(distanceFromStart) < 3)
+	{
+		maximumFoeOnScreen = Math.floor(MAX_FOES / 4);
+		minimumFoeDifficulty = 0;
+		maximumFoeDifficulty = 3;
+	}
+	else if(Math.abs(distanceFromStart) < 6)
+	{
+		maximumFoeOnScreen = Math.floor(MAX_FOES / 2);
+		minimumFoeDifficulty = 0;
+		maximumFoeDifficulty = 6;
+	}
 	for(var i = 0;i < MAX_FOES;i++) {
+		foes[i].stat.hp = 0;
+	}
+	for(var i = 0;i < maximumFoeOnScreen;i++) {
 		// TODO - add more foes.
-		var distanceFromStart = mapX + mapY;
-		var minimumFoeDifficulty = 0;
-		var maximumFoeDifficulty = 7;
-		if(Math.abs(distanceFromStart) < 3)
-		{
-			minimumFoeDifficulty = 0;
-			maximumFoeDifficulty = 3;
-		}
-		else if(Math.abs(distanceFromStart) < 6)
-		{
-			minimumFoeDifficulty = 0;
-			maximumFoeDifficulty = 6;
-		}
 		newName = ( Array('keese','octo','rope','moblin','stalfos','gibdo','darknut') )[ minimumFoeDifficulty + Math.floor(Math.random() * maximumFoeDifficulty) ];
 		foes[i].pos = { x: 60 + Math.random() * 320, y: 60 + Math.random() * 360 }; 
 		foes[i].stat = { hp: 5 + Math.random() * 15, mhp: 15, attTime: 8,  att: 5, time: 3, force: 12, cool: 10, effect: "none", speed: 2};
@@ -80,6 +86,7 @@ function resetFoes() {
 			foes[i].misc.xp = 5;
 		}
 		foes[i].stat.hp = foes[i].stat.mhp;
+		foes[i].ai.aggro = false;
 	}	
 }
 
@@ -185,8 +192,8 @@ function checkCollision() {
 				rupees += itemDrop.amnt;
 			}
 			else if(itemDrop.type == "speed") {
-				p1.stat.speed += itemDrop.amnt * 0.5;
-				if(p2 !== null) {p2.stat.speed += itemDrop.amnt * 0.5;}
+				p1.stat.speed += itemDrop.amnt * 0.2;
+				refreshPlayer2Equipment();
 			}
 			redrawHearts();
 			if(p1.stat.lensOfTruth > 0)
@@ -210,10 +217,24 @@ function checkCollision() {
 	if( checkSingleCollision(p1, nonPlayerCharacter) == true || didPlayer2Collide) {
 		if(nonPlayerCharacter.cost > 0)
 		{
-			switch(nonPlayerCharacter.productCode){
-				case "L":
-					lensOfTruthUpgrade();
-				break;
+
+			switch(nonPlayerCharacter.productCode)
+			{
+				 case "h":  heal(healHealthCost)
+				 case "H":  upgradeHearts(upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp); break;
+				 case "l":  upgradeLens(0, upgradeLensCost); break;
+				 case "L":  upgradeLens(1, upgradeLensCost); break;
+				 case "b":  upgradeBomb(0, upgradeBlueBombCost); break;
+				 case "B":  upgradeBomb(1, upgradeRedBombCost); break;
+				 case "O":  upgradeBomb(2, upgradeBlackBombCost); break;
+				 case "a":  upgradeArrow(0, upgradeWoodenArrowCost); break;
+				 case "A":  upgradeArrow(1, upgradeSilverArrowCost); break;
+				 case "R":  upgradeArrow(2, upgradeLightArrowCost); break;
+				 case "m":  upgradeBoomerang(0, upgradeWoodenBoomerangCost); break;
+				 case "N":  upgradeBoomerang(1, upgradeMagicBoomerangCost); break;
+				 case "G":  upgradeBoomerang(2, upgradeFireBoomerangCost); break;
+				 case "s":  upgradeSword(1, upgradeWhiteSwordCost); break;
+				 case "S":  upgradeSword(2, upgradeMagicSwordCost); break;
 			}
 			nonPlayerCharacter.pos.x = -999;
 			nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
@@ -248,7 +269,7 @@ function objDmg(self) {
 	self.dmg.time--;
 
 	// Move the someone 
-	moveUnpassable(self, self.dmg.direction, self.dmg.force);
+	moveImpassable(self, self.dmg.direction, self.dmg.force);
 
 	// HP is lost at the end of being pushed around rather than the beginning to prevent chaining
 	if(self.dmg.time == 1) {
@@ -319,6 +340,29 @@ function TryParseInt(str,defaultValue) {
      return retValue;
 }
 
+function isChrome() {
+  var isChromium = window.chrome,
+    winNav = window.navigator,
+    vendorName = winNav.vendor,
+    isOpera = winNav.userAgent.indexOf("OPR") > -1,
+    isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+    isIOSChrome = winNav.userAgent.match("CriOS");
+
+  if (isIOSChrome) {
+    return true;
+  } else if (
+    isChromium !== null &&
+    typeof isChromium !== "undefined" &&
+    vendorName === "Google Inc." &&
+    isOpera === false &&
+    isIEedge === false
+  ) {
+    return true;
+  } else { 
+    return false;
+  }
+}
+
 // Request from the server an adjacent map to be drawn.
 function nextRoom(mapXadd, mapYadd) {
 	mapX += mapXadd;
@@ -327,9 +371,9 @@ function nextRoom(mapXadd, mapYadd) {
 	var mapFileName = "ajax/map_" + mapX + "" + mapY + ".txt";
 	var fullMapFileName = mapFileName;
 	var currentFilePath = window.location.href;
-	if(window.location.protocol == "file:")
+	if(isChrome() && window.location.protocol == "file:")
 	{
-		//fullMapFileName = `http://foxweb.marist.edu/users/sean.higgins1/${mapFileName}`;
+		//fullMapFileName = `http://seansuke.mygamesonline.com/zeldajs/${mapFileName}`;
 		setTiles("random"); 
 		return;
 	}
@@ -565,32 +609,55 @@ function RemoveNonPlayerCharacter()
 
 function CreateNonPlayerCharacter(currentTileCharacter, i, j)
 {
-	switch(currentTileCharacter)
+	var spawned = false;
+
+	var weaponUpdateMap = {
+		"h": ["gfx/gui/heart_full.png", healHealthCost]
+		,"H": ["gfx/drop/heart.png",  upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp]
+		,"l": ["gfx/wpn/lensOfTruth.png",  upgradeLensCost]
+		,"L": ["gfx/wpn/lensOfTruth.png",  upgradeLensCost]
+		,"b": ["gfx/wpn/blue_bomb.png",  upgradeBlueBombCost]
+		,"B": ["gfx/wpn/red_bomb.png",  upgradeRedBombCost]
+		,"a": ["gfx/wpn/wooden_arrow.png",  upgradeWoodenArrowCost]
+		,"A": ["gfx/wpn/silver_arrow.png",  upgradeSilverArrowCost]
+		,"R": ["gfx/wpn/light_arrow.png",  upgradeLightArrowCost]
+		,"m": ["gfx/wpn/wooden_boomerang.png",  upgradeWoodenBoomerangCost]
+		,"N": ["gfx/wpn/magic_boomerang.png",  upgradeMagicBoomerangCost]
+		,"G": ["gfx/wpn/fire_boomerang.png",  upgradeFireBoomerangCost]
+		,"s": ["gfx/wpn/white_sword.png",  upgradeWhiteSwordCost]
+		,"S": ["gfx/wpn/magic_sword.png",  upgradeMagicSwordCost]
+	}
+
+	var weaponUpdateArray = weaponUpdateMap[currentTileCharacter];
+	if(weaponUpdateArray !== undefined)
 	{
-		case "L":
-			nonPlayerCharacter.pos = { x: i*16, y: j*16 };
-			nonPlayerCharacter.imgtag.style.left = nonPlayerCharacter.pos.x;
-			nonPlayerCharacter.imgtag.style.top = nonPlayerCharacter.pos.y;
-			nonPlayerCharacter.productImgTag.style.left = nonPlayerCharacter.pos.x;
-			nonPlayerCharacter.productImgTag.style.top = nonPlayerCharacter.pos.y + 16;
-			nonPlayerCharacter.productCode = currentTileCharacter;
-			nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
-			nonPlayerCharacter.productImgTag.src = "gfx/wpn/lensOfTruth.png";
-			nonPlayerCharacter.cost = upgradeLensCost;
-			nonPlayerCharacter.text = "";
-		break;
-		case "g":
-			nonPlayerCharacter.pos = { x: i*16, y: j*16 };
-			nonPlayerCharacter.imgtag.style.left = nonPlayerCharacter.pos.x;
-			nonPlayerCharacter.imgtag.style.top = nonPlayerCharacter.pos.y;
-			nonPlayerCharacter.productImgTag.style.left = nonPlayerCharacter.pos.x;
-			nonPlayerCharacter.productImgTag.style.top = nonPlayerCharacter.pos.y + 16;
-			nonPlayerCharacter.productCode = currentTileCharacter;
-			nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
-			nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
-			nonPlayerCharacter.cost = 0;
-			nonPlayerCharacter.text = `Old Man: "Turn around and leave this cold oppressed island while you can."`;
-		break;
+		nonPlayerCharacter.productImgTag.src = weaponUpdateArray[0];
+		nonPlayerCharacter.cost = weaponUpdateArray[1];
+		spawned = true;
+	}
+
+	var dialogueEventMap = {
+		"g": `"Turn around and leave this cold oppressed island while you can."`
+		, "k": `"I already paid this month, please don't hurt me!."`
+	};
+
+	var dialogueText = dialogueEventMap[currentTileCharacter];
+	if(dialogueText !== undefined)
+	{
+		nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+		nonPlayerCharacter.text = dialogueText;
+		spawned = true;
+	}
+
+	if(spawned)
+	{
+		nonPlayerCharacter.pos = { x: i*16, y: j*16 };
+		nonPlayerCharacter.imgtag.style.left = nonPlayerCharacter.pos.x + "px";
+		nonPlayerCharacter.imgtag.style.top = nonPlayerCharacter.pos.y + "px";
+		nonPlayerCharacter.productImgTag.style.left = nonPlayerCharacter.pos.x + "px";
+		nonPlayerCharacter.productImgTag.style.top = nonPlayerCharacter.pos.y + 16 + "px";
+		nonPlayerCharacter.productCode = currentTileCharacter;
+		nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
 	}
 }
 
@@ -602,7 +669,6 @@ function resetGame(player)
 	// TODO - MAke more maps too.
 	// POLS VOICE + 
 	// MORE MAPS + 
-	// PLAYABLE ZELDA + 
 	// OLD MAN IN ROCK WALLS THAT YOU BUY EQUIPMENT FROM.
 	// CHU CHUS
 	// make a money bag/ e.g. bunch of rupees.
@@ -637,4 +703,3 @@ function resetGame(player)
 	mapY = 0;
 	nextRoom(0, 0);
 }
-

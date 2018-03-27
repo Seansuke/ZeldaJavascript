@@ -14,16 +14,26 @@ function foeAction(foe_obj) {
 			foe_obj.attackElem.pos.x = -300; 
 			foe_obj.attackElem.imgtag.src = "gfx/alpha.png"; 
 			foe_obj.imgtag.src = "gfx/alpha.png";
+			foe_obj.ai.aggro = false;
 			return;
 		}
 	}
 	var randomAction = Math.floor(Math.random() * 8);
 	boundaryCheck(foe_obj);
 
+	if(foe_obj.ai.aggro == false && Math.abs(p1.pos.x - foe_obj.pos.x) < 64 && Math.abs(p1.pos.y - foe_obj.pos.y) < 64)
+	{
+		foe_obj.ai.aggro = true;
+	}
+
 	// If the foe if hurt, then the foe is temporarily stunned
 	if(foe_obj.dmg.time > 0) {
 		objDmg(foe_obj);
 		randomAction = -1; 
+		if(foe_obj.ai.aggro == false)
+		{
+			foe_obj.ai.aggro = true;
+		}
 	} 
 
 	var initiateAttackLogic = randomAction == 4 && foe_obj.misc.currentWpn != "none";
@@ -39,7 +49,6 @@ function foeAction(foe_obj) {
 		randomAction = -1;
 	}
 
-	// TODO - implement enemy brains
 	// A random occurance:  Initiate an attack
 	else if(initiateAttackLogic) {
 		foe_obj.misc.attacking = 99;
@@ -60,7 +69,33 @@ function foeAction(foe_obj) {
 		else if (randomAction == 3) { 
 			foe_obj.misc.direction = "down";
 		}
-		moveUnpassable(foe_obj, foe_obj.misc.direction, foe_obj.stat.speed);
+		if(foe_obj.ai.aggro)
+		{
+			if(p1.pos.x < foe_obj.pos.x && Math.abs(p1.pos.x - foe_obj.pos.x) > 8)
+			{
+				foe_obj.misc.direction = "left";
+				moveImpassable(foe_obj, foe_obj.misc.direction, foe_obj.stat.speed);
+			}
+			else if(p1.pos.x > foe_obj.pos.x && Math.abs(p1.pos.x - foe_obj.pos.x) > 8)
+			{
+				foe_obj.misc.direction = "right";
+				moveImpassable(foe_obj, foe_obj.misc.direction, foe_obj.stat.speed);
+			}
+			if(p1.pos.y < foe_obj.pos.y && Math.abs(p1.pos.y - foe_obj.pos.y) > 8)
+			{
+				foe_obj.misc.direction = "up";
+				moveImpassable(foe_obj, foe_obj.misc.direction, foe_obj.stat.speed);
+			}
+			else if(p1.pos.y > foe_obj.pos.y && Math.abs(p1.pos.y - foe_obj.pos.y) > 8 	)
+			{
+				foe_obj.misc.direction = "down";
+				moveImpassable(foe_obj, foe_obj.misc.direction, foe_obj.stat.speed);
+			}
+		}
+		else
+		{
+			moveImpassable(foe_obj, foe_obj.misc.direction, foe_obj.stat.speed);
+		}
 		foe_obj.misc.subimg++;
 	}
 	drawSprite(foe_obj.imgtag, foe_obj);

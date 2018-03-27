@@ -16,21 +16,25 @@ function playerWalk(player) {
 	
 	// TODO - implement these as variables that can be changed.
 	// TODO - implement touch controls.
-	if (control[player.ctrl.left] == true || stateu.hold & 0x00000800 || stateu.hold & 0x40000000 || state.held & 0x00000100) {
+	if (control[player.ctrl.left] == true || touchControls.left || stateu.hold & 0x00000800 || stateu.hold & 0x40000000 || state.held & 0x00000100) {
 		player.misc.direction = "left";
-		moveObj(player, - player.stat.speed , 0); 
+		moveObj(player, - player.stat.speed / 2 , 0); 
+		moveObj(player, - player.stat.speed / 2 , 0); 
 	}
-	else if (control[player.ctrl.right] == true || stateu.hold & 0x00000400 || stateu.hold & 0x20000000  || state.held & 0x00000200) {
+	else if (control[player.ctrl.right] == true || touchControls.right  || stateu.hold & 0x00000400 || stateu.hold & 0x20000000  || state.held & 0x00000200) {
 		player.misc.direction = "right"; 	
-		moveObj(player, player.stat.speed , 0);
+		moveObj(player, player.stat.speed / 2 , 0);
+		moveObj(player, player.stat.speed / 2 , 0);
 	}
-	if (control[player.ctrl.up] == true || stateu.hold & 0x00000200 || stateu.hold & 0x10000000  || state.held & 0x00000800) {
+	if (control[player.ctrl.up] == true || touchControls.up  || stateu.hold & 0x00000200 || stateu.hold & 0x10000000  || state.held & 0x00000800) {
 		player.misc.direction = "up";
-		moveObj(player, 0 , - player.stat.speed);
+		moveObj(player, 0 , - player.stat.speed / 2);
+		moveObj(player, 0 , - player.stat.speed / 2);
 	}
-	else if (control[player.ctrl.down] == true || stateu.hold & 0x00000100 || stateu.hold & 0x08000000  || state.held & 0x00000400) {
+	else if (control[player.ctrl.down] == true || touchControls.down  || stateu.hold & 0x00000100 || stateu.hold & 0x08000000  || state.held & 0x00000400) {
 		player.misc.direction = "down"; 
-		moveObj(player, 0 , player.stat.speed); 
+		moveObj(player, 0 , player.stat.speed / 2); 
+		moveObj(player, 0 , player.stat.speed / 2); 
 	}
 	player.misc.subimg = Math.round(player.misc.subimg);
 
@@ -323,7 +327,9 @@ function actionArrow(player) {
 	}
 	// The arrow arches forward until removal time
 	else if(player.misc.attacking > 7 && player.misc.attacking <= 12) { 
-		movePassable(player.attackElem, 32); 
+		moveImpassable(player.attackElem, player.misc.direction, 11); 
+		moveImpassable(player.attackElem, player.misc.direction, 11); 
+		moveImpassable(player.attackElem, player.misc.direction, 11); 
 	}
 
 

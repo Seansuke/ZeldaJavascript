@@ -2,7 +2,6 @@
 /* ==========================================================MAIN==================================================================== */
 /* ================================================================================================================================== */
 
-// TODO - Add NPCs to add upgrades for them.
 function changeTunic(playerNumber) {
 
 	var tunicGfxList = [
@@ -13,12 +12,13 @@ function changeTunic(playerNumber) {
 		, 'gfx/link/purple.png'
 		, 'gfx/link/pink.png'
 		, 'gfx/link/classic.png'
+		, 'gfx/link/zelda.png'
 	];
 
 	if(playerNumber == 1)
 	{
 		var tunicIndexP1 = tunicGfxList.indexOf(p1.stat.imgSource);
-		tunicIndexP1 = (tunicIndexP1 + 1) % 7;
+		tunicIndexP1 = (tunicIndexP1 + 1) % tunicGfxList.length;
 		p1.stat.imgSource = tunicGfxList[tunicIndexP1];
 		p1.imgtag.src = p1.stat.imgSource;
 	}
@@ -27,7 +27,7 @@ function changeTunic(playerNumber) {
 		if(p2 !== null)
 		{
 			var tunicIndexP2 = tunicGfxList.indexOf(p2.stat.imgSource);
-			tunicIndexP2 = (tunicIndexP2 + 1) % 7;
+			tunicIndexP2 = (tunicIndexP2 + 1) % tunicGfxList.length;
 			p2.stat.imgSource = tunicGfxList[tunicIndexP2];
 			p2.imgtag.src = p2.stat.imgSource;
 		}
@@ -49,19 +49,19 @@ function refreshPlayer2Equipment()
 		p2.wpn.D = p1.wpn.D;
 		p2.stat.mhp = p1.stat.mhp;
 		p2.stat.lensOfTruth = p1.stat.lensOfTruth;
+		p2.stat.speed = p1.stat.speed;
 	}
 }
 
-function swordUpgrade() {
-	var amountRequired = upgradeSwordCost;
-	if(rupees >= amountRequired) {
+function swordUpgrade(rank, cost) {
+	if(rupees >= cost) {
 		if(p1.wpn.A == 'wooden_sword') {
-			rupees -= upgradeSwordCost;
+			rupees -= cost;
 			p1.wpn.A = 'white_sword';
 			DisplayConsoleText('Upgraded to White Sword!');
 		}
 		else if(p1.wpn.A == 'white_sword') {
-			rupees -= upgradeSwordCost;
+			rupees -= cost;
 			p1.wpn.A = 'magic_sword';
 			DisplayConsoleText('Upgraded to Magic Sword!');
 		}
@@ -70,27 +70,26 @@ function swordUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
+		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
 
-function boomerangUpgrade() {
-	var amountRequired = upgradeBoomerangCost;
-	if(rupees >= amountRequired) {
+function boomerangUpgrade(rank, cost) {
+	if(rupees >= cost) {
 		if(p1.wpn.B == 'None') {
-			rupees -= upgradeBoomerangCost;
+			rupees -= cost;
 			p1.wpn.B = 'wooden_boomerang';
 			DisplayConsoleText('Upgraded to Wooden Boomerang!');
 		}
 		else if(p1.wpn.B == 'wooden_boomerang') {
-			rupees -= upgradeBoomerangCost;
+			rupees -= cost;
 			p1.wpn.B = 'magic_boomerang';
 			DisplayConsoleText('Upgraded to Magic Boomerang!');
 		}
 		else if(p1.wpn.B == 'magic_boomerang') {
-			rupees -= upgradeBoomerangCost;
+			rupees -= cost;
 			p1.wpn.B = 'fire_boomerang';
 			DisplayConsoleText('Upgraded to Fire Boomerang!');
 		}
@@ -99,27 +98,26 @@ function boomerangUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
+		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
 
-function arrowUpgrade() {
-	var amountRequired = upgradeArrowCost;
-	if(rupees >= amountRequired) {
+function arrowUpgrade(rank, cost) {
+	if(rupees >= cost) {
 		if(p1.wpn.D == 'None') {
-			rupees -= upgradeArrowCost;
+			rupees -= cost;
 			p1.wpn.D = 'wooden_arrow';
 			DisplayConsoleText('Upgraded to Wooden Arrow!');
 		}
 		else if(p1.wpn.D == 'wooden_arrow') {
-			rupees -= upgradeArrowCost;
+			rupees -= cost;
 			p1.wpn.D = 'silver_arrow';
 			DisplayConsoleText('Upgraded to Silver Arrow!');
 		}
 		else if(p1.wpn.D == 'silver_arrow') {
-			rupees -= upgradeArrowCost;
+			rupees -= cost;
 			p1.wpn.D = 'light_arrow';
 			DisplayConsoleText('Upgraded to Light Arrow!');
 		}
@@ -128,27 +126,26 @@ function arrowUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
+		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
 
-function bombUpgrade() {
-	var amountRequired = upgradeBombCost;
-	if(rupees >= amountRequired) {
+function bombUpgrade(rank, cost) {
+	if(rupees >= cost) {
 		if(p1.wpn.C == 'None') {
-			rupees -= upgradeBombCost;
+			rupees -= cost;
 			p1.wpn.C = 'blue_bomb';
 			DisplayConsoleText('Upgraded to Blue Bomb!');
 		}
 		else if(p1.wpn.C == 'blue_bomb') {
-			rupees -= upgradeBombCost;
+			rupees -= cost;
 			p1.wpn.C = 'red_bomb';
 			DisplayConsoleText('Upgraded to Red Bomb!');
 		}
 		else if(p1.wpn.C == 'red_bomb') {
-			rupees -= upgradeBombCost;
+			rupees -= cost;
 			p1.wpn.C = 'black_bomb';
 			DisplayConsoleText('Upgraded to Black Bomb!');
 		}
@@ -157,17 +154,16 @@ function bombUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
+		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
 
-function heartUpgrade() {
-	var amountRequired = upgradeHeartCost;
-	if(rupees >= amountRequired) {
+function heartUpgrade(rank, cost) {
+	if(rupees >= cost) {
 		if(p1.stat.mhp < 100) {
-			rupees -= upgradeHeartCost;
+			rupees -= cost;
 			p1.stat.mhp += 10;
 			p1.stat.hp += 10;
 			if(p2 !== null)
@@ -181,7 +177,7 @@ function heartUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
+		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
@@ -190,16 +186,15 @@ function heartUpgrade() {
 	redrawHearts();
 }
 
-function lensOfTruthUpgrade() {
-	var amountRequired = upgradeLensCost;
-	if(rupees >= amountRequired) {
+function lensOfTruthUpgrade(rank, cost) {
+	if(rupees >= cost) {
 		if(p1.stat.lensOfTruth == 0) {
-			rupees -= amountRequired;
+			rupees -= cost;
 			p1.stat.lensOfTruth = 1;
 			DisplayConsoleText('Upgraded to Lens Of Truth!');
 		}
 		else if(p1.stat.lensOfTruth == 1) {
-			rupees -= amountRequired;
+			rupees -= cost;
 			p1.stat.lensOfTruth = 2;
 			DisplayConsoleText('Upgraded to Eye Of Truth!');
 		}
@@ -208,11 +203,29 @@ function lensOfTruthUpgrade() {
 		}
 	} 
 	else {
-		DisplayConsoleText(`You do not have enough rupees!  ${amountRequired} required, but ${rupees} owned.`);
+		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
 	}
 
 	refreshPlayer2Equipment();
 }
+
+function heal(cost) {
+	if(rupees >= cost) {
+		p1.stat.hp = p1.stat.mhp;
+		if(p2 !== null)
+		{
+			p2.stat.hp = p2.stat.mhp;
+		}
+		rupees -= cost;
+		DisplayConsoleText('Healed!');
+	} 
+	else {
+		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
+	}
+
+	refreshPlayer2Equipment();
+}
+
 
 function DisplayConsoleText(newConsoleText)
 {
@@ -318,7 +331,6 @@ function download(filename, text) {
 
 // Start file download.
 document.getElementById("saveFile").addEventListener("click", function(){
-    // Generate download of hello.txt file with some content
 	var fileInput = document.getElementById("saveFileUpload");
 	var uploadButton = document.getElementById("saveFile");
 	var dataObject = {p1: p1, p2: p2, rupees: rupees};
@@ -328,8 +340,37 @@ document.getElementById("saveFile").addEventListener("click", function(){
     download(filename, text);
 }, false);
 
+var startTouch = undefined;
+window.addEventListener("touchmove",function(e){
+	for(var i = 0;i < e.touches.length;i++) {
+		var currentTouch = e.touches[i];
+		var xDelta = currentTouch.clientX - startTouch.touches[i].clientX;
+		var yDelta = currentTouch.clientY - startTouch.touches[i].clientY;
+		var directionDegrees = (360 + (Math.atan2(-yDelta, -xDelta) * 180 / Math.PI) - 90) % 360;
+		touchControls.up = 325 < directionDegrees || directionDegrees <= 55;
+		touchControls.right = 35 < directionDegrees && directionDegrees <= 145;
+		touchControls.down = 125 < directionDegrees && directionDegrees <= 235;
+		touchControls.left = 215 < directionDegrees && directionDegrees <= 345;
+	}
+});
+
+window.addEventListener("touchcancel",function(e){
+	startTouch = undefined;
+	touchControls = { up: false, right: false, down: false, left: false, A: false, B: false, C: false, D: false};
+});
+
+window.addEventListener("touchend",function(e){
+	startTouch = undefined;
+	touchControls = { up: false, right: false, down: false, left: false, A: false, B: false, C: false, D: false};
+});
+
+window.addEventListener("touchstart",function(e){
+	startTouch = e;
+});
+
 // Calling this function once will initialize all the resources necessary for the game to run.
 function init( ) {
+	gameStarted = true;
 	var heartWrapperP2Tag = document.getElementById("heartWrapperP2");
 	heartWrapperP2Tag.style.display = "none";
 	var backgroundMusicTag = document.getElementById("backgroundMusic");

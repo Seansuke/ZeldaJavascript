@@ -22,8 +22,14 @@ function Attack() {
 	this.misc.attacking = 0;
 }
 function Foe(newName) {
+	this.pos = { x: -300, y: 0 };
+	this.wpn = { A: "None", B: "None", C: "None", D: "None" };
+	this.stat = { hp: 0, mhp: 0, attTime: 8, speed: 4, lensOfTruth: 0, imgSource: "gfx/link/link.png" };
+	this.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
+	this.misc = { name: "", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"enemy", respawnTimer: 0 };
 	this.imgtag = ( document.getElementById("enemies").appendChild( document.createElement( 'img' ) ) ); 
 	this.attackElem = new Attack(); 
+	this.ai = { target: null, aggro: false}
 }
 function Drop() {
 	this.pos = { x: -999, y: -999 };
@@ -47,8 +53,8 @@ function NonPlayerCharacter() {
 }
 function SaveData() {
 	this.version = 1;
-	this.p1 = undefined;
-	this.p2 = undefined;
+	this.p1 = null;
+	this.p2 = null;
 	this.rupees = 0;
 }
 
