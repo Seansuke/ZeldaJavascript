@@ -10,7 +10,7 @@ body {
 }
 
 #console {
-    width: 654px;
+    width: 100%;
     height: 1.5em;
     background-color: white;
     border: 1px solid black;
@@ -42,6 +42,10 @@ body {
 
 #heartWrapper, #heartWrapperP2 {
     padding: 0em 1em;
+}
+
+#gui {
+    width: 100%;
 }
 
 #gui * {
@@ -76,4 +80,12 @@ body {
 
 .controls {
     display: inline-block;
+}
+
+#overlay-touch {
+    width: 657px;
+    height: 520px;
+    position: absolute;
+    opacity: 0.2;
+    font-size: 99em;
 }

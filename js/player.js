@@ -355,6 +355,7 @@ function actionPerformAttack(player) {
 		actionArrow(player); 
 	}
 	else { 
-		player.misc.attacking = 0; 
+		player.misc.currentWpn = player.wpn.A;
+		actionSword(player); 
 	}
 }

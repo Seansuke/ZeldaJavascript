@@ -329,6 +329,16 @@ function download(filename, text) {
     document.body.removeChild(element);
 }
 
+function decreaseConsole(){
+	consoleLength -= 10;
+	document.getElementById("gui").style.width = consoleLength + "%";
+}
+
+function increaseConsole(){
+	consoleLength += 10;
+	document.getElementById("gui").style.width = consoleLength + "%";
+}
+
 // Start file download.
 document.getElementById("saveFile").addEventListener("click", function(){
 	var fileInput = document.getElementById("saveFileUpload");

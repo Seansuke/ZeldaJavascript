@@ -19,6 +19,7 @@ var p1 = null;
 var p2 = null;
 var foes = new Array();
 var MAX_FOES = 15;
+var consoleLength = 100;
 
 // Everything involving game map data: the tiles, the world position (world is a collection of maps), 
 var mapX = 0;
