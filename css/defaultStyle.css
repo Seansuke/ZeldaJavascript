@@ -10,7 +10,7 @@ body {
 }
 
 #console {
-    width: 100%;
+    width: 668px;
     height: 1.5em;
     background-color: white;
     border: 1px solid black;
@@ -45,7 +45,7 @@ body {
 }
 
 #gui {
-    width: 100%;
+    width: 668px;
 }
 
 #gui * {
