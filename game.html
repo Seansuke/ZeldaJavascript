@@ -12,7 +12,7 @@
 		/>
 	</head>
 	<body onload="init()">
-		<textarea id="overlay-touch">
+		<textarea id="overlay-touch" readonly="readonly">
 			MMM
 		    MMM
 			MMM
@@ -33,10 +33,10 @@
 
 		<div id="gui">
 
-			<audio id="backgroundMusic" autoplay="autoplay" loop="loop" >
-				<source src="bgm/overworld.ogg" type="audio/ogg" />
-				<source src="bgm/overworld.mp3" type="audio/mpeg" />
-				<source src="bgm/overworld.wav" type="audio/wav" />
+			<audio id="backgroundMusic" onended="nextSong()">
+				<source id="oggMusicSource" type="audio/ogg" />
+				<source id="mp3MusicSource" type="audio/mpeg" />
+				<source id="bgmMusicSource" type="audio/wav" />
 			</audio>
 
 			<div id = "console" >
@@ -104,6 +104,10 @@
         
 				<div id="saveFile" class="clickable-button">
 					Save File
+				</div>
+
+				<div class="clickable-button" onclick="nextSong();">
+					Next Song
 				</div>
 
 				<div id = "helpGui">

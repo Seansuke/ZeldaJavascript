@@ -10,7 +10,7 @@ body {
 }
 
 #console {
-    width: 100%;
+    width: 668px;
     height: 1.5em;
     background-color: white;
     border: 1px solid black;
@@ -45,7 +45,7 @@ body {
 }
 
 #gui {
-    width: 100%;
+    width: 668px;
 }
 
 #gui * {
@@ -83,9 +83,10 @@ body {
 }
 
 #overlay-touch {
-    width: 657px;
+    width: 100%;
     height: 520px;
     position: absolute;
-    opacity: 0.2;
+    opacity: 0.0;
     font-size: 99em;
+    z-index: 1;
 }

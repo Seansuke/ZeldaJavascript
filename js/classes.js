@@ -50,6 +50,7 @@ function NonPlayerCharacter() {
 	this.imgtag.src = "gfx/alpha.png";
 	this.productImgTag = ( document.getElementById("drops").appendChild( document.createElement( 'img' ) ) );
 	this.productImgTag.src = "gfx/alpha.png";
+	this.equipment = new Equipment();
 }
 function SaveData() {
 	this.version = 1;
@@ -57,4 +58,34 @@ function SaveData() {
 	this.p2 = null;
 	this.rupees = 0;
 }
-
+function EquipmentList() {
+	this.h = new Equipment("heart", 0, "heal", "gfx/gui/heart_half.png", heal, 0);
+	this.H = new Equipment("heartContainer", 1, "heartContainer", "gfx/gui/heart_full.png", heartUpgrade, upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp);
+	this.u = new Equipment("lensOfTruth", 0, "lensOfTruth", "gfx/wpn/lensOfTruth.png", lensOfTruthUpgrade, 8);
+	this.U = new Equipment("lensOfTruth", 1, "eyeOfTruth", "gfx/wpn/lensOfTruth.png", lensOfTruthUpgrade, 16);
+	this.z = new Equipment("sword", 0, "wooden_sword", "gfx/wpn/wooden_sword.png", swordUpgrade, 0);
+	this.s = new Equipment("sword", 1, "white_sword", "gfx/wpn/white_sword.png", swordUpgrade, 200);
+	this.S = new Equipment("sword", 2, "magic_sword", "gfx/wpn/magic_sword.png", swordUpgrade, 400);
+	this.m = new Equipment("boomerang", 0, "wooden_boomerang", "gfx/wpn/wooden_boomerang.png", boomerangUpgrade, 10);
+	this.N = new Equipment("boomerang", 1, "magic_boomerang", "gfx/wpn/magic_boomerang.png", boomerangUpgrade, 100);
+	this.G = new Equipment("boomerang", 2, "fire_boomerang", "gfx/wpn/fire_boomerang.png", boomerangUpgrade, 200);
+	this.b = new Equipment("bomb", 0, "blue_bomb", "gfx/wpn/blue_bomb.png", bombUpgrade, 10);
+	this.B = new Equipment("bomb", 1, "red_bomb", "gfx/wpn/red_bomb.png", bombUpgrade, 120);
+	this.O = new Equipment("bomb", 2, "black_bomb", "gfx/wpn/black_bomb.png", bombUpgrade, 250);
+	this.a = new Equipment("arrow", 0, "wooden_arrow", "gfx/wpn/wooden_arrow.png", arrowUpgrade, 10);
+	this.A = new Equipment("arrow", 1, "silver_arrow", "gfx/wpn/silver_arrow.png", arrowUpgrade, 150);
+	this.R = new Equipment("arrow", 2, "light_arrow", "gfx/wpn/light_arrow.png", arrowUpgrade, 300);
+}
+function Equipment(parentName, rank, name, gfx, upgradeFunction, cost) {
+	this.parentName = parentName;
+	this.rank = rank;
+	this.name = name;
+	this.gfx = gfx;
+	this.upgradeFunction = upgradeFunction;
+	this.cost = cost;
+}
+function DialogueList() {
+	this.g = `"Turn around and leave this cold oppressed island while you can."`;
+	this.k = `"I already paid this month, please don't hurt me!."`;
+	this.x = `"I already paid this month, please don't hurt me!."`;
+}

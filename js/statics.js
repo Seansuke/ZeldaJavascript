@@ -215,27 +215,9 @@ function checkCollision() {
 		didPlayer2Collide = checkSingleCollision(p2, nonPlayerCharacter);
 	}
 	if( checkSingleCollision(p1, nonPlayerCharacter) == true || didPlayer2Collide) {
-		if(nonPlayerCharacter.cost > 0)
+		if(nonPlayerCharacter.equipment.upgradeFunction !== undefined)
 		{
-
-			switch(nonPlayerCharacter.productCode)
-			{
-				 case "h":  heal(healHealthCost)
-				 case "H":  upgradeHearts(upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp); break;
-				 case "l":  lensUpgrade(0, upgradeLensCost); break;
-				 case "L":  lensUpgrade(1, upgradeLensCost); break;
-				 case "b":  bombUpgrade(0, upgradeBlueBombCost); break;
-				 case "B":  bombUpgrade(1, upgradeRedBombCost); break;
-				 case "O":  bombUpgrade(2, upgradeBlackBombCost); break;
-				 case "a":  arrowUpgrade(0, upgradeWoodenArrowCost); break;
-				 case "A":  arrowUpgrade(1, upgradeSilverArrowCost); break;
-				 case "R":  arrowUpgrade(2, upgradeLightArrowCost); break;
-				 case "m":  boomerangUpgrade(0, upgradeWoodenBoomerangCost); break;
-				 case "N":  boomerangUpgrade(1, upgradeMagicBoomerangCost); break;
-				 case "G":  boomerangUpgrade(2, upgradeFireBoomerangCost); break;
-				 case "s":  swordUpgrade(1, upgradeWhiteSwordCost); break;
-				 case "S":  swordUpgrade(2, upgradeMagicSwordCost); break;
-			}
+			nonPlayerCharacter.equipment.upgradeFunction(nonPlayerCharacter.equipment.rank, nonPlayerCharacter.equipment.cost);
 			nonPlayerCharacter.pos.x = -999;
 			nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
 			nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
@@ -276,7 +258,7 @@ function objDmg(self) {
 		if(self.dmg.att != 0 && self.stat.hp > 0) {
 			self.stat.hp -= self.dmg.att;
 			if(self.misc.name == "link") {
-				if(self.stat.lensOfTruth > 0)
+				if(p1.stat.lensOfTruth > 0)
 				{
 					DisplayConsoleText(`Link took ${Math.round(self.dmg.att)} damage!  ${Math.floor(self.stat.hp)} / ${Math.floor(self.stat.mhp)} Health Remains.`);
 				}
@@ -610,37 +592,16 @@ function CreateNonPlayerCharacter(currentTileCharacter, i, j)
 {
 	var spawned = false;
 
-	var weaponUpdateMap = {
-		"h": ["gfx/gui/heart_full.png", healHealthCost]
-		,"H": ["gfx/drop/heart.png",  upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp]
-		,"u": ["gfx/wpn/lensOfTruth.png",  upgradeLensCost]
-		,"U": ["gfx/wpn/lensOfTruth.png",  upgradeLensCost]
-		,"b": ["gfx/wpn/blue_bomb.png",  upgradeBlueBombCost]
-		,"B": ["gfx/wpn/red_bomb.png",  upgradeRedBombCost]
-		,"a": ["gfx/wpn/wooden_arrow.png",  upgradeWoodenArrowCost]
-		,"A": ["gfx/wpn/silver_arrow.png",  upgradeSilverArrowCost]
-		,"R": ["gfx/wpn/light_arrow.png",  upgradeLightArrowCost]
-		,"m": ["gfx/wpn/wooden_boomerang.png",  upgradeWoodenBoomerangCost]
-		,"N": ["gfx/wpn/magic_boomerang.png",  upgradeMagicBoomerangCost]
-		,"G": ["gfx/wpn/fire_boomerang.png",  upgradeFireBoomerangCost]
-		,"s": ["gfx/wpn/white_sword.png",  upgradeWhiteSwordCost]
-		,"S": ["gfx/wpn/magic_sword.png",  upgradeMagicSwordCost]
-	}
-
-	var weaponUpdateArray = weaponUpdateMap[currentTileCharacter];
+	var weaponUpdateArray = (new EquipmentList())[currentTileCharacter];
 	if(weaponUpdateArray !== undefined)
 	{
-		nonPlayerCharacter.productImgTag.src = weaponUpdateArray[0];
-		nonPlayerCharacter.cost = weaponUpdateArray[1];
+		nonPlayerCharacter.productImgTag.src = weaponUpdateArray.gfx;
+		nonPlayerCharacter.equipment = weaponUpdateArray;
+		nonPlayerCharacter.text = "";
 		spawned = true;
 	}
 
-	var dialogueEventMap = {
-		"g": `"Turn around and leave this cold oppressed island while you can."`
-		, "k": `"I already paid this month, please don't hurt me!."`
-	};
-
-	var dialogueText = dialogueEventMap[currentTileCharacter];
+	var dialogueText = (new DialogueList())[currentTileCharacter];
 	if(dialogueText !== undefined)
 	{
 		nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
@@ -655,6 +616,14 @@ function CreateNonPlayerCharacter(currentTileCharacter, i, j)
 		nonPlayerCharacter.imgtag.style.top = nonPlayerCharacter.pos.y + "px";
 		nonPlayerCharacter.productImgTag.style.left = nonPlayerCharacter.pos.x + "px";
 		nonPlayerCharacter.productImgTag.style.top = nonPlayerCharacter.pos.y + 16 + "px";
+		nonPlayerCharacter.productImgTag.style.clip = "rect(0px, 16px, 16px, 0px)";
+		if(nonPlayerCharacter.equipment.name !== undefined)
+		{
+			if(nonPlayerCharacter.equipment.name.indexOf("bomb") != -1)
+			{
+				nonPlayerCharacter.productImgTag.style.clip = "rect(16px, 32px, 32px, 16px)";
+			}
+		}
 		nonPlayerCharacter.productCode = currentTileCharacter;
 		nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
 	}
@@ -668,12 +637,20 @@ function resetGame(player)
 	// TODO - MAke more maps too.
 	// POLS VOICE + 
 	// MORE MAPS + 
-	// OLD MAN IN ROCK WALLS THAT YOU BUY EQUIPMENT FROM.
 	// CHU CHUS
 	// make a money bag/ e.g. bunch of rupees.
 	// make temples.
 	// make temple music.
 	// make bosses.
+	// All shopkeepers have the "g" dialogue for some reason...
+	// shopkeepers need to have the item cost displayed.
+	// I bought red bombs for 10 rupees.  Something is WRONG.
+	// define save file name in advance.
+	// bombs op, plz nerf
+	// we spent 10 rupees but did not get another max heart....
+	// bought white sword... i dont have it thoughl.. hwat?
+	// Checkpoint locations.
+	// if p1 dies. then p2 gets a heart: respawn does not happen.
 	player.pos = { x: 20, y: 240 };
 	p1.pos.x = player.pos.x;
 	p1.pos.y = player.pos.y;

@@ -35,18 +35,8 @@ var keys = new Array("up","right","down","left","attA","attB","attC","attD","END
 var gameStarted = false;
 
 // Costs
-var healHealthCost = 10;
-var upgradeHeartsCostFlatFee = 10;
+var upgradeHeartsCostFlatFee = 20;
 var upgradeHeartCostMultiplier = 2;
-var upgradeLensCost = 8;
-var upgradeBlueBombCost = 10;
-var upgradeRedBombCost = 120;
-var upgradeBlackBombCost = 250;
-var upgradeWoodenArrowCost = 10;
-var upgradeSilverArrowCost = 150;
-var upgradeLightArrowCost = 300;
-var upgradeWoodenBoomerangCost = 10;
-var upgradeMagicBoomerangCost = 100;
-var upgradeFireBoomerangCost = 200;
-var upgradeWhiteSwordCost = 200;
-var upgradeMagicSwordCost = 400;
+
+// Song List
+var songList = ["Ballad of the Goddess", "Dragon Roost Island", "Fairies Woods", "Hyrule Castle BOTW", "Lorule Castle", "Mabe Village", "Minish Woods", "overworld", "Realm Overworld"];

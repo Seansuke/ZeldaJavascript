@@ -55,15 +55,15 @@ function refreshPlayer2Equipment()
 
 function swordUpgrade(rank, cost) {
 	if(rupees >= cost) {
-		if(p1.wpn.A == 'wooden_sword') {
+		if(p1.wpn.A == 'wooden_sword' && rank == 1) {
 			rupees -= cost;
 			p1.wpn.A = 'white_sword';
-			DisplayConsoleText('Upgraded to White Sword!');
+			DisplayConsoleText(`Upgraded to White Sword for ${cost} rupees!`);
 		}
-		else if(p1.wpn.A == 'white_sword') {
+		else if(p1.wpn.A == 'white_sword' && rank == 2) {
 			rupees -= cost;
 			p1.wpn.A = 'magic_sword';
-			DisplayConsoleText('Upgraded to Magic Sword!');
+			DisplayConsoleText(`Upgraded to Magic Sword for ${cost} rupees!`);
 		}
 		else {
 			DisplayConsoleText('You cannot upgrade further!');
@@ -78,20 +78,20 @@ function swordUpgrade(rank, cost) {
 
 function boomerangUpgrade(rank, cost) {
 	if(rupees >= cost) {
-		if(p1.wpn.B == 'None') {
+		if(p1.wpn.B == 'None' && rank == 0) {
 			rupees -= cost;
 			p1.wpn.B = 'wooden_boomerang';
-			DisplayConsoleText('Upgraded to Wooden Boomerang!');
+			DisplayConsoleText(`Upgraded to Wooden Boomerang for ${cost} rupees!`);
 		}
-		else if(p1.wpn.B == 'wooden_boomerang') {
+		else if(p1.wpn.B == 'wooden_boomerang' && rank == 1) {
 			rupees -= cost;
 			p1.wpn.B = 'magic_boomerang';
-			DisplayConsoleText('Upgraded to Magic Boomerang!');
+			DisplayConsoleText(`Upgraded to Magic Boomerang for ${cost} rupees!`);
 		}
-		else if(p1.wpn.B == 'magic_boomerang') {
+		else if(p1.wpn.B == 'magic_boomerang' && rank == 2) {
 			rupees -= cost;
 			p1.wpn.B = 'fire_boomerang';
-			DisplayConsoleText('Upgraded to Fire Boomerang!');
+			DisplayConsoleText(`Upgraded to Fire Boomerang for ${cost} rupees!`);
 		}
 		else {
 			DisplayConsoleText('You cannot upgrade further!');
@@ -106,20 +106,20 @@ function boomerangUpgrade(rank, cost) {
 
 function arrowUpgrade(rank, cost) {
 	if(rupees >= cost) {
-		if(p1.wpn.D == 'None') {
+		if(p1.wpn.D == 'None' && rank == 0) {
 			rupees -= cost;
 			p1.wpn.D = 'wooden_arrow';
-			DisplayConsoleText('Upgraded to Wooden Arrow!');
+			DisplayConsoleText(`Upgraded to Wooden Arrow for ${cost} rupees!`);
 		}
-		else if(p1.wpn.D == 'wooden_arrow') {
+		else if(p1.wpn.D == 'wooden_arrow' && rank == 1) {
 			rupees -= cost;
 			p1.wpn.D = 'silver_arrow';
-			DisplayConsoleText('Upgraded to Silver Arrow!');
+			DisplayConsoleText(`Upgraded to Silver Arrow for ${cost} rupees!`);
 		}
-		else if(p1.wpn.D == 'silver_arrow') {
+		else if(p1.wpn.D == 'silver_arrow' && rank == 2) {
 			rupees -= cost;
 			p1.wpn.D = 'light_arrow';
-			DisplayConsoleText('Upgraded to Light Arrow!');
+			DisplayConsoleText(`Upgraded to Light Arrow for ${cost} rupees!`);
 		}
 		else {
 			DisplayConsoleText('You cannot upgrade further!');
@@ -134,20 +134,20 @@ function arrowUpgrade(rank, cost) {
 
 function bombUpgrade(rank, cost) {
 	if(rupees >= cost) {
-		if(p1.wpn.C == 'None') {
+		if(p1.wpn.C == 'None' && rank == 0) {
 			rupees -= cost;
 			p1.wpn.C = 'blue_bomb';
-			DisplayConsoleText('Upgraded to Blue Bomb!');
+			DisplayConsoleText(`Upgraded to Blue Bomb for ${cost} rupees!`);
 		}
-		else if(p1.wpn.C == 'blue_bomb') {
+		else if(p1.wpn.C == 'blue_bomb' && rank == 1) {
 			rupees -= cost;
 			p1.wpn.C = 'red_bomb';
-			DisplayConsoleText('Upgraded to Red Bomb!');
+			DisplayConsoleText(`Upgraded to Red Bomb! for ${cost} rupees!`);
 		}
-		else if(p1.wpn.C == 'red_bomb') {
+		else if(p1.wpn.C == 'red_bomb' && rank == 2) {
 			rupees -= cost;
 			p1.wpn.C = 'black_bomb';
-			DisplayConsoleText('Upgraded to Black Bomb!');
+			DisplayConsoleText(`Upgraded to Black Bomb! for ${cost} rupees!`);
 		}
 		else {
 			DisplayConsoleText('You cannot upgrade further!');
@@ -170,7 +170,7 @@ function heartUpgrade(rank, cost) {
 			{
 				p2.stat.hp += 10;	
 			}
-			DisplayConsoleText('Upgraded Hearts!');
+			DisplayConsoleText(`Upgraded Hearts for ${cost} rupees!`);
 		}
 		else {
 			DisplayConsoleText('You cannot upgrade further!');
@@ -188,15 +188,15 @@ function heartUpgrade(rank, cost) {
 
 function lensOfTruthUpgrade(rank, cost) {
 	if(rupees >= cost) {
-		if(p1.stat.lensOfTruth == 0) {
+		if(p1.stat.lensOfTruth == 0 && rank == 0) {
 			rupees -= cost;
 			p1.stat.lensOfTruth = 1;
-			DisplayConsoleText('Upgraded to Lens Of Truth!');
+			DisplayConsoleText(`Upgraded to Lens Of Truth for ${cost} rupees!`);
 		}
-		else if(p1.stat.lensOfTruth == 1) {
+		else if(p1.stat.lensOfTruth == 1 && rank == 1) {
 			rupees -= cost;
 			p1.stat.lensOfTruth = 2;
-			DisplayConsoleText('Upgraded to Eye Of Truth!');
+			DisplayConsoleText(`Upgraded to Eye Of Truth! for ${cost} rupees`);
 		}
 		else {
 			DisplayConsoleText('You cannot upgrade further!');
@@ -217,12 +217,13 @@ function heal(cost) {
 			p2.stat.hp = p2.stat.mhp;
 		}
 		rupees -= cost;
-		DisplayConsoleText('Healed!');
+		DisplayConsoleText(`Healed for ${cost} rupees!`);
 	} 
 	else {
 		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
 	}
 
+	redrawHearts();
 	refreshPlayer2Equipment();
 }
 
@@ -388,6 +389,21 @@ window.addEventListener("touchstart",function(e){
 	startTouch = e;
 });
 
+function nextSong() {
+	var maxSongCount = songList.length;
+	var randomSongIndex = Math.floor(Math.random() * maxSongCount);
+	var songName = "bgm/" + songList[randomSongIndex];
+	var oggName = songName + ".ogg";
+	var mp3Name = songName + ".mp3";
+	var wavName = songName + ".wav";
+	document.getElementById("oggMusicSource").src = oggName;
+	document.getElementById("mp3MusicSource").src = mp3Name;
+	document.getElementById("bgmMusicSource").src = wavName;
+	var parentNode = document.getElementById("backgroundMusic");
+	parentNode.load();
+	parentNode.play();
+}
+
 // Calling this function once will initialize all the resources necessary for the game to run.
 function init( ) {
 	gameStarted = true;
@@ -420,6 +436,8 @@ function init( ) {
 	}
 	timer = setInterval("action()", spf);
 	DisplayConsoleText("Enjoy your adventure!");
+
+	nextSong();
 }
 
 function cycleUpkeep() {
