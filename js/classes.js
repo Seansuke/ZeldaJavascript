@@ -7,8 +7,10 @@ function Player() {
 	this.wpn = { A: "wooden_sword", B: "None", C: "None", D: "None" };
 	this.ctrl = { up: 87, right: 68, down: 83, left: 65, attA: 72 , attB: 74 , attC: 75 , attD: 76 };
 	this.stat = { hp: 30, mhp: 30, attTime: 8, speed: 4, lensOfTruth: 0, imgSource: "gfx/link/link.png" };
-	this.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
-	this.misc = { name: "link", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", respawnTimer: 0 };
+	this.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none", invincible: 0};
+	this.misc = { name: "link", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", respawnTimer: 0, gfxRows: 4,
+		checkpointMapX: 0, checkpointMapY: 0, checkpointPosX: 20, checkpointPosY: 240, attackType: 0
+	};
 	this.imgtag = ( document.getElementById("players").appendChild( document.createElement( 'img' ) ) );
 	this.imgtag.src = "gfx/link/link.png";
 	this.attackElem = new Attack();
@@ -16,7 +18,7 @@ function Player() {
 function Attack() {
 	this.pos = { x: -999, y: -999 };
 	this.stat = { att: 5, time: 3, force: 12, cool: 10, direction: "up", effect: "none", speed: 0};
-	this.misc = { name: "wooden_sword", box:8, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player" };
+	this.misc = { name: "wooden_sword", box:8, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", gfxRows: 4 };
 	this.imgtag = ( document.getElementById("attacks").appendChild( document.createElement( 'img' ) ) ); 
 	this.imgtag.src = "gfx/alpha.png";
 	this.misc.attacking = 0;
@@ -25,15 +27,15 @@ function Foe(newName) {
 	this.pos = { x: -300, y: 0 };
 	this.wpn = { A: "None", B: "None", C: "None", D: "None" };
 	this.stat = { hp: 0, mhp: 0, attTime: 8, speed: 4, lensOfTruth: 0, imgSource: "gfx/link/link.png" };
-	this.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
-	this.misc = { name: "", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"enemy", respawnTimer: 0 };
+	this.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none", invincible: 0};
+	this.misc = { name: "", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"enemy", respawnTimer: 0, gfxRows: 4, attackType: 0 };
 	this.imgtag = ( document.getElementById("enemies").appendChild( document.createElement( 'img' ) ) ); 
 	this.attackElem = new Attack(); 
 	this.ai = { target: null, aggro: false}
 }
 function Drop() {
 	this.pos = { x: -999, y: -999 };
-	this.misc = { name: "drop", box:6, subimg:0, direction:"up", attacking:0, imgSpd: 0, currentWpn:"none", team:"itemDrop" };
+	this.misc = { name: "drop", box:6, subimg:0, direction:"up", attacking:0, imgSpd: 0, currentWpn:"none", team:"itemDrop", gfxRows: 4 };
 	this.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
 	this.type = "";
 	this.amnt = 0;
@@ -42,7 +44,7 @@ function Drop() {
 }
 function NonPlayerCharacter() {
 	this.pos = { x: -999, y: -999 };
-	this.misc = { name: "nonplayerCharacter", box:6, subimg:0, direction:"up", attacking:0, imgSpd: 0, currentWpn:"none", team:"itemDrop" };
+	this.misc = { name: "nonplayerCharacter", box:6, subimg:0, direction:"up", attacking:0, imgSpd: 0, currentWpn:"none", team:"itemDrop", gfxRows: 4 };
 	this.cost = 0;
 	this.productCode = "";
 	this.text = "";
@@ -63,7 +65,7 @@ function EquipmentList() {
 	this.H = new Equipment("heartContainer", 1, "heartContainer", "gfx/gui/heart_full.png", heartUpgrade, upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp);
 	this.u = new Equipment("lensOfTruth", 0, "lensOfTruth", "gfx/wpn/lensOfTruth.png", lensOfTruthUpgrade, 8);
 	this.U = new Equipment("lensOfTruth", 1, "eyeOfTruth", "gfx/wpn/lensOfTruth.png", lensOfTruthUpgrade, 16);
-	this.z = new Equipment("sword", 0, "wooden_sword", "gfx/wpn/wooden_sword.png", swordUpgrade, 0);
+	this.woodenSword = new Equipment("sword", 0, "wooden_sword", "gfx/wpn/wooden_sword.png", swordUpgrade, 0);
 	this.s = new Equipment("sword", 1, "white_sword", "gfx/wpn/white_sword.png", swordUpgrade, 200);
 	this.S = new Equipment("sword", 2, "magic_sword", "gfx/wpn/magic_sword.png", swordUpgrade, 400);
 	this.m = new Equipment("boomerang", 0, "wooden_boomerang", "gfx/wpn/wooden_boomerang.png", boomerangUpgrade, 10);
@@ -85,7 +87,9 @@ function Equipment(parentName, rank, name, gfx, upgradeFunction, cost) {
 	this.cost = cost;
 }
 function DialogueList() {
-	this.g = `"Turn around and leave this cold oppressed island while you can."`;
-	this.k = `"I already paid this month, please don't hurt me!."`;
-	this.x = `"I already paid this month, please don't hurt me!."`;
+	this.g = `"You are very unlucky to land on this island."`;
+	this.k = `"I already paid this month, please don't hurt me!"`;
+	this.x = `"Quick to take taxes, but slow to deliver our rations as usual."`;
+	this.v = `"I'm not going to be brought to the volcano, will I?"`;
+	this.n = `"See that volcano over yonder?  That's the "`;
 }

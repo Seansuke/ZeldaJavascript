@@ -20,76 +20,6 @@ function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 	player.attackElem.misc.imgSpd = 1/3;
 }
 
-// This will reset every single foe within the array to a random type, position, with mild stat variation.
-function resetFoes() {
-	var maximumFoeOnScreen = MAX_FOES;
-	var distanceFromStart = mapX + mapY;
-	var minimumFoeDifficulty = 0;
-	var maximumFoeDifficulty = 7;
-	if(Math.abs(distanceFromStart) < 3)
-	{
-		maximumFoeOnScreen = Math.floor(MAX_FOES / 4);
-		minimumFoeDifficulty = 0;
-		maximumFoeDifficulty = 3;
-	}
-	else if(Math.abs(distanceFromStart) < 6)
-	{
-		maximumFoeOnScreen = Math.floor(MAX_FOES / 2);
-		minimumFoeDifficulty = 0;
-		maximumFoeDifficulty = 6;
-	}
-	for(var i = 0;i < MAX_FOES;i++) {
-		foes[i].stat.hp = 0;
-	}
-	for(var i = 0;i < maximumFoeOnScreen;i++) {
-		// TODO - add more foes.
-		newName = ( Array('keese','octo','rope','moblin','stalfos','gibdo','darknut') )[ minimumFoeDifficulty + Math.floor(Math.random() * maximumFoeDifficulty) ];
-		foes[i].pos = { x: 60 + Math.random() * 320, y: 60 + Math.random() * 360 }; 
-		foes[i].stat = { hp: 5 + Math.random() * 15, mhp: 15, attTime: 8,  att: 5, time: 3, force: 12, cool: 10, effect: "none", speed: 2};
-		foes[i].dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
-		foes[i].misc = { name: newName, box:8, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"enemy", xp:1 };
-		foes[i].imgtag.src = "gfx/foe/" + foes[i].misc.name + ".png";
-		foes[i].imgtag.style.opacity = "1";
-		foes[i].attackElem.pos.x = -300;
-		if(newName == "keese") {
-			foes[i].stat.mhp = 1 + Math.random() * 2;
-			foes[i].stat.att = 1 + Math.random() * 2;
-			foes[i].stat.speed = 6;
-		}
-		if(newName == "rope") {
-			foes[i].stat.mhp = 3 + Math.random() * 5;
-			foes[i].stat.att = 3 + Math.random() * 5;
-			foes[i].stat.speed = 5;
-		}
-		if(newName == "moblin") {
-			foes[i].stat.mhp = 10 + Math.random() * 5;
-			foes[i].stat.att = 7 + Math.random() * 3;
-			foes[i].misc.currentWpn = "wooden_boomerang";
-			foes[i].misc.xp = 3;
-		}
-		if(newName == "stalfos") {
-			foes[i].stat.mhp = 13 + Math.random() * 8;
-			foes[i].stat.att = 3 + Math.random() * 3;
-			foes[i].stat.speed = 3;
-			foes[i].misc.xp = 4;
-			foes[i].misc.currentWpn = "white_sword";
-		}
-		if(newName == "gibdo") {
-			foes[i].stat.mhp = 25 + Math.random() * 10;
-			foes[i].stat.att = 6 + Math.random() * 4;
-			foes[i].misc.xp = 4;
-		}
-		if(newName == "darknut") {
-			foes[i].stat.mhp = 20 + Math.random() * 20;
-			foes[i].stat.att = 15 + Math.random() * 5;
-			foes[i].stat.speed = 3;
-			foes[i].misc.xp = 5;
-		}
-		foes[i].stat.hp = foes[i].stat.mhp;
-		foes[i].ai.aggro = false;
-	}	
-}
-
 // Determine if there is a collision between two objects based on their misc.box variable
 function checkSingleCollision(a, b) { 
 	if(Math.abs((a.pos.x + a.misc.box) - (b.pos.x + b.misc.box)) < a.misc.box + b.misc.box) {
@@ -135,7 +65,7 @@ function checkCollision() {
 	for( var i = 0; i < MAX_FOES; i++) {
 
 		// Check if player is colliding with any foe
-		if( checkSingleCollision(p1, foes[i]) == true) {
+		if(foes[i].dmg.time <= 0 && checkSingleCollision(p1, foes[i]) == true) {
 			setDmg(p1, foes[i]);
 		}
 
@@ -170,17 +100,23 @@ function checkCollision() {
 
 	// Check if player is colliding with an item
 	var didPlayer2Collide = false;
+	var didPlayer2WeaponCollide = false;
 	if( p2 !== null) {
 		didPlayer2Collide = checkSingleCollision(p2, itemDrop);
+		didPlayer2WeaponCollide = checkSingleCollision(p2.attackElem, itemDrop);
 	}
-	if( checkSingleCollision(p1, itemDrop) == true || didPlayer2Collide) {
+	var didPlayer1Collide = checkSingleCollision(p1, itemDrop);
+	var didPlayer1WeaponCollide = checkSingleCollision(p1.attackElem, itemDrop);
+	if(didPlayer1Collide || didPlayer1WeaponCollide || didPlayer2Collide || didPlayer2WeaponCollide) {
 		if(itemDrop.pos.x != 0) {
 			if(itemDrop.type == "heart") {
+				p1.misc.respawnTimer = 0;
 				p1.stat.hp += itemDrop.amnt * 2;
 				if(p1.stat.hp > p1.stat.mhp) {
 					p1.stat.hp = p1.stat.mhp;
 				}
 				if(p2 !== null) {
+					p2.misc.respawnTimer = 0;
 					p2.stat.hp += itemDrop.amnt * 2;
 					
 					if(p2.stat.hp > p2.stat.mhp) {
@@ -301,12 +237,12 @@ function boundaryCheck(self) {
 }
 
 // Have a random drop appear in the location (x, y)
-function randomDrop(x,y) {
+function randomDrop(x,y,maxDropGain) {
 	itemDrop.pos.x = x;
 	itemDrop.pos.y = y;
 	itemDrop.type = ( Array('heart','rupee','speed') )[ Math.floor(Math.random() * 3) ];
 	itemDrop.imgtag.src = "gfx/drop/" + itemDrop.type + ".png";
-	itemDrop.amnt = Math.ceil(Math.random() * 5);
+	itemDrop.amnt = Math.ceil(Math.random() * maxDropGain);
 	drawSprite(itemDrop.imgtag, itemDrop);
 }
 
@@ -553,7 +489,8 @@ function setTiles(responseText) {
 			"T": 3, // tree
 			"&": 4, // green rock
 			"#": 5, // rock wall
-			"_": 6  // grass  - passable
+			"_": 6, // grass  - passable
+			"t": 7  // dying tree
 		};
 		RemoveNonPlayerCharacter();
 		while(responseText.length > 0) {
@@ -562,7 +499,7 @@ function setTiles(responseText) {
 			currentTileNumber = TryParseInt(currentTileCharacter, -1)
 			if(currentTileNumber == -1)
 			{
-				CreateNonPlayerCharacter(currentTileCharacter, i, j);0
+				CreateNonPlayerCharacter(currentTileCharacter, i, j);
 				currentTileNumber = characterToTileNumberBook[currentTileCharacter];
 			}
 			if(isNaN(currentTileNumber))
@@ -635,23 +572,28 @@ function resetGame(player)
 	// TODO - make multiple drops available.
 	// TODO - do not pick up hearts if full. 
 	// TODO - MAke more maps too.
-	// POLS VOICE + 
-	// MORE MAPS + 
-	// CHU CHUS
-	// make a money bag/ e.g. bunch of rupees.
+	// make a money bag/ e.g. bunch of rupees. - test
 	// make temples.
 	// make temple music.
 	// make bosses.
-	// All shopkeepers have the "g" dialogue for some reason...
 	// shopkeepers need to have the item cost displayed.
-	// I bought red bombs for 10 rupees.  Something is WRONG.
 	// define save file name in advance.
-	// bombs op, plz nerf
-	// we spent 10 rupees but did not get another max heart....
-	// bought white sword... i dont have it thoughl.. hwat?
-	// Checkpoint locations.
-	// if p1 dies. then p2 gets a heart: respawn does not happen.
-	player.pos = { x: 20, y: 240 };
+	// I bought red bombs for 10 rupees.  Something is WRONG. = test
+	// bombs op, plz nerf - test
+	// bought white sword... i dont have it thoughl.. hwat? - test
+	// if p1 dies. then p2 gets a heart: respawn does not happen. - test
+	// Foes, while they are invincible, should not do damage to you! - test
+	// ally invincible time
+	// hearts should not drop if hp is high.  hearts should drop more when hp is low.
+	// shopkeepers shouldnt disappear.
+	if(p1.misc.checkpointPosX === undefined)
+	{
+		p1.misc.checkpointPosX = 20;
+		p1.misc.checkpointPosY = 240;
+		p1.misc.checkpointMapX = 0;
+		p1.misc.checkpointMapY = 0;
+	}
+	player.pos = { x: p1.misc.checkpointPosX, y: p1.misc.checkpointPosY };
 	p1.pos.x = player.pos.x;
 	p1.pos.y = player.pos.y;
 	if(p2 !== null)
@@ -661,7 +603,10 @@ function resetGame(player)
 	}
 
 	player.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
-	player.misc = { name: "link", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", respawnTimer: 0 };
+	player.misc.attacking = 0;
+	player.misc.imgSpd = 1/3;
+	player.misc.currentWpn = "none";
+	player.misc.respawnTimer = 0;
 
 	// Reset player HP to max.
 	p1.stat.hp = p1.stat.mhp;
@@ -672,10 +617,11 @@ function resetGame(player)
 
 	player.imgtag.src = player.stat.imgSource;
 	player.imgtag.style.opacity = "1";
+	refreshPlayer2Equipment();
 	redrawMaxHearts();
 	redrawHearts();
+	mapX = p1.misc.checkpointMapX;
+	mapY = p1.misc.checkpointMapY;
 	resetFoes();
-	mapX = 0;
-	mapY = 0;
 	nextRoom(0, 0);
 }

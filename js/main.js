@@ -217,7 +217,11 @@ function heal(cost) {
 			p2.stat.hp = p2.stat.mhp;
 		}
 		rupees -= cost;
-		DisplayConsoleText(`Healed for ${cost} rupees!`);
+		p1.misc.checkpointMapX = mapX;
+		p1.misc.checkpointMapY = mapY;
+		p1.misc.checkpointPosX = p1.pos.x;
+		p1.misc.checkpointPosY = p1.pos.y;
+		DisplayConsoleText(`Healed for ${cost} rupees!  Checkpoint set!`);
 	} 
 	else {
 		DisplayConsoleText(`You do not have enough rupees!  ${cost} required, but ${rupees} owned.`);
@@ -294,12 +298,14 @@ function addPlayer2(){
 			p1.wpn = data.p1.wpn;
 			p1.ctrl = data.p1.ctrl;
 			p1.stat = data.p1.stat;
+			p1.misc = data.p1.misc;
 			p1.imgtag.src = data.p1.stat.imgSource;
 			if(data.p2 !== null)
 			{
 				addPlayer2();
 				p2.ctrl = data.p2.ctrl;
 				p2.stat = data.p2.stat;
+				p2.misc = data.p2.misc;
 				p2.imgtag.src = data.p2.stat.imgSource;
 				refreshPlayer2Equipment();
 			}

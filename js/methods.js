@@ -96,6 +96,10 @@ function drawSprite(img,element) {
 		placeY = 48; 
 	}
 
+	if(element.misc.gfxRows == 1) {
+		placeY = 0;
+	}
+
 	// A boomerang only has 4 animations on seperate columns but only 1 row
 	if(element.misc.name.search("_boomerang") != -1) {
 		placeX = 0;

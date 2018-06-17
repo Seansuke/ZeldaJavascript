@@ -1,0 +1,32 @@
+<root><![CDATA[
+5555      55555555555555555555555########
+5555        55555555555##################
+5555        555555#######################
+5555         ############################
+5555          ###########################
+####               ####################TT
+##t##           t        ##############TT
+######    t            t     ##########TT
+#####   t                       ######TTT
+#t##                 t      t      ###TTT
+###  t                              ##TTT
+t##       t                          TTTT
+###    t                              TTT
+##tt           t          t       t   TTT
+#tt  t  t                             TTT
+#ttt                  T             TTTTT
+#tt  t                                TTT
+ttt     t                     T   T   TTT
+ttt                T                  TTT
+tttt   t      t          T           _TTT
+ttt  t   t                     T    T_TTT
+ttt           T    T               ____TT
+ttt    t                 T       ______TT
+tttt     t             T     T__T_______T
+ttt          T             ______T______T
+ttt   T        T   T  ______T____________
+tttT             _______T________________
+ttTTT   T___T________________T___________
+tTTTTT__________T________________________
+TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+]]></root>
