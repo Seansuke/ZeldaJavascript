@@ -499,7 +499,7 @@ function setTiles(responseText) {
 			currentTileNumber = TryParseInt(currentTileCharacter, -1)
 			if(currentTileNumber == -1)
 			{
-				CreateNonPlayerCharacter(currentTileCharacter, i, j);0
+				CreateNonPlayerCharacter(currentTileCharacter, i, j);
 				currentTileNumber = characterToTileNumberBook[currentTileCharacter];
 			}
 			if(isNaN(currentTileNumber))
