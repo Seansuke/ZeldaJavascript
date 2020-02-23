@@ -96,6 +96,10 @@ function drawSprite(img,element) {
 		placeY = 48; 
 	}
 
+	if(element.misc.gfxRows == 1) {
+		placeY = 0;
+	}
+
 	// A boomerang only has 4 animations on seperate columns but only 1 row
 	if(element.misc.name.search("_boomerang") != -1) {
 		placeX = 0;
@@ -131,7 +135,11 @@ function drawSprite(img,element) {
 	img.style.top = (element.pos.y - 16 - placeY) + "px"; 
 }
 
-// Moves an object, can also define whether place checking occurs
+// Moves an object, can also define whether place checking occurs.  
+// element: The element must posses a [pos] object containing [x] and [y] fields.  The function will directly change the value in these fields.
+// dir: Text stating the direction the element is looking to move.  Literally a string of either "up" "down" "left" or "right"
+// spd: The amount of pixels to move in one direction.
+// pass: Set to true if the element does not need to check if the location is free to move.
 function move(element, dir, spd, pass) {
 	if(dir == "up" && (placeFree(element.pos.x, element.pos.y - spd) == true || pass == true )) {
 		element.pos.y -= spd;
@@ -153,6 +161,6 @@ function movePassable(element, spd) {
 }
 
 // Move an object if the location is free
-function moveUnpassable(element, dir, spd) {
+function moveImpassable(element, dir, spd) {
 	return move(element, dir, spd, false);
 }

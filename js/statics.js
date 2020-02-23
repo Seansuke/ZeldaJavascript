@@ -20,69 +20,6 @@ function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 	player.attackElem.misc.imgSpd = 1/3;
 }
 
-// This will reset every single foe within the array to a random type, position, with mild stat variation.
-function resetFoes() {
-	for(var i = 0;i < MAX_FOES;i++) {
-		// TODO - add more foes.
-		var distanceFromStart = mapX + mapY;
-		var minimumFoeDifficulty = 0;
-		var maximumFoeDifficulty = 7;
-		if(Math.abs(distanceFromStart) < 3)
-		{
-			minimumFoeDifficulty = 0;
-			maximumFoeDifficulty = 3;
-		}
-		else if(Math.abs(distanceFromStart) < 6)
-		{
-			minimumFoeDifficulty = 0;
-			maximumFoeDifficulty = 6;
-		}
-		newName = ( Array('keese','octo','rope','moblin','stalfos','gibdo','darknut') )[ minimumFoeDifficulty + Math.floor(Math.random() * maximumFoeDifficulty) ];
-		foes[i].pos = { x: 60 + Math.random() * 320, y: 60 + Math.random() * 360 }; 
-		foes[i].stat = { hp: 5 + Math.random() * 15, mhp: 15, attTime: 8,  att: 5, time: 3, force: 12, cool: 10, effect: "none", speed: 2};
-		foes[i].dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
-		foes[i].misc = { name: newName, box:8, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"enemy", xp:1 };
-		foes[i].imgtag.src = "gfx/foe/" + foes[i].misc.name + ".png";
-		foes[i].imgtag.style.opacity = "1";
-		foes[i].attackElem.pos.x = -300;
-		if(newName == "keese") {
-			foes[i].stat.mhp = 1 + Math.random() * 2;
-			foes[i].stat.att = 1 + Math.random() * 2;
-			foes[i].stat.speed = 6;
-		}
-		if(newName == "rope") {
-			foes[i].stat.mhp = 3 + Math.random() * 5;
-			foes[i].stat.att = 3 + Math.random() * 5;
-			foes[i].stat.speed = 5;
-		}
-		if(newName == "moblin") {
-			foes[i].stat.mhp = 10 + Math.random() * 5;
-			foes[i].stat.att = 7 + Math.random() * 3;
-			foes[i].misc.currentWpn = "wooden_boomerang";
-			foes[i].misc.xp = 3;
-		}
-		if(newName == "stalfos") {
-			foes[i].stat.mhp = 13 + Math.random() * 8;
-			foes[i].stat.att = 3 + Math.random() * 3;
-			foes[i].stat.speed = 3;
-			foes[i].misc.xp = 4;
-			foes[i].misc.currentWpn = "white_sword";
-		}
-		if(newName == "gibdo") {
-			foes[i].stat.mhp = 25 + Math.random() * 10;
-			foes[i].stat.att = 6 + Math.random() * 4;
-			foes[i].misc.xp = 4;
-		}
-		if(newName == "darknut") {
-			foes[i].stat.mhp = 20 + Math.random() * 20;
-			foes[i].stat.att = 15 + Math.random() * 5;
-			foes[i].stat.speed = 3;
-			foes[i].misc.xp = 5;
-		}
-		foes[i].stat.hp = foes[i].stat.mhp;
-	}	
-}
-
 // Determine if there is a collision between two objects based on their misc.box variable
 function checkSingleCollision(a, b) { 
 	if(Math.abs((a.pos.x + a.misc.box) - (b.pos.x + b.misc.box)) < a.misc.box + b.misc.box) {
@@ -128,7 +65,7 @@ function checkCollision() {
 	for( var i = 0; i < MAX_FOES; i++) {
 
 		// Check if player is colliding with any foe
-		if( checkSingleCollision(p1, foes[i]) == true) {
+		if(foes[i].dmg.time <= 0 && checkSingleCollision(p1, foes[i]) == true) {
 			setDmg(p1, foes[i]);
 		}
 
@@ -163,17 +100,23 @@ function checkCollision() {
 
 	// Check if player is colliding with an item
 	var didPlayer2Collide = false;
+	var didPlayer2WeaponCollide = false;
 	if( p2 !== null) {
 		didPlayer2Collide = checkSingleCollision(p2, itemDrop);
+		didPlayer2WeaponCollide = checkSingleCollision(p2.attackElem, itemDrop);
 	}
-	if( checkSingleCollision(p1, itemDrop) == true || didPlayer2Collide) {
+	var didPlayer1Collide = checkSingleCollision(p1, itemDrop);
+	var didPlayer1WeaponCollide = checkSingleCollision(p1.attackElem, itemDrop);
+	if(didPlayer1Collide || didPlayer1WeaponCollide || didPlayer2Collide || didPlayer2WeaponCollide) {
 		if(itemDrop.pos.x != 0) {
 			if(itemDrop.type == "heart") {
+				p1.misc.respawnTimer = 0;
 				p1.stat.hp += itemDrop.amnt * 2;
 				if(p1.stat.hp > p1.stat.mhp) {
 					p1.stat.hp = p1.stat.mhp;
 				}
 				if(p2 !== null) {
+					p2.misc.respawnTimer = 0;
 					p2.stat.hp += itemDrop.amnt * 2;
 					
 					if(p2.stat.hp > p2.stat.mhp) {
@@ -185,8 +128,8 @@ function checkCollision() {
 				rupees += itemDrop.amnt;
 			}
 			else if(itemDrop.type == "speed") {
-				p1.stat.speed += itemDrop.amnt * 0.05;
-				if(p2 !== null) {p2.stat.speed += itemDrop.amnt * 0.05;}
+				p1.stat.speed += itemDrop.amnt * 0.2;
+				refreshPlayer2Equipment();
 			}
 			redrawHearts();
 			if(p1.stat.lensOfTruth > 0)
@@ -199,6 +142,25 @@ function checkCollision() {
 			}
 			itemDrop.pos.x = 0;
 			itemDrop.imgtag.src = "gfx/alpha.png";
+		}
+	}
+
+	// Check if player is colliding with an item
+	didPlayer2Collide = false;
+	if( p2 !== null) {
+		didPlayer2Collide = checkSingleCollision(p2, nonPlayerCharacter);
+	}
+	if( checkSingleCollision(p1, nonPlayerCharacter) == true || didPlayer2Collide) {
+		if(nonPlayerCharacter.equipment.upgradeFunction !== undefined)
+		{
+			nonPlayerCharacter.equipment.upgradeFunction(nonPlayerCharacter.equipment.rank, nonPlayerCharacter.equipment.cost);
+			nonPlayerCharacter.pos.x = -999;
+			nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
+			nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+		}
+		if(nonPlayerCharacter.text != "")
+		{
+			DisplayConsoleText(nonPlayerCharacter.text);
 		}
 	}
 }
@@ -225,14 +187,14 @@ function objDmg(self) {
 	self.dmg.time--;
 
 	// Move the someone 
-	moveUnpassable(self, self.dmg.direction, self.dmg.force);
+	moveImpassable(self, self.dmg.direction, self.dmg.force);
 
 	// HP is lost at the end of being pushed around rather than the beginning to prevent chaining
 	if(self.dmg.time == 1) {
 		if(self.dmg.att != 0 && self.stat.hp > 0) {
 			self.stat.hp -= self.dmg.att;
 			if(self.misc.name == "link") {
-				if(self.stat.lensOfTruth > 0)
+				if(p1.stat.lensOfTruth > 0)
 				{
 					DisplayConsoleText(`Link took ${Math.round(self.dmg.att)} damage!  ${Math.floor(self.stat.hp)} / ${Math.floor(self.stat.mhp)} Health Remains.`);
 				}
@@ -275,16 +237,14 @@ function boundaryCheck(self) {
 }
 
 // Have a random drop appear in the location (x, y)
-function randomDrop(x,y) {
+function randomDrop(x,y,maxDropGain) {
 	itemDrop.pos.x = x;
 	itemDrop.pos.y = y;
 	itemDrop.type = ( Array('heart','rupee','speed') )[ Math.floor(Math.random() * 3) ];
 	itemDrop.imgtag.src = "gfx/drop/" + itemDrop.type + ".png";
-	itemDrop.amnt = Math.ceil(Math.random() * 5);
+	itemDrop.amnt = Math.ceil(Math.random() * maxDropGain);
 	drawSprite(itemDrop.imgtag, itemDrop);
 }
-
-
 
 function TryParseInt(str,defaultValue) {
      var retValue = defaultValue;
@@ -298,6 +258,29 @@ function TryParseInt(str,defaultValue) {
      return retValue;
 }
 
+function isChrome() {
+  var isChromium = window.chrome,
+    winNav = window.navigator,
+    vendorName = winNav.vendor,
+    isOpera = winNav.userAgent.indexOf("OPR") > -1,
+    isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+    isIOSChrome = winNav.userAgent.match("CriOS");
+
+  if (isIOSChrome) {
+    return true;
+  } else if (
+    isChromium !== null &&
+    typeof isChromium !== "undefined" &&
+    vendorName === "Google Inc." &&
+    isOpera === false &&
+    isIEedge === false
+  ) {
+    return true;
+  } else { 
+    return false;
+  }
+}
+
 // Request from the server an adjacent map to be drawn.
 function nextRoom(mapXadd, mapYadd) {
 	mapX += mapXadd;
@@ -306,11 +289,11 @@ function nextRoom(mapXadd, mapYadd) {
 	var mapFileName = "ajax/map_" + mapX + "" + mapY + ".txt";
 	var fullMapFileName = mapFileName;
 	var currentFilePath = window.location.href;
-	if(window.location.protocol == "file:")
+	if(isChrome() && window.location.protocol == "file:")
 	{
-		var lastIndexOfSlash = currentFilePath.lastIndexOf("/");
-		var currentFilePath = currentFilePath.substring(0, lastIndexOfSlash + 1);
-		var fullMapFileName = `${currentFilePath}${mapFileName}`;
+		//fullMapFileName = `http://seansuke.mygamesonline.com/zeldajs/${mapFileName}`;
+		setTiles("random"); 
+		return;
 	}
 	simpleHttpRequest(fullMapFileName, setTiles);
 }
@@ -330,7 +313,6 @@ function redrawHearts() {
 	}
 	if(p2 !== null)
 	{
-
 		for(var i = 0;i * 10 < p2.stat.mhp;i++) {
 			if(p2.stat.hp >= (i)*10 + 5) { 
 				heartListP2[i].src = "gfx/gui/heart_full.png"; 
@@ -404,7 +386,7 @@ function makeHttpObject() {
 function simpleHttpRequest(url, callbackFunction) {
 
 	// Generate random tiles first.
-	setTiles(""); 
+	setTiles("random"); 
 
 	// Attempt to make the HTTP Object
 	var request = makeHttpObject();
@@ -452,6 +434,16 @@ function addTile(i, j, tileNum) {
 
 //Based on your options (and internet connectivity), a map will be loaded.
 function setTiles(responseText) {
+	
+	if(responseText == "")
+	{
+		return;
+	}
+	
+	if(responseText == "random")
+	{
+		responseText = "";
+	}
 
 	// Ensure all the tiles have been removed from the tiles div tag
 	while(tileTags.length > 0) { 
@@ -470,10 +462,10 @@ function setTiles(responseText) {
 					&& j > 2 
 					&& j < verticalTileCount - 2
 					) {
-					addTile(i, j, 1 + Math.floor(Math.random() * 5)); 
+					addTile(i, j, Math.floor(Math.random() * 7)); 
 				}
 				else {
-					tileSet[i][j] = 0; 
+					addTile(i, j, 0); 
 				}
 			}
 		}
@@ -497,14 +489,17 @@ function setTiles(responseText) {
 			"T": 3, // tree
 			"&": 4, // green rock
 			"#": 5, // rock wall
-			"_": 6  // grass  - passable
+			"_": 6, // grass  - passable
+			"t": 7  // dying tree
 		};
+		RemoveNonPlayerCharacter();
 		while(responseText.length > 0) {
 			var currentTileCharacter = responseText.substring(0,1);
 			var currentTileNumber = 0;
 			currentTileNumber = TryParseInt(currentTileCharacter, -1)
 			if(currentTileNumber == -1)
 			{
+				CreateNonPlayerCharacter(currentTileCharacter, i, j);
 				currentTileNumber = characterToTileNumberBook[currentTileCharacter];
 			}
 			if(isNaN(currentTileNumber))
@@ -523,12 +518,83 @@ function setTiles(responseText) {
 	}
 }
 
+function RemoveNonPlayerCharacter()
+{
+	nonPlayerCharacter.pos = { x: -999, y: -999 };
+	nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
+	nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+}
+
+function CreateNonPlayerCharacter(currentTileCharacter, i, j)
+{
+	var spawned = false;
+
+	var weaponUpdateArray = (new EquipmentList())[currentTileCharacter];
+	if(weaponUpdateArray !== undefined)
+	{
+		nonPlayerCharacter.productImgTag.src = weaponUpdateArray.gfx;
+		nonPlayerCharacter.equipment = weaponUpdateArray;
+		nonPlayerCharacter.text = "";
+		spawned = true;
+	}
+
+	var dialogueText = (new DialogueList())[currentTileCharacter];
+	if(dialogueText !== undefined)
+	{
+		nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+		nonPlayerCharacter.text = dialogueText;
+		spawned = true;
+	}
+
+	if(spawned)
+	{
+		nonPlayerCharacter.pos = { x: i*16, y: j*16 };
+		nonPlayerCharacter.imgtag.style.left = nonPlayerCharacter.pos.x + "px";
+		nonPlayerCharacter.imgtag.style.top = nonPlayerCharacter.pos.y + "px";
+		nonPlayerCharacter.productImgTag.style.left = nonPlayerCharacter.pos.x + "px";
+		nonPlayerCharacter.productImgTag.style.top = nonPlayerCharacter.pos.y + 16 + "px";
+		nonPlayerCharacter.productImgTag.style.clip = "rect(0px, 16px, 16px, 0px)";
+		if(nonPlayerCharacter.equipment.name !== undefined)
+		{
+			if(nonPlayerCharacter.equipment.name.indexOf("bomb") != -1)
+			{
+				nonPlayerCharacter.productImgTag.style.clip = "rect(16px, 32px, 32px, 16px)";
+			}
+		}
+		nonPlayerCharacter.productCode = currentTileCharacter;
+		nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
+	}
+}
 
 // Resets the game upon game over.
 function resetGame(player)
 {
-
-	player.pos = { x: 20, y: 240 };
+	// TODO - make multiple drops available.
+	// TODO - do not pick up hearts if full. 
+	// TODO - MAke more maps too.
+	// CHU CHUS
+	// make a money bag/ e.g. bunch of rupees. - test
+	// make temples.
+	// make temple music.
+	// make bosses.
+	// All shopkeepers have the "g" dialogue for some reason... - test
+	// shopkeepers need to have the item cost displayed.
+	// define save file name in advance.
+	// I bought red bombs for 10 rupees.  Something is WRONG. = test
+	// bombs op, plz nerf - test
+	// bought white sword... i dont have it thoughl.. hwat? - test
+	// if p1 dies. then p2 gets a heart: respawn does not happen. - test
+	// Foes, while they are invincible, should not do damage to you! - test
+	// ally invincible time
+	// Weapons should have different attacks. Standing Attack, Moving Attack, Charge Attack. - test
+	if(p1.misc.checkpointPosX === undefined)
+	{
+		p1.misc.checkpointPosX = 20;
+		p1.misc.checkpointPosY = 240;
+		p1.misc.checkpointMapX = 0;
+		p1.misc.checkpointMapY = 0;
+	}
+	player.pos = { x: p1.misc.checkpointPosX, y: p1.misc.checkpointPosY };
 	p1.pos.x = player.pos.x;
 	p1.pos.y = player.pos.y;
 	if(p2 !== null)
@@ -538,7 +604,10 @@ function resetGame(player)
 	}
 
 	player.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
-	player.misc = { name: "link", box:6, subimg:0, direction:"down", attacking:0, imgSpd: 1/3, currentWpn:"none", team:"player", respawnTimer: 0 };
+	player.misc.attacking = 0;
+	player.misc.imgSpd = 1/3;
+	player.misc.currentWpn = "none";
+	player.misc.respawnTimer = 0;
 
 	// Reset player HP to max.
 	p1.stat.hp = p1.stat.mhp;
@@ -549,11 +618,11 @@ function resetGame(player)
 
 	player.imgtag.src = player.stat.imgSource;
 	player.imgtag.style.opacity = "1";
+	refreshPlayer2Equipment();
 	redrawMaxHearts();
 	redrawHearts();
+	mapX = p1.misc.checkpointMapX;
+	mapY = p1.misc.checkpointMapY;
 	resetFoes();
-	mapX = 0;
-	mapY = 0;
 	nextRoom(0, 0);
 }
-

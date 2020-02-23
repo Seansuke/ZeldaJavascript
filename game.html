@@ -12,32 +12,31 @@
 		/>
 	</head>
 	<body onload="init()">
+		<textarea id="overlay-touch" readonly="readonly">
+			MMM
+		    MMM
+			MMM
+		</textarea>
 
 		<div id="gameWindow">
-			<!-- TILES SECTION -->
 			<div id = "tiles">
-			</div>
-			 <!-- ENEMIES SECTION -->
+			</div><!-- #tiles -->
 			<div id = "enemies">
-			</div>
-			 <!-- ATTACKS SECTION -->
+			</div><!-- #enemies -->
 			<div id = "attacks">
-			</div>
-			 <!-- PLAYERS SECTION -->
+			</div><!-- #attacks -->
 			<div id = "players">
-			</div>
-			 <!-- DROPS SECTION -->
+			</div><!-- #players -->
 			<div id = "drops">
-			</div>
+			</div><!-- #drops -->
 		</div>
 
 		<div id="gui">
 
-			<!-- AUDIO -->
-			<audio id="backgroundMusic" autoplay="autoplay" loop="loop" >
-				<source src="bgm/overworld.ogg" type="audio/ogg" />
-				<source src="bgm/overworld.mp3" type="audio/mpeg" />
-				<source src="bgm/overworld.wav" type="audio/wav" />
+			<audio id="backgroundMusic" onended="nextSong()">
+				<source id="oggMusicSource" type="audio/ogg" />
+				<source id="mp3MusicSource" type="audio/mpeg" />
+				<source id="bgmMusicSource" type="audio/wav" />
 			</audio>
 
 			<div id = "console" >
@@ -67,7 +66,6 @@
 
 				<img 
 					id = "tunicColorsP2"
-					alt = "Credit: CukeMan from PureZC.com and Nintendo"
 					src = "gfx/gui/change-tunic-2.png"
 					 class="clickable-button"
 					onclick = "changeTunic(2);"
@@ -81,7 +79,6 @@
 					onclick = "addPlayer2();"
 				/>
 				
-				<!-- Frame Skip Button -->
 				<div id = "faster"  class="clickable-button"
 					type = "button" onclick = "increaseGameSpeed();">
 					Increase Game Speed
@@ -90,40 +87,28 @@
 					type = "button" onclick = "decreaseGameSpeed();">
 					Decrease Game Speed
 				</div>
-
-				<div 
-					id = "swordUpgrade" class="clickable-button"
-					onclick = "swordUpgrade();// TODO - Port these to NPCs"
-				>Upgrade Sword -[cost]</div>
-				<div 
-					id = "boomerangUpgrade" class="clickable-button"
-					onclick = "boomerangUpgrade();"
-				>Buy/Up Boomerang -[cost]</div>
-				<div 
-					id = "bombUpgrade" class="clickable-button"
-					onclick = "bombUpgrade();"
-				>Buy/Up Bomb -[cost]</div>
-				<div 
-					id = "arrowUpgrade" class="clickable-button"
-					onclick = "arrowUpgrade();"
-				>Buy/Up Arrow -[cost]</div>
-				<div 
-					id = "heartsUpgrade" class="clickable-button"
-					onclick = "heartUpgrade(); // TODO - Create recurring NPC to do this for you.  And one that offers to heal for rupees."
-				>Buy/Up Max Hearts -[cost]</div>
-				<div 
-					id = "lensOfTruthUpgrade" class="clickable-button"
-					onclick = "lensOfTruthUpgrade();"
-				>Buy/Up Lens of Truth -[cost]</div>
-
-				<div id="loadFile" class="clickable-button"
-					onclick = "loadFile();"
-				>Load File</div>
-
-				<input id="loadFileUpload" type="file" value="Browse for Save File"/>
+				
+				<div  class="clickable-button"
+					type = "button" onclick = "decreaseConsole();">
+					Shorter Console
+				</div>
+				<div  class="clickable-button"
+					type = "button" onclick = "increaseConsole();">
+					Longer Console
+				</div>
+				
+				<div class="clickable-button" >
+					Load File
+					<input id="loadFileUpload" type="file" ></input>
+				</div>
         
-				<div id="saveFile" class="clickable-button"
-				>Save File</div>
+				<div id="saveFile" class="clickable-button">
+					Save File
+				</div>
+
+				<div class="clickable-button" onclick="nextSong();">
+					Next Song
+				</div>
 
 				<div id = "helpGui">
 					<div id="defaultControls">
