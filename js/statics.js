@@ -107,6 +107,7 @@ function checkCollision() {
 	}
 	var didPlayer1Collide = checkSingleCollision(p1, itemDrop);
 	var didPlayer1WeaponCollide = checkSingleCollision(p1.attackElem, itemDrop);
+	// TODO - do not pick up hearts if full. - https://github.com/Seansuke/ZeldaJavascript/issues/1
 	if(didPlayer1Collide || didPlayer1WeaponCollide || didPlayer2Collide || didPlayer2WeaponCollide) {
 		if(itemDrop.pos.x != 0) {
 			if(itemDrop.type == "heart") {
@@ -281,11 +282,12 @@ function isChrome() {
   }
 }
 
+	// TODO - MAke more maps too.  https://github.com/Seansuke/ZeldaJavascript/issues/4
 // Request from the server an adjacent map to be drawn.
 function nextRoom(mapXadd, mapYadd) {
 	mapX += mapXadd;
 	mapY += mapYadd;
-	// TODO - make this work with maps on file for testing.
+	// TODO - make this work with maps on file for testing.  https://github.com/Seansuke/ZeldaJavascript/issues/8
 	var mapFileName = "ajax/map_" + mapX + "" + mapY + ".txt";
 	var fullMapFileName = mapFileName;
 	var currentFilePath = window.location.href;
@@ -569,24 +571,20 @@ function CreateNonPlayerCharacter(currentTileCharacter, i, j)
 // Resets the game upon game over.
 function resetGame(player)
 {
-	// TODO - make multiple drops available.
-	// TODO - do not pick up hearts if full. 
-	// TODO - MAke more maps too.
-	// CHU CHUS
-	// make a money bag/ e.g. bunch of rupees. - test
-	// make temples.
-	// make temple music.
-	// make bosses.
-	// All shopkeepers have the "g" dialogue for some reason... - test
-	// shopkeepers need to have the item cost displayed.
-	// define save file name in advance.
-	// I bought red bombs for 10 rupees.  Something is WRONG. = test
-	// bombs op, plz nerf - test
-	// bought white sword... i dont have it thoughl.. hwat? - test
-	// if p1 dies. then p2 gets a heart: respawn does not happen. - test
-	// Foes, while they are invincible, should not do damage to you! - test
-	// ally invincible time
-	// Weapons should have different attacks. Standing Attack, Moving Attack, Charge Attack. - test
+	// TODO - make a money bag/ e.g. bunch of rupees. - test  https://github.com/Seansuke/ZeldaJavascript/issues/5
+	// TODO - make temples.   https://github.com/Seansuke/ZeldaJavascript/issues/13
+	// TODO - make temple music.  https://github.com/Seansuke/ZeldaJavascript/issues/14
+	// TODO - make bosses.  https://github.com/Seansuke/ZeldaJavascript/issues/15
+	// TODO - shopkeepers need to have the item cost displayed.  https://github.com/Seansuke/ZeldaJavascript/issues/16
+	// TODO - define save file name in advance.  https://github.com/Seansuke/ZeldaJavascript/issues/17
+	// TODO - I bought red bombs for 10 rupees.  Something is WRONG. = test https://github.com/Seansuke/ZeldaJavascript/issues/18
+	// TODO - bombs op, plz nerf - test  https://github.com/Seansuke/ZeldaJavascript/issues/19
+	// TODO - bought white sword... i dont have it thoughl.. hwat? - test  https://github.com/Seansuke/ZeldaJavascript/issues/20
+	// TODO - if p1 dies. then p2 gets a heart: respawn does not happen. - test  https://github.com/Seansuke/ZeldaJavascript/issues/21
+	// TODO - Foes, while they are invincible, should not do damage to you! - test  https://github.com/Seansuke/ZeldaJavascript/issues/22
+	// TODO - ally invincible time  https://github.com/Seansuke/ZeldaJavascript/issues/23
+	// TODO - hearts should not drop if hp is high.  hearts should drop more when hp is low.  https://github.com/Seansuke/ZeldaJavascript/issues/24
+	// TODO - shopkeepers shouldnt disappear.  https://github.com/Seansuke/ZeldaJavascript/issues/25
 	if(p1.misc.checkpointPosX === undefined)
 	{
 		p1.misc.checkpointPosX = 20;

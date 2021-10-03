@@ -4,37 +4,34 @@
 // Determine if the player will decide to move
 function playerWalk(player) {
 	var isWalking = false;
-	if( typeof wiiu === 'undefined' )
+	var wiiuGamepadState = { hold: 0 };
+	var wiiuRemoteState = { held: 0 };
+	if( typeof wiiu !== 'undefined' )
 	{
-		var stateu = {hold: 0};
-		var state = {held: 0};
-	}
-	else
-	{
-		var stateu = wiiu.gamepad.update();
-		var state = wiiu.remote.update(0);
+		wiiuGamepadState = wiiu.gamepad.update();
+		wiiuRemoteState = wiiu.remote.update(0);
 	}
 	
-	// TODO - implement these as variables that can be changed.
-	if (control[player.ctrl.left] == true || touchControls.left || stateu.hold & 0x00000800 || stateu.hold & 0x40000000 || state.held & 0x00000100) {
+	// TODO - implement these as variables that can be changed. https://github.com/Seansuke/ZeldaJavascript/issues/3
+	if (control[player.ctrl.left] == true || touchControls.left || wiiuGamepadState.hold & 0x00000800 || wiiuGamepadState.hold & 0x40000000 || wiiuRemoteState.held & 0x00000100) {
 		isWalking = true;
 		player.misc.direction = "left";
 		moveObj(player, - player.stat.speed / 2 , 0); 
 		moveObj(player, - player.stat.speed / 2 , 0); 
 	}
-	else if (control[player.ctrl.right] == true || touchControls.right  || stateu.hold & 0x00000400 || stateu.hold & 0x20000000  || state.held & 0x00000200) {
+	else if (control[player.ctrl.right] == true || touchControls.right  || wiiuGamepadState.hold & 0x00000400 || wiiuGamepadState.hold & 0x20000000  || wiiuRemoteState.held & 0x00000200) {
 		isWalking = true;
 		player.misc.direction = "right"; 	
 		moveObj(player, player.stat.speed / 2 , 0);
 		moveObj(player, player.stat.speed / 2 , 0);
 	}
-	if (control[player.ctrl.up] == true || touchControls.up  || stateu.hold & 0x00000200 || stateu.hold & 0x10000000  || state.held & 0x00000800) {
+	if (control[player.ctrl.up] == true || touchControls.up  || wiiuGamepadState.hold & 0x00000200 || wiiuGamepadState.hold & 0x10000000  || wiiuRemoteState.held & 0x00000800) {
 		isWalking = true;
 		player.misc.direction = "up";
 		moveObj(player, 0 , - player.stat.speed / 2);
 		moveObj(player, 0 , - player.stat.speed / 2);
 	}
-	else if (control[player.ctrl.down] == true || touchControls.down  || stateu.hold & 0x00000100 || stateu.hold & 0x08000000  || state.held & 0x00000400) {
+	else if (control[player.ctrl.down] == true || touchControls.down  || wiiuGamepadState.hold & 0x00000100 || wiiuGamepadState.hold & 0x08000000  || wiiuRemoteState.held & 0x00000400) {
 		isWalking = true;
 		player.misc.direction = "down"; 
 		moveObj(player, 0 , player.stat.speed / 2); 
@@ -325,16 +322,6 @@ function actionArrow(player) {
 	// When player's attacking time == 99, initialize the attack, and set the REAL attacking time to the proper amount
 	if(player.misc.attacking == 99) {
 		player.stat.attTime = 18;
-
-
-		//Creates a new attack with the following stats (player, DMG, TIME, FORCE, COOL, "effect")
-		setAttack(player, 2 , player.stat.attTime,0,2,  "none");
-		player.attackElem.imgtag.src = "gfx/wpn/" + player.attackElem.misc.currentWpn +  ".png";
-
-
-		//Creates a new attack with the following stats (player, DMG, TIME, FORCE, COOL, "effect")
-		setAttack(player, 2 , player.stat.attTime,0,2,  "none");
-		player.attackElem.imgtag.src = "gfx/wpn/" + player.attackElem.misc.currentWpn +  ".png";
 
 		// The light_arrow is stronger than the silver_arrow and in turn the wooden_arrow
 		if(player.attackElem.misc.currentWpn.search("silver_") != -1) {

@@ -2,6 +2,7 @@
 =============================================================CLASSES====================================================================
 ===================================================================================================================================== */
 
+// TODO - This should go into it's own file and class.  It should inherit the Combatant class.  https://github.com/Seansuke/ZeldaJavascript/issues/11
 function Player() {
 	this.pos = { x: 20, y: 240 };
 	this.wpn = { A: "wooden_sword", B: "None", C: "None", D: "None" };
@@ -15,6 +16,8 @@ function Player() {
 	this.imgtag.src = "gfx/link/link.png";
 	this.attackElem = new Attack();
 }
+
+// TODO - This should go into its own class file.  https://github.com/Seansuke/ZeldaJavascript/issues/12
 function Attack() {
 	this.pos = { x: -999, y: -999 };
 	this.stat = { att: 5, time: 3, force: 12, cool: 10, direction: "up", effect: "none", speed: 0};
@@ -23,6 +26,8 @@ function Attack() {
 	this.imgtag.src = "gfx/alpha.png";
 	this.misc.attacking = 0;
 }
+
+// TODO - This should go into it's own file and class.  It should inherit the Combatant class. https://github.com/Seansuke/ZeldaJavascript/issues/11
 function Foe(newName) {
 	this.pos = { x: -300, y: 0 };
 	this.wpn = { A: "None", B: "None", C: "None", D: "None" };
@@ -33,6 +38,9 @@ function Foe(newName) {
 	this.attackElem = new Attack(); 
 	this.ai = { target: null, aggro: false}
 }
+
+	// TODO - make multiple drops available. https://github.com/Seansuke/ZeldaJavascript/issues/6
+// TODO - This should go into its own class file.  https://github.com/Seansuke/ZeldaJavascript/issues/12
 function Drop() {
 	this.pos = { x: -999, y: -999 };
 	this.misc = { name: "drop", box:6, subimg:0, direction:"up", attacking:0, imgSpd: 0, currentWpn:"none", team:"itemDrop", gfxRows: 4 };
@@ -42,6 +50,8 @@ function Drop() {
 	this.imgtag = ( document.getElementById("drops").appendChild( document.createElement( 'img' ) ) );
 	this.imgtag.src = "gfx/alpha.png";
 }
+
+// TODO - This should go into its own class file.  https://github.com/Seansuke/ZeldaJavascript/issues/12
 function NonPlayerCharacter() {
 	this.pos = { x: -999, y: -999 };
 	this.misc = { name: "nonplayerCharacter", box:6, subimg:0, direction:"up", attacking:0, imgSpd: 0, currentWpn:"none", team:"itemDrop", gfxRows: 4 };
@@ -54,12 +64,16 @@ function NonPlayerCharacter() {
 	this.productImgTag.src = "gfx/alpha.png";
 	this.equipment = new Equipment();
 }
+
+// TODO - This should go into its own class file.  https://github.com/Seansuke/ZeldaJavascript/issues/12
 function SaveData() {
 	this.version = 1;
 	this.p1 = null;
 	this.p2 = null;
 	this.rupees = 0;
 }
+
+// TODO - This should go into its own class file.  https://github.com/Seansuke/ZeldaJavascript/issues/12
 function EquipmentList() {
 	this.h = new Equipment("heart", 0, "heal", "gfx/gui/heart_half.png", heal, 0);
 	this.H = new Equipment("heartContainer", 1, "heartContainer", "gfx/gui/heart_full.png", heartUpgrade, upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp);
@@ -78,6 +92,8 @@ function EquipmentList() {
 	this.A = new Equipment("arrow", 1, "silver_arrow", "gfx/wpn/silver_arrow.png", arrowUpgrade, 150);
 	this.R = new Equipment("arrow", 2, "light_arrow", "gfx/wpn/light_arrow.png", arrowUpgrade, 300);
 }
+
+// TODO - This should go into its own class file.  https://github.com/Seansuke/ZeldaJavascript/issues/12
 function Equipment(parentName, rank, name, gfx, upgradeFunction, cost) {
 	this.parentName = parentName;
 	this.rank = rank;
@@ -86,10 +102,12 @@ function Equipment(parentName, rank, name, gfx, upgradeFunction, cost) {
 	this.upgradeFunction = upgradeFunction;
 	this.cost = cost;
 }
+
+// TODO - This should go into its own class file.  https://github.com/Seansuke/ZeldaJavascript/issues/12
 function DialogueList() {
 	this.g = `"You are very unlucky to land on this island."`;
 	this.k = `"I already paid this month, please don't hurt me!"`;
 	this.x = `"Quick to take taxes, but slow to deliver our rations as usual."`;
 	this.v = `"I'm not going to be brought to the volcano, will I?"`;
-	this.n = `"See that volcano over yonder?  That's the "`;
+	this.n = `"See that volcano over yonder?  Quite the eye-sore."`;
 }

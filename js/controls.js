@@ -10,7 +10,7 @@ document.onkeydown=function(e) {
 		control[e.keyCode] = true;
 	}
 }
-// TODO - Implement Gamepad.
+// TODO - Implement Gamepad. https://github.com/Seansuke/ZeldaJavascript/issues/2
 document.onkeyup=function(e) {
 	e = window.event || e; 
 	if(e.which != undefined) { 

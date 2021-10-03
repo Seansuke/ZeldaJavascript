@@ -33,6 +33,7 @@ var control = new Array(512);
 var currentKeyIndex = 0;
 var keys = new Array("up","right","down","left","attA","attB","attC","attD","END");
 var gameStarted = false;
+var enemyNameArray = Array('chuchu', 'keese', 'octo', 'rope', 'polsvoice', 'peahat', 'leever', 'tektite', 'wallmaster', 'ghini', 'moblin', 'stalfos', 'likelike', 'gibdo', 'darknut', 'wizzro');
 
 // Costs
 var upgradeHeartsCostFlatFee = 20;
