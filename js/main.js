@@ -298,12 +298,14 @@ function addPlayer2(){
 			p1.wpn = data.p1.wpn;
 			p1.ctrl = data.p1.ctrl;
 			p1.stat = data.p1.stat;
+			p1.misc = data.p1.misc;
 			p1.imgtag.src = data.p1.stat.imgSource;
 			if(data.p2 !== null)
 			{
 				addPlayer2();
 				p2.ctrl = data.p2.ctrl;
 				p2.stat = data.p2.stat;
+				p2.misc = data.p2.misc;
 				p2.imgtag.src = data.p2.stat.imgSource;
 				refreshPlayer2Equipment();
 			}
