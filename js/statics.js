@@ -98,55 +98,9 @@ function checkCollision() {
 		}
 	}
 
-	// Check if player is colliding with an item
-	var didPlayer2Collide = false;
-	var didPlayer2WeaponCollide = false;
-	if( p2 !== null) {
-		didPlayer2Collide = checkSingleCollision(p2, itemDrop);
-		didPlayer2WeaponCollide = checkSingleCollision(p2.attackElem, itemDrop);
-	}
-	var didPlayer1Collide = checkSingleCollision(p1, itemDrop);
-	var didPlayer1WeaponCollide = checkSingleCollision(p1.attackElem, itemDrop);
-	// TODO - do not pick up hearts if full. - https://github.com/Seansuke/ZeldaJavascript/issues/1
-	if(didPlayer1Collide || didPlayer1WeaponCollide || didPlayer2Collide || didPlayer2WeaponCollide) {
-		if(itemDrop.pos.x != 0) {
-			if(itemDrop.type == "heart") {
-				p1.misc.respawnTimer = 0;
-				p1.stat.hp += itemDrop.amnt * 2;
-				if(p1.stat.hp > p1.stat.mhp) {
-					p1.stat.hp = p1.stat.mhp;
-				}
-				if(p2 !== null) {
-					p2.misc.respawnTimer = 0;
-					p2.stat.hp += itemDrop.amnt * 2;
-					
-					if(p2.stat.hp > p2.stat.mhp) {
-						p2.stat.hp = p2.stat.mhp;
-					}
-				}
-			}
-			else if(itemDrop.type == "rupee") {
-				rupees += itemDrop.amnt;
-			}
-			else if(itemDrop.type == "speed") {
-				p1.stat.speed += itemDrop.amnt * 0.2;
-				refreshPlayer2Equipment();
-			}
-			redrawHearts();
-			if(p1.stat.lensOfTruth > 0)
-			{
-				DisplayConsoleText("Link gained " + itemDrop.amnt + " " + itemDrop.type + "(s)!");
-			}
-			else
-			{
-				DisplayConsoleText(`Link gained ${itemDrop.type}(s)!`);
-			}
-			itemDrop.pos.x = 0;
-			itemDrop.imgtag.src = "gfx/alpha.png";
-		}
-	}
+	checkItemDropCollision();
 
-	// Check if player is colliding with an item
+	// Check if player is colliding with an nonplayercharacter
 	didPlayer2Collide = false;
 	if( p2 !== null) {
 		didPlayer2Collide = checkSingleCollision(p2, nonPlayerCharacter);
@@ -162,6 +116,55 @@ function checkCollision() {
 		if(nonPlayerCharacter.text != "")
 		{
 			DisplayConsoleText(nonPlayerCharacter.text);
+		}
+	}
+}
+
+/** Handles a reaction to touching an item if it happens and removes it from the global queue. */
+function checkItemDropCollision() {
+	var collidedItem = itemDropArray.find(itemDrop => checkSingleCollision(p1, itemDrop));
+	collidedItem = collidedItem === undefined ? itemDropArray.find(itemDrop => checkSingleCollision(p1.attackElem, itemDrop)) : collidedItem;
+	if (p2 !== null) {
+		collidedItem = collidedItem === undefined ? itemDropArray.find(itemDrop => checkSingleCollision(p2, itemDrop)) : collidedItem;
+		collidedItem = collidedItem === undefined ? itemDropArray.find(itemDrop => checkSingleCollision(p2.attackElem, itemDrop)) : collidedItem;
+	}
+	// TODO - do not pick up hearts if full. - https://github.com/Seansuke/ZeldaJavascript/issues/1
+	if (collidedItem !== undefined) {
+		if (collidedItem.pos.x != 0) {
+			if (collidedItem.type == "heart") {
+				p1.misc.respawnTimer = 0;
+				p1.stat.hp += collidedItem.amnt * 2;
+				if (p1.stat.hp > p1.stat.mhp) {
+					p1.stat.hp = p1.stat.mhp;
+				}
+				if (p2 !== null) {
+					p2.misc.respawnTimer = 0;
+					p2.stat.hp += collidedItem.amnt * 2;
+
+					if (p2.stat.hp > p2.stat.mhp) {
+						p2.stat.hp = p2.stat.mhp;
+					}
+				}
+			}
+			else if (collidedItem.type == "rupee") {
+				rupees += collidedItem.amnt;
+			}
+			else if (collidedItem.type == "speed") {
+				p1.stat.speed += collidedItem.amnt * 0.2;
+				refreshPlayer2Equipment();
+			}
+
+			redrawHearts();
+
+			if (p1.stat.lensOfTruth > 0) {
+				DisplayConsoleText("Link gained " + collidedItem.amnt + " " + collidedItem.type + "(s)!");
+			}
+			else {
+				DisplayConsoleText(`Link gained ${collidedItem.type}(s)!`);
+			}
+
+			collidedItem.imgtag.remove();
+			itemDropArray.splice(itemDropArray.indexOf(collidedItem), 1);
 		}
 	}
 }
@@ -206,16 +209,18 @@ function objDmg(self) {
 				redrawHearts();
 			}
 			else {
-				if(p1.stat.lensOfTruth == 2)
-				{
-					DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage!  ${Math.floor(self.stat.hp)} / ${Math.floor(self.stat.mhp)} Health Remains.`);
+				if (p1.stat.lensOfTruth == 2) {
+					if (self.stat.hp <= 0) {
+						DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage and was defeated!`);
+					}
+					else {
+						DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage!  ${Math.floor(self.stat.hp)} / ${Math.floor(self.stat.mhp)} Health Remains.`);
+                    }
 				}
-				else if(p1.stat.lensOfTruth == 1)
-				{
+				else if(p1.stat.lensOfTruth == 1) {
 					DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage!`);
 				}
-				else
-				{
+				else {
 					DisplayConsoleText(`${self.misc.name} took damage!`);
 				}
 				
@@ -239,16 +244,19 @@ function boundaryCheck(self) {
 	}
 }
 
+// TODO - hearts should not drop if hp is high.  hearts should drop more when hp is low.  https://github.com/Seansuke/ZeldaJavascript/issues/24
 /** 
  * Have a random drop appear in the location (x, y)
  */
-function randomDrop(x,y,maxDropGain) {
+function randomDrop(x, y, maxDropGain) {
+	var itemDrop = new Drop();
 	itemDrop.pos.x = x;
 	itemDrop.pos.y = y;
 	itemDrop.type = ( Array('heart','rupee','speed') )[ Math.floor(Math.random() * 3) ];
 	itemDrop.imgtag.src = "gfx/drop/" + itemDrop.type + ".png";
 	itemDrop.amnt = Math.ceil(maxDropGain * 0.5 + Math.random() * maxDropGain * 0.5);
 	drawSprite(itemDrop.imgtag, itemDrop);
+	itemDropArray.push(itemDrop);
 }
 
 function TryParseInt(str, defaultValue) {
@@ -592,7 +600,6 @@ function resetGame(player)
 	// TODO - if p1 dies. then p2 gets a heart: respawn does not happen. - test  https://github.com/Seansuke/ZeldaJavascript/issues/21
 	// TODO - Foes, while they are invincible, should not do damage to you! - test  https://github.com/Seansuke/ZeldaJavascript/issues/22
 	// TODO - ally invincible time  https://github.com/Seansuke/ZeldaJavascript/issues/23
-	// TODO - hearts should not drop if hp is high.  hearts should drop more when hp is low.  https://github.com/Seansuke/ZeldaJavascript/issues/24
 	// TODO - shopkeepers shouldnt disappear.  https://github.com/Seansuke/ZeldaJavascript/issues/25
 	if(p1.misc.checkpointPosX === undefined)
 	{

@@ -418,7 +418,6 @@ function init( ) {
 	var backgroundMusicTag = document.getElementById("backgroundMusic");
 	backgroundMusicTag.volume = 0.5;
 	rupeeTag = document.getElementById("rupee");
-	itemDrop = new Drop();
 	nonPlayerCharacter = new NonPlayerCharacter();
 	consoleTag = document.getElementById("console");
 	p1 = new Player();
@@ -427,6 +426,7 @@ function init( ) {
 		foes[i] = new Foe("random"); 
 	}
 	resetFoes();
+	itemDropArray = new Array();
 	tileSet = new Array();
 	for(var i = 0;i <= 640 / 16;i++) {
 		tileSet[i] = new Array();
