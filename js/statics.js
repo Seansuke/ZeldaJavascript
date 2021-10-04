@@ -2,7 +2,7 @@
 /* ==========================================================General Use ==========================================================*/
 /* ==================================================================================================================================*/
 
-// A generic way to quickly create an attack
+/** A generic way to quickly create an attack*/
 function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 	player.attackElem.stat.att = newAtt; 
 	player.attackElem.stat.time = newTime; 
@@ -20,7 +20,7 @@ function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 	player.attackElem.misc.imgSpd = 1/3;
 }
 
-// Determine if there is a collision between two objects based on their misc.box variable
+/** Determine if there is a collision between two objects based on their misc.box variable*/
 function checkSingleCollision(a, b) { 
 	if(Math.abs((a.pos.x + a.misc.box) - (b.pos.x + b.misc.box)) < a.misc.box + b.misc.box) {
 		if(Math.abs(a.pos.y - b.pos.y) < a.misc.box + b.misc.box) {
@@ -30,7 +30,7 @@ function checkSingleCollision(a, b) {
 	return false;
 }
 
-//  Have object A take damage from object B
+/**  Have object A take damage from object B*/
 function setDmg(a, b) { 
 	
 	// Damage is done to object A if A is not taking damage or on the same team
@@ -60,7 +60,7 @@ function setDmg(a, b) {
 	}
 }
 
-// A generic check for all possible collisions
+/** A generic check for all possible collisions*/
 function checkCollision() {
 	for( var i = 0; i < MAX_FOES; i++) {
 
@@ -166,7 +166,7 @@ function checkCollision() {
 	}
 }
 
-// Have an object follow through it's damaged state
+/** Have an object follow through it's damaged state */
 function objDmg(self) {
 
 	// Transparency is used for a basic flashing animation.  50% visible
@@ -189,11 +189,11 @@ function objDmg(self) {
 
 	// Move the someone 
 	moveImpassable(self, self.dmg.direction, self.dmg.force);
-
+	
 	// HP is lost at the end of being pushed around rather than the beginning to prevent chaining
 	if(self.dmg.time == 1) {
 		if(self.dmg.att != 0 && self.stat.hp > 0) {
-			self.stat.hp -= self.dmg.att;
+			self.stat.hp = Math.max(self.stat.hp - self.dmg.att, 0);
 			if(self.misc.name == "link") {
 				if(p1.stat.lensOfTruth > 0)
 				{
@@ -224,7 +224,9 @@ function objDmg(self) {
 	}
 }
 
-// Check if the object is not within it's graphic bounds or cooldown time bounds.
+/**
+ * Check if the object is not within it's graphic bounds or cooldown time bounds.
+ */
 function boundaryCheck(self) {
 	if(self.dmg.cool > 0) {
 		self.dmg.cool--;
@@ -237,17 +239,19 @@ function boundaryCheck(self) {
 	}
 }
 
-// Have a random drop appear in the location (x, y)
+/** 
+ * Have a random drop appear in the location (x, y)
+ */
 function randomDrop(x,y,maxDropGain) {
 	itemDrop.pos.x = x;
 	itemDrop.pos.y = y;
 	itemDrop.type = ( Array('heart','rupee','speed') )[ Math.floor(Math.random() * 3) ];
 	itemDrop.imgtag.src = "gfx/drop/" + itemDrop.type + ".png";
-	itemDrop.amnt = Math.ceil(Math.random() * maxDropGain);
+	itemDrop.amnt = Math.ceil(maxDropGain * 0.5 + Math.random() * maxDropGain * 0.5);
 	drawSprite(itemDrop.imgtag, itemDrop);
 }
 
-function TryParseInt(str,defaultValue) {
+function TryParseInt(str, defaultValue) {
      var retValue = defaultValue;
      if(str !== null) {
          if(str.length > 0) {
@@ -282,8 +286,8 @@ function isChrome() {
   }
 }
 
-	// TODO - MAke more maps too.  https://github.com/Seansuke/ZeldaJavascript/issues/4
-// Request from the server an adjacent map to be drawn.
+// TODO - MAke more maps too.  https://github.com/Seansuke/ZeldaJavascript/issues/4
+/** Request from the server an adjacent map to be drawn.*/
 function nextRoom(mapXadd, mapYadd) {
 	mapX += mapXadd;
 	mapY += mapYadd;
@@ -300,7 +304,7 @@ function nextRoom(mapXadd, mapYadd) {
 	simpleHttpRequest(fullMapFileName, setTiles);
 }
 
-// Redraw the hearts on the screen
+/** Redraw the hearts on the screen*/
 function redrawHearts() { 
 	for(var i = 0;i * 10 < p1.stat.mhp;i++) {
 		if(p1.stat.hp >= (i)*10 + 5) { 
@@ -329,7 +333,7 @@ function redrawHearts() {
 	}
 }
 
-// Request the player's life to be redrawn.
+/** Request the player's life to be redrawn.*/
 function redrawMaxHearts() {
 	while(heartList.length > 0)
 	{
@@ -367,7 +371,7 @@ function redrawMaxHearts() {
 	}
 }
 
-// Example code from Professor Johnson
+/** Returns a request object depending on the browser used. */
 function makeHttpObject() {
 	try {
 		return new XMLHttpRequest();
@@ -384,7 +388,12 @@ function makeHttpObject() {
 	throw new Error("Could not create HTTP request object.");
 }
 
-// Example code from Professor Johnson
+/**
+ * Re-initializes the current tiles to be randomized, then sends a GET request and 
+ * responds back to the callback function with the response body.
+ * @param {string} url 
+ * @param {CallableFunction} callbackFunction
+ */
 function simpleHttpRequest(url, callbackFunction) {
 
 	// Generate random tiles first.
@@ -421,7 +430,7 @@ function simpleHttpRequest(url, callbackFunction) {
 	}
 }
 
-// A single addition of a tile will be made on position i,j.
+/** Creates a sprite on tile location i, j on the screen. */
 function addTile(i, j, tileNum) {
 	tileSet[i][j] = tileNum; 
 	var tileNum = tileSet[i][j];
@@ -434,7 +443,7 @@ function addTile(i, j, tileNum) {
 	tileTags[tileTags.length - 1].style.clip = "rect(0px," + String( tileNum * 16 + 16 ) + "px, 16px," + String( tileNum * 16 ) + "px)"; 
 }
 
-//Based on your options (and internet connectivity), a map will be loaded.
+/** Loads the current screen with the responseText of map data. */
 function setTiles(responseText) {
 	
 	if(responseText == "")
@@ -568,7 +577,7 @@ function CreateNonPlayerCharacter(currentTileCharacter, i, j)
 	}
 }
 
-// Resets the game upon game over.
+/** Resets the game upon game over. */
 function resetGame(player)
 {
 	// TODO - make a money bag/ e.g. bunch of rupees. - test  https://github.com/Seansuke/ZeldaJavascript/issues/5

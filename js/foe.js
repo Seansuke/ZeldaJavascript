@@ -3,7 +3,7 @@
 /* ==================================================================================================================================*/
 
 // TODO - This should go into a FoeFactory class. https://github.com/Seansuke/ZeldaJavascript/issues/10
-// This will reset every single foe within the array to a random type, position, with mild stat variation.
+/** This will reset every single foe within the array to a random type, position, with mild stat variation.*/
 function resetFoes() {
 
 	// The quantity of foes and the foe difficulty all depend on how far you are from the starting point.
@@ -176,8 +176,8 @@ function resetFoes() {
 }
 
 
-// This should go into the actual foe class as a function where you pass the current player.
-//Have a single foe run through it's life cycle
+/**This should go into the actual foe class as a function where you pass the current player.
+Have a single foe run through it's life cycle*/
 function foeAction(foe_obj) {
 	// If the foe's life is <= 0, remove the foe from play
 	if(foe_obj.stat.hp <= 0) {
