@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\js"
   ],
-  "SelectedNode": "\\game.html",
+  "SelectedNode": "\\js\\drop.js",
   "PreviewInSolutionExplorer": false
 }

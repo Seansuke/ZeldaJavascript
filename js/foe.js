@@ -170,6 +170,8 @@ function resetFoes() {
 			foes[i].misc.currentWpn = "light_arrow";
 		}
 
+		foes[i].stat.mhp = Math.floor(foes[i].stat.mhp);
+		foes[i].stat.att = Math.floor(foes[i].stat.att);
 		foes[i].stat.hp = foes[i].stat.mhp;
 		foes[i].ai.aggro = false;
 	}	
