@@ -285,7 +285,7 @@ function addPlayer2(){
 	redrawHearts()
 }
 
-  function readSingleFile(evt) {
+function readSingleFile(evt) {
     //Retrieve the first (and only!) File from the FileList object
     var f = evt.target.files[0]; 
 
@@ -320,7 +320,7 @@ function addPlayer2(){
     }
   }
 
-  document.getElementById('loadFileUpload').addEventListener('change', readSingleFile, false);
+document.getElementById('loadFileUpload').addEventListener('change', readSingleFile, false);
 
 
 function download(filename, text) {
@@ -346,7 +346,7 @@ function increaseConsole(){
 	document.getElementById("gui").style.width = consoleLength + "%";
 }
 
-// Start file download.
+/** Start file download.*/
 document.getElementById("saveFile").addEventListener("click", function(){
 	var fileInput = document.getElementById("saveFileUpload");
 	var uploadButton = document.getElementById("saveFile");
@@ -410,7 +410,7 @@ function nextSong() {
 	parentNode.play();
 }
 
-// Calling this function once will initialize all the resources necessary for the game to run.
+/** Calling this function once will initialize all the resources necessary for the game to run.*/
 function init( ) {
 	gameStarted = true;
 	var heartWrapperP2Tag = document.getElementById("heartWrapperP2");
@@ -451,7 +451,7 @@ function cycleUpkeep() {
 	rupeeTag.innerText = rupees;
 }
 
-// This is the main game loop which will run once more every 50 milliseconds.
+/** This is the main game loop which will run once more every 50 milliseconds.*/
 function action( ) {
 	cycleUpkeep();
 	playerAction(p1);

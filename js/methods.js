@@ -2,7 +2,7 @@
 /* ==========================================================GLOBAL FUNCTIONS ======================================================*/
 /* ==================================================================================================================================*/
 
-// Returns whether a place on the board is completely free
+/** Returns whether a place on the board is completely free*/
 function placeFree(x,y) { 
 
 	// Check barriers
@@ -46,12 +46,12 @@ function placeFree(x,y) {
 	return true; 
 }
 
-// Returns whether a place on the board is completely free
+/** Returns whether a place on the board is completely free*/
 function placeFree_byElement(element, Xoffset, Yoffset) {
 	return placeFree(element.pos.x + Xoffset, element.pos.y + Yoffset);
 }
 
-// Moves an object if the location is free
+/** Moves an object if the location is free*/
 function moveObj(self, addX, addY) {
 	if(placeFree_byElement(self, addX, addY) == true) {
 		self.pos.x += addX;
@@ -68,7 +68,7 @@ function moveObj(self, addX, addY) {
 	self.misc.subimg += 0.6;
 }
 
-// Displays the proper sprite in the proper place on screen based on its width/height
+/** Displays the proper sprite in the proper place on screen based on its width/height*/
 function drawSprite(img,element) {
 
 	//This entire function is custom coded to match the sprite sheets themselves
@@ -135,11 +135,12 @@ function drawSprite(img,element) {
 	img.style.top = (element.pos.y - 16 - placeY) + "px"; 
 }
 
-// Moves an object, can also define whether place checking occurs.  
-// element: The element must posses a [pos] object containing [x] and [y] fields.  The function will directly change the value in these fields.
-// dir: Text stating the direction the element is looking to move.  Literally a string of either "up" "down" "left" or "right"
-// spd: The amount of pixels to move in one direction.
-// pass: Set to true if the element does not need to check if the location is free to move.
+/** Moves an object, can also define whether place checking occurs.
+ * @param {Element} element The element must posses a [pos] object containing [x] and [y] fields.  The function will directly change the value in these fields.
+ * @param {string} dir: Text stating the direction the element is looking to move.  Literally a string of either "up" "down" "left" or "right"
+ * @param {integer} spd: The amount of pixels to move in one direction.
+ * @param {boolean} pass: Set to true if the element does not need to check if the location is free to move.
+*/
 function move(element, dir, spd, pass) {
 	if(dir == "up" && (placeFree(element.pos.x, element.pos.y - spd) == true || pass == true )) {
 		element.pos.y -= spd;
@@ -155,12 +156,12 @@ function move(element, dir, spd, pass) {
 	}
 }
 
-// Moves an object if the place is passable
+/** Moves an object if the place is passable*/
 function movePassable(element, spd) {
 	return move(element, element.misc.direction, spd, true);
 }
 
-// Move an object if the location is free
+/** Move an object if the location is free*/
 function moveImpassable(element, dir, spd) {
 	return move(element, dir, spd, false);
 }

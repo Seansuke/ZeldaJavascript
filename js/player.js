@@ -1,7 +1,7 @@
 /* ==================================================================================================================================*/
 /* ==========================================================Player functions========================================================== */
 /* ==================================================================================================================================*/
-// Determine if the player will decide to move
+/** Determine if the player will decide to move*/
 function playerWalk(player) {
 	var isWalking = false;
 	var wiiuGamepadState = { hold: 0 };
@@ -97,7 +97,7 @@ function playerWalk(player) {
 	return isWalking;
 }
 
-// Determine if the player wishes to initiate an attack
+/** Determine if the player wishes to initiate an attack*/
 function playerAttack(player, isWalking) {
 	if( typeof wiiu === 'undefined' )
 	{
@@ -139,7 +139,7 @@ function playerAttack(player, isWalking) {
 	} 
 }
 
-// The player's life cycle, from 
+/** The player's single cycle.  Handles: death check, boundary check, damage check, walking, attacking, drawing sprite. */
 function playerAction(player) {
 	if(player.stat.hp <= 0) {
 		if(player.misc.respawnTimer < 0)
@@ -158,21 +158,20 @@ function playerAction(player) {
 	}
 	boundaryCheck(player);
 
-	// If the player takes damage, they are unable to move
 	if(player.dmg.time > 0) { 
+		// If the player takes damage, they are unable to move
 		objDmg(player); 
 	}
-
-	// If the player is not attacking, the player can walk or choose to initiate an attack.
 	else if(player.misc.attacking <= 0) {
+		// If the player is not attacking, the player can walk or choose to initiate an attack.
 		var isWalking = playerWalk(player);
 		playerAttack(player, isWalking);
 	}
-
-	// If the player is attacking, follow through.
 	else if(player.misc.attacking > 0) {
+		// If the player is attacking, follow through.
 		actionPerformAttack(player, player.misc.attackType);
 	}
+
 	drawSprite(player.imgtag, player);
 	drawSprite(player.attackElem.imgtag, player.attackElem);
 }
@@ -366,7 +365,7 @@ function actionArrow(player) {
 	}
 }
 
-// Initialize a strike based on the weapon that is currently "equipped"
+/** Initialize a strike based on the weapon that is currently "equipped" */
 function actionPerformAttack(player) {
 	if(player.misc.currentWpn.search("_sword") != -1) { 
 		actionSword(player); 

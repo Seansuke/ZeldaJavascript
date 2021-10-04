@@ -21,7 +21,7 @@ document.onkeyup=function(e) {
 	}
 }
 
-// Check which keyboard key is being held down and sets player one's key to such
+/** Check which keyboard key is being held down and sets player one's key to such*/
 function setKey(playerNumber) {
 	// Iterate through all keys pressed to find what is being pressed and set it.
 	for(var keyCode = 0;keyCode < 512;keyCode++) {
@@ -69,7 +69,7 @@ function setKey(playerNumber) {
 	return -1; 
 }
 
-// Set up the custom controls
+/** Set up the custom controls*/
 function controlSet(playerNumber) {
 	if(p2 === null && playerNumber == 2)
 	{
