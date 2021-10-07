@@ -21,7 +21,7 @@ function setAttack(player, newAtt, newTime, newForce, newCool, newEffect) {
 }
 
 /** Determine if there is a collision between two objects based on their misc.box variable*/
-function checkSingleCollision(a, b) { 
+function isColliding(a, b) { 
 	if(Math.abs((a.pos.x + a.misc.box) - (b.pos.x + b.misc.box)) < a.misc.box + b.misc.box) {
 		if(Math.abs(a.pos.y - b.pos.y) < a.misc.box + b.misc.box) {
 			return true;
@@ -30,70 +30,72 @@ function checkSingleCollision(a, b) {
 	return false;
 }
 
-/**  Have object A take damage from object B*/
-function setDmg(a, b) { 
+/**  Have the receiver store damage from the giver.  Will handle how far receiver is pushed.
+  * Stored damage is not applied until the force from the push ends.  
+  * Actually deducting HP is not done in this method. */
+function storeDamageAndPush(receiver, giver) { 
 	
 	// Damage is done to object A if A is not taking damage or on the same team
-	if(a.dmg.cool <= 0 && b.stat.att > 0 && a.misc.team != b.misc.team) {
-		a.dmg.time = b.stat.time; 
-		a.dmg.force = b.stat.force; 
-		a.dmg.cool = b.stat.force;
-		a.dmg.att = b.stat.att;
+	if(receiver.dmg.cool <= 0 && giver.stat.att > 0 && receiver.misc.team != giver.misc.team) {
+		receiver.dmg.time = giver.stat.time; 
+		receiver.dmg.force = giver.stat.force; 
+		receiver.dmg.cool = giver.stat.force;
+		receiver.dmg.att = giver.stat.att;
 
 		// Push object A away from object B's direction
-		if(Math.abs(a.pos.x - b.pos.x) > Math.abs(a.pos.y - b.pos.y)) {
-			if(a.pos.x < b.pos.x) { 
-				a.dmg.direction = "left"; 
+		if(Math.abs(receiver.pos.x - giver.pos.x) > Math.abs(receiver.pos.y - giver.pos.y)) {
+			if(receiver.pos.x < giver.pos.x) { 
+				receiver.dmg.direction = "left"; 
 			}
 			else { 
-				a.dmg.direction = "right"; 
+				receiver.dmg.direction = "right"; 
 			}
 		}
 		else {
-			if(a.pos.y < b.pos.y) { 
-				a.dmg.direction = "up"; 
+			if(receiver.pos.y < giver.pos.y) { 
+				receiver.dmg.direction = "up"; 
 			}
 			else { 
-				a.dmg.direction = "down"; 
+				receiver.dmg.direction = "down"; 
 			}
 		}
 	}
 }
 
-/** A generic check for all possible collisions*/
-function checkCollision() {
+/** A generic check for all possible collisions.  Will also trigger their reactions.  */
+function checkAllCollisions() {
 	for( var i = 0; i < MAX_FOES; i++) {
 
 		// Check if player is colliding with any foe
-		if(foes[i].dmg.time <= 0 && checkSingleCollision(p1, foes[i]) == true) {
-			setDmg(p1, foes[i]);
+		if(_foeList[i].dmg.time <= 0 && isColliding(_p1, _foeList[i]) == true) {
+			storeDamageAndPush(_p1, _foeList[i]);
 		}
 
 		// Check if player is colliding with any foe's attack
-		if( checkSingleCollision(p1, foes[i].attackElem) == true) { 
-			setDmg(p1, foes[i].attackElem); 
+		if( isColliding(_p1, _foeList[i].attackElem) == true) { 
+			storeDamageAndPush(_p1, _foeList[i].attackElem); 
 		}
 
 		// Check if any foe is colliding with player's attack
-		if( checkSingleCollision(foes[i], p1.attackElem) == true) { 
-			setDmg(foes[i], p1.attackElem); 
+		if( isColliding(_foeList[i], _p1.attackElem) == true) { 
+			storeDamageAndPush(_foeList[i], _p1.attackElem); 
 		}
 
 		// Expect p2 to exist before we compare damaging it
-		if(p2 !== null) {
+		if(_p2 !== null) {
 			// Check if player is colliding with any foe
-			if( checkSingleCollision(p2, foes[i]) == true) {
-				setDmg(p2, foes[i]);
+			if( isColliding(_p2, _foeList[i]) == true) {
+				storeDamageAndPush(_p2, _foeList[i]);
 			}
 
 			// Check if player is colliding with any foe's attack
-			if( checkSingleCollision(p2, foes[i].attackElem) == true) { 
-				setDmg(p2, foes[i].attackElem); 
+			if( isColliding(_p2, _foeList[i].attackElem) == true) { 
+				storeDamageAndPush(_p2, _foeList[i].attackElem); 
 			}
 
 			// Check if any foe is colliding with player's attack
-			if( checkSingleCollision(foes[i], p2.attackElem) == true) { 
-				setDmg(foes[i], p2.attackElem); 
+			if( isColliding(_foeList[i], _p2.attackElem) == true) { 
+				storeDamageAndPush(_foeList[i], _p2.attackElem); 
 			}
 		}
 	}
@@ -102,61 +104,58 @@ function checkCollision() {
 
 	// Check if player is colliding with an nonplayercharacter
 	didPlayer2Collide = false;
-	if( p2 !== null) {
-		didPlayer2Collide = checkSingleCollision(p2, nonPlayerCharacter);
+	if( _p2 !== null) {
+		didPlayer2Collide = isColliding(_p2, _nonPlayerCharacter);
 	}
-	if( checkSingleCollision(p1, nonPlayerCharacter) == true || didPlayer2Collide) {
-		if(nonPlayerCharacter.equipment.upgradeFunction !== undefined)
-		{
-			nonPlayerCharacter.equipment.upgradeFunction(nonPlayerCharacter.equipment.rank, nonPlayerCharacter.equipment.cost);
-			nonPlayerCharacter.pos.x = -999;
-			nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
-			nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+	if( isColliding(_p1, _nonPlayerCharacter) == true || didPlayer2Collide) {
+		if(_nonPlayerCharacter.equipment.upgradeFunction !== undefined) {
+			_nonPlayerCharacter.equipment.upgradeFunction(_nonPlayerCharacter.equipment.rank, _nonPlayerCharacter.equipment.cost);
+			_nonPlayerCharacter.pos.x = -999;
+			_nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
+			_nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
 		}
-		if(nonPlayerCharacter.text != "")
-		{
-			DisplayConsoleText(nonPlayerCharacter.text);
+		if(_nonPlayerCharacter.text != "") {
+			DisplayConsoleText(_nonPlayerCharacter.text);
 		}
 	}
 }
 
 /** Handles a reaction to touching an item if it happens and removes it from the global queue. */
 function checkItemDropCollision() {
-	var collidedItem = itemDropArray.find(itemDrop => checkSingleCollision(p1, itemDrop));
-	collidedItem = collidedItem === undefined ? itemDropArray.find(itemDrop => checkSingleCollision(p1.attackElem, itemDrop)) : collidedItem;
-	if (p2 !== null) {
-		collidedItem = collidedItem === undefined ? itemDropArray.find(itemDrop => checkSingleCollision(p2, itemDrop)) : collidedItem;
-		collidedItem = collidedItem === undefined ? itemDropArray.find(itemDrop => checkSingleCollision(p2.attackElem, itemDrop)) : collidedItem;
+	var collidedItem = _itemDropList.find(itemDrop => isColliding(_p1, itemDrop));
+	collidedItem = collidedItem === undefined ? _itemDropList.find(itemDrop => isColliding(_p1.attackElem, itemDrop)) : collidedItem;
+	if (_p2 !== null) {
+		collidedItem = collidedItem === undefined ? _itemDropList.find(itemDrop => isColliding(_p2, itemDrop)) : collidedItem;
+		collidedItem = collidedItem === undefined ? _itemDropList.find(itemDrop => isColliding(_p2.attackElem, itemDrop)) : collidedItem;
 	}
-	// TODO - do not pick up hearts if full. - https://github.com/Seansuke/ZeldaJavascript/issues/1
 	if (collidedItem !== undefined) {
 		if (collidedItem.pos.x != 0) {
 			if (collidedItem.type == "heart") {
-				p1.misc.respawnTimer = 0;
-				p1.stat.hp += collidedItem.amnt * 2;
-				if (p1.stat.hp > p1.stat.mhp) {
-					p1.stat.hp = p1.stat.mhp;
-				}
-				if (p2 !== null) {
-					p2.misc.respawnTimer = 0;
-					p2.stat.hp += collidedItem.amnt * 2;
+				// Do not pick up hearts if full
+				if (_p1.stat.hp >= _p1.stat.mhp && (_p2 !== null ? _p2.stat.hp >= _p2.stat.mhp : true)) {
+					DisplayConsoleText("Link's hearts are already full!");
+					return;
+                }
 
-					if (p2.stat.hp > p2.stat.mhp) {
-						p2.stat.hp = p2.stat.mhp;
-					}
+				// Pick up hearts
+				_p1.misc.respawnTimer = 0;
+				_p1.stat.hp = Math.min(_p1.stat.hp + collidedItem.amnt * 2, _p1.stat.hp);
+				if (_p2 !== null) {
+					_p2.misc.respawnTimer = 0;
+					_p2.stat.hp = Math.min(_p2.stat.hp + collidedItem.amnt * 2, _p2.stat.mhp);
 				}
 			}
 			else if (collidedItem.type == "rupee") {
-				rupees += collidedItem.amnt;
+				_rupees += collidedItem.amnt;
 			}
 			else if (collidedItem.type == "speed") {
-				p1.stat.speed += collidedItem.amnt * 0.2;
+				_p1.stat.speed += collidedItem.amnt * 0.2;
 				refreshPlayer2Equipment();
 			}
 
 			redrawHearts();
 
-			if (p1.stat.lensOfTruth > 0) {
+			if (_p1.stat.lensOfTruth > 0) {
 				DisplayConsoleText("Link gained " + collidedItem.amnt + " " + collidedItem.type + "(s)!");
 			}
 			else {
@@ -164,26 +163,24 @@ function checkItemDropCollision() {
 			}
 
 			collidedItem.imgtag.remove();
-			itemDropArray.splice(itemDropArray.indexOf(collidedItem), 1);
+			_itemDropList.splice(_itemDropList.indexOf(collidedItem), 1);
 		}
 	}
 }
 
-/** Have an object follow through it's damaged state */
-function objDmg(self) {
+/** Have an object follow through it's damaged state.  Handles graphic change, being pushed, invincibility frames, HP lost at the end of a forced push. */
+function combatantDamageState(self) {
 
-	// Transparency is used for a basic flashing animation.  50% visible
 	if(self.dmg.time % 2 == 0) {
+		// Transparency is used for a basic flashing animation.  50% visible
 		self.imgtag.style.opacity = "0.5";
 	}
-
-	// 20% visible
 	else if(self.dmg.time % 4 == 3) {
+		// 20% visible
 		self.imgtag.style.opacity = "0.2";
 	}
-
-	// 100% visible
 	else {
+		// 100% visible
 		self.imgtag.style.opacity = "1";
 	}
 
@@ -198,7 +195,7 @@ function objDmg(self) {
 		if(self.dmg.att != 0 && self.stat.hp > 0) {
 			self.stat.hp = Math.max(self.stat.hp - self.dmg.att, 0);
 			if(self.misc.name == "link") {
-				if(p1.stat.lensOfTruth > 0)
+				if(_p1.stat.lensOfTruth > 0)
 				{
 					DisplayConsoleText(`Link took ${Math.round(self.dmg.att)} damage!  ${Math.floor(self.stat.hp)} / ${Math.floor(self.stat.mhp)} Health Remains.`);
 				}
@@ -209,7 +206,7 @@ function objDmg(self) {
 				redrawHearts();
 			}
 			else {
-				if (p1.stat.lensOfTruth == 2) {
+				if (_p1.stat.lensOfTruth == 2) {
 					if (self.stat.hp <= 0) {
 						DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage and was defeated!`);
 					}
@@ -217,7 +214,7 @@ function objDmg(self) {
 						DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage!  ${Math.floor(self.stat.hp)} / ${Math.floor(self.stat.mhp)} Health Remains.`);
                     }
 				}
-				else if(p1.stat.lensOfTruth == 1) {
+				else if(_p1.stat.lensOfTruth == 1) {
 					DisplayConsoleText(`${self.misc.name} took ${Math.round(self.dmg.att)} damage!`);
 				}
 				else {
@@ -232,7 +229,7 @@ function objDmg(self) {
 /**
  * Check if the object is not within it's graphic bounds or cooldown time bounds.
  */
-function boundaryCheck(self) {
+function reduceCooldownAndResetOutsideBoundaries(self) {
 	if(self.dmg.cool > 0) {
 		self.dmg.cool--;
 	}
@@ -242,21 +239,6 @@ function boundaryCheck(self) {
 		self.pos.x = 60 + Math.random() * 320
 		self.pos.y = 60 + Math.random() * 360
 	}
-}
-
-// TODO - hearts should not drop if hp is high.  hearts should drop more when hp is low.  https://github.com/Seansuke/ZeldaJavascript/issues/24
-/** 
- * Have a random drop appear in the location (x, y)
- */
-function randomDrop(x, y, maxDropGain) {
-	var itemDrop = new Drop();
-	itemDrop.pos.x = x;
-	itemDrop.pos.y = y;
-	itemDrop.type = ( Array('heart','rupee','speed') )[ Math.floor(Math.random() * 3) ];
-	itemDrop.imgtag.src = "gfx/drop/" + itemDrop.type + ".png";
-	itemDrop.amnt = Math.ceil(maxDropGain * 0.5 + Math.random() * maxDropGain * 0.5);
-	drawSprite(itemDrop.imgtag, itemDrop);
-	itemDropArray.push(itemDrop);
 }
 
 function TryParseInt(str, defaultValue) {
@@ -271,71 +253,40 @@ function TryParseInt(str, defaultValue) {
      return retValue;
 }
 
-function isChrome() {
-  var isChromium = window.chrome,
-    winNav = window.navigator,
-    vendorName = winNav.vendor,
-    isOpera = winNav.userAgent.indexOf("OPR") > -1,
-    isIEedge = winNav.userAgent.indexOf("Edge") > -1,
-    isIOSChrome = winNav.userAgent.match("CriOS");
-
-  if (isIOSChrome) {
-    return true;
-  } else if (
-    isChromium !== null &&
-    typeof isChromium !== "undefined" &&
-    vendorName === "Google Inc." &&
-    isOpera === false &&
-    isIEedge === false
-  ) {
-    return true;
-  } else { 
-    return false;
-  }
-}
-
 // TODO - MAke more maps too.  https://github.com/Seansuke/ZeldaJavascript/issues/4
 /** Request from the server an adjacent map to be drawn.*/
 function nextRoom(mapXadd, mapYadd) {
-	mapX += mapXadd;
-	mapY += mapYadd;
-	// TODO - make this work with maps on file for testing.  https://github.com/Seansuke/ZeldaJavascript/issues/8
-	var mapFileName = "ajax/map_" + mapX + "" + mapY + ".txt";
+	_mapX += mapXadd;
+	_mapY += mapYadd;
+	var mapFileName = "ajax/map_" + _mapX + "" + _mapY + ".txt";
 	var fullMapFileName = mapFileName;
-	var currentFilePath = window.location.href;
-	if(isChrome() && window.location.protocol == "file:")
-	{
-		//fullMapFileName = `http://seansuke.mygamesonline.com/zeldajs/${mapFileName}`;
-		setTiles("random"); 
-		return;
-	}
 	simpleHttpRequest(fullMapFileName, setTiles);
 }
 
 /** Redraw the hearts on the screen*/
 function redrawHearts() { 
-	for(var i = 0;i * 10 < p1.stat.mhp;i++) {
-		if(p1.stat.hp >= (i)*10 + 5) { 
-			heartList[i].src = "gfx/gui/heart_full.png"; 
+	for(var i = 0;i * 10 < _p1.stat.mhp;i++) {
+		if(_p1.stat.hp >= (i)*10 + 5) { 
+			_heartList[i].src = "gfx/gui/heart_full.png"; 
 		}
-		else if(p1.stat.hp >= (i)*10) { 
-			heartList[i].src = "gfx/gui/heart_half.png"; 
+		else if(_p1.stat.hp >= (i)*10) { 
+			_heartList[i].src = "gfx/gui/heart_half.png"; 
 		}
 		else { 
-			heartList[i].src = "gfx/gui/heart_empty.png"; 
+			_heartList[i].src = "gfx/gui/heart_empty.png"; 
 		}
 	}
-	if(p2 !== null)
+	if(_p2 !== null)
 	{
-		for(var i = 0;i * 10 < p2.stat.mhp;i++) {
-			if(p2.stat.hp >= (i)*10 + 5) { 
-				heartListP2[i].src = "gfx/gui/heart_full.png"; 
+		for(var i = 0;i * 10 < _p2.stat.mhp;i++) {
+			if(_p2.stat.hp >= (i)*10 + 5) { 
+				_player2HeartList[i].src = "gfx/gui/heart_full.png"; 
 			}
-			else if(p2.stat.hp >= (i)*10) { 
-				heartListP2[i].src = "gfx/gui/heart_half.png"; 
+			else if(_p2.stat.hp >= (i)*10) { 
+				_player2HeartList[i].src = "gfx/gui/heart_half.png"; 
 			}
 			else { 
-				heartListP2[i].src = "gfx/gui/heart_empty.png"; 
+				_player2HeartList[i].src = "gfx/gui/heart_empty.png"; 
 			}
 		}
 	}
@@ -343,37 +294,37 @@ function redrawHearts() {
 
 /** Request the player's life to be redrawn.*/
 function redrawMaxHearts() {
-	while(heartList.length > 0)
+	while(_heartList.length > 0)
 	{
-		heartList.pop();
+		_heartList.pop();
 	}
 	while(document.getElementsByClassName("heart").length > 0) { 
 		document.getElementsByClassName("heart")[0].remove();
 	3}
 	var heartWrapperDivTag = document.getElementById('heartWrapper');
-	for(var i = 0;i * 10 < p1.stat.mhp;i++) {
+	for(var i = 0;i * 10 < _p1.stat.mhp;i++) {
 		var newHeartImageTag = document.createElement('img');
 		newHeartImageTag.classList.add("heart");
 		newHeartImageTag.src = "gfx/gui/heart_full.png";
 		var appendedHeartImageTag = heartWrapperDivTag.appendChild(newHeartImageTag);
-		heartList.push(appendedHeartImageTag);
+		_heartList.push(appendedHeartImageTag);
 	}
-	if(p2 !== null)
+	if(_p2 !== null)
 	{
-		while(heartListP2.length > 0)
+		while(_player2HeartList.length > 0)
 		{
-			heartListP2.pop();
+			_player2HeartList.pop();
 		}
 		while(document.getElementsByClassName("heartP2").length > 0) { 
 			document.getElementsByClassName("heartP2")[0].remove();
 		}
 		var heartWrapperP2DivTag = document.getElementById('heartWrapperP2');
-		for(var i = 0;i * 10 < p2.stat.mhp;i++) {
+		for(var i = 0;i * 10 < _p2.stat.mhp;i++) {
 			var newHeartImageTag = document.createElement('img');
 			newHeartImageTag.classList.add("heartP2");
 			newHeartImageTag.src = "gfx/gui/heart_full.png";
 			var appendedHeartImageTag = heartWrapperP2DivTag.appendChild(newHeartImageTag);
-			heartListP2.push(appendedHeartImageTag);
+			_player2HeartList.push(appendedHeartImageTag);
 		}
 
 	}
@@ -440,15 +391,15 @@ function simpleHttpRequest(url, callbackFunction) {
 
 /** Creates a sprite on tile location i, j on the screen. */
 function addTile(i, j, tileNum) {
-	tileSet[i][j] = tileNum; 
-	var tileNum = tileSet[i][j];
-	tileTags.push(document.getElementById("tiles").appendChild(document.createElement('img')));
-	tileTags[tileTags.length - 1].src = "gfx/tileset.png";
-	tileTags[tileTags.length - 1].style.left = (i * 16 - tileNum * 16 - 8) + "px";
-	tileTags[tileTags.length - 1].style.top = (j * 16 - 16) + "px"; 
+	_tileMatrix[i][j] = tileNum; 
+	var tileNum = _tileMatrix[i][j];
+	_tileTagList.push(document.getElementById("tiles").appendChild(document.createElement('img')));
+	_tileTagList[_tileTagList.length - 1].src = "gfx/tileset.png";
+	_tileTagList[_tileTagList.length - 1].style.left = (i * 16 - tileNum * 16 - 8) + "px";
+	_tileTagList[_tileTagList.length - 1].style.top = (j * 16 - 16) + "px"; 
 
 	//Rectangle Clip's parameters: (top, right, bottom, left)
-	tileTags[tileTags.length - 1].style.clip = "rect(0px," + String( tileNum * 16 + 16 ) + "px, 16px," + String( tileNum * 16 ) + "px)"; 
+	_tileTagList[_tileTagList.length - 1].style.clip = "rect(0px," + String( tileNum * 16 + 16 ) + "px, 16px," + String( tileNum * 16 ) + "px)"; 
 }
 
 /** Loads the current screen with the responseText of map data. */
@@ -465,21 +416,21 @@ function setTiles(responseText) {
 	}
 
 	// Ensure all the tiles have been removed from the tiles div tag
-	while(tileTags.length > 0) { 
+	while(_tileTagList.length > 0) { 
 
 		// Remove them, one by one, off of the 2D Array
-		document.getElementById("tiles").removeChild( tileTags.pop()); 
+		document.getElementById("tiles").removeChild( _tileTagList.pop()); 
 	} 
 
-	if(responseText.length < horizontalTileCount * verticalTileCount) {
+	if(responseText.length < _horizontalTileCount * _verticalTileCount) {
 		// Create a random map if the length of the response does not match the intended tile count.
-		for(var i = 0;i < horizontalTileCount;i++) {
-			for(var j = 0;j < verticalTileCount;j++) {
+		for(var i = 0;i < _horizontalTileCount;i++) {
+			for(var j = 0;j < _verticalTileCount;j++) {
 				if(Math.random() < 0.15 
 					&& i > 2 
-					&& i < horizontalTileCount - 2 
+					&& i < _horizontalTileCount - 2 
 					&& j > 2 
-					&& j < verticalTileCount - 2
+					&& j < _verticalTileCount - 2
 					) {
 					addTile(i, j, Math.floor(Math.random() * 7)); 
 				}
@@ -539,9 +490,9 @@ function setTiles(responseText) {
 
 function RemoveNonPlayerCharacter()
 {
-	nonPlayerCharacter.pos = { x: -999, y: -999 };
-	nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
-	nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+	_nonPlayerCharacter.pos = { x: -999, y: -999 };
+	_nonPlayerCharacter.imgtag.src = "gfx/alpha.png";
+	_nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
 }
 
 function CreateNonPlayerCharacter(currentTileCharacter, i, j)
@@ -551,37 +502,37 @@ function CreateNonPlayerCharacter(currentTileCharacter, i, j)
 	var weaponUpdateArray = (new EquipmentList())[currentTileCharacter];
 	if(weaponUpdateArray !== undefined)
 	{
-		nonPlayerCharacter.productImgTag.src = weaponUpdateArray.gfx;
-		nonPlayerCharacter.equipment = weaponUpdateArray;
-		nonPlayerCharacter.text = "";
+		_nonPlayerCharacter.productImgTag.src = weaponUpdateArray.gfx;
+		_nonPlayerCharacter.equipment = weaponUpdateArray;
+		_nonPlayerCharacter.text = "";
 		spawned = true;
 	}
 
 	var dialogueText = (new DialogueList())[currentTileCharacter];
 	if(dialogueText !== undefined)
 	{
-		nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
-		nonPlayerCharacter.text = dialogueText;
+		_nonPlayerCharacter.productImgTag.src = "gfx/alpha.png";
+		_nonPlayerCharacter.text = dialogueText;
 		spawned = true;
 	}
 
 	if(spawned)
 	{
-		nonPlayerCharacter.pos = { x: i*16, y: j*16 };
-		nonPlayerCharacter.imgtag.style.left = nonPlayerCharacter.pos.x + "px";
-		nonPlayerCharacter.imgtag.style.top = nonPlayerCharacter.pos.y + "px";
-		nonPlayerCharacter.productImgTag.style.left = nonPlayerCharacter.pos.x + "px";
-		nonPlayerCharacter.productImgTag.style.top = nonPlayerCharacter.pos.y + 16 + "px";
-		nonPlayerCharacter.productImgTag.style.clip = "rect(0px, 16px, 16px, 0px)";
-		if(nonPlayerCharacter.equipment.name !== undefined)
+		_nonPlayerCharacter.pos = { x: i*16, y: j*16 };
+		_nonPlayerCharacter.imgtag.style.left = _nonPlayerCharacter.pos.x + "px";
+		_nonPlayerCharacter.imgtag.style.top = _nonPlayerCharacter.pos.y + "px";
+		_nonPlayerCharacter.productImgTag.style.left = _nonPlayerCharacter.pos.x + "px";
+		_nonPlayerCharacter.productImgTag.style.top = _nonPlayerCharacter.pos.y + 16 + "px";
+		_nonPlayerCharacter.productImgTag.style.clip = "rect(0px, 16px, 16px, 0px)";
+		if(_nonPlayerCharacter.equipment.name !== undefined)
 		{
-			if(nonPlayerCharacter.equipment.name.indexOf("bomb") != -1)
+			if(_nonPlayerCharacter.equipment.name.indexOf("bomb") != -1)
 			{
-				nonPlayerCharacter.productImgTag.style.clip = "rect(16px, 32px, 32px, 16px)";
+				_nonPlayerCharacter.productImgTag.style.clip = "rect(16px, 32px, 32px, 16px)";
 			}
 		}
-		nonPlayerCharacter.productCode = currentTileCharacter;
-		nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
+		_nonPlayerCharacter.productCode = currentTileCharacter;
+		_nonPlayerCharacter.imgtag.src = "gfx/shopkeeper.png";
 	}
 }
 
@@ -601,20 +552,20 @@ function resetGame(player)
 	// TODO - Foes, while they are invincible, should not do damage to you! - test  https://github.com/Seansuke/ZeldaJavascript/issues/22
 	// TODO - ally invincible time  https://github.com/Seansuke/ZeldaJavascript/issues/23
 	// TODO - shopkeepers shouldnt disappear.  https://github.com/Seansuke/ZeldaJavascript/issues/25
-	if(p1.misc.checkpointPosX === undefined)
+	if(_p1.misc.checkpointPosX === undefined)
 	{
-		p1.misc.checkpointPosX = 20;
-		p1.misc.checkpointPosY = 240;
-		p1.misc.checkpointMapX = 0;
-		p1.misc.checkpointMapY = 0;
+		_p1.misc.checkpointPosX = 20;
+		_p1.misc.checkpointPosY = 240;
+		_p1.misc.checkpointMapX = 0;
+		_p1.misc.checkpointMapY = 0;
 	}
-	player.pos = { x: p1.misc.checkpointPosX, y: p1.misc.checkpointPosY };
-	p1.pos.x = player.pos.x;
-	p1.pos.y = player.pos.y;
-	if(p2 !== null)
+	player.pos = { x: _p1.misc.checkpointPosX, y: _p1.misc.checkpointPosY };
+	_p1.pos.x = player.pos.x;
+	_p1.pos.y = player.pos.y;
+	if(_p2 !== null)
 	{
-		p2.pos.x = player.pos.x;
-		p2.pos.y = player.pos.y;
+		_p2.pos.x = player.pos.x;
+		_p2.pos.y = player.pos.y;
 	}
 
 	player.dmg = { att: 0, time: 0, force: 0, cool: 0, direction: "up", effect: "none"};
@@ -624,10 +575,10 @@ function resetGame(player)
 	player.misc.respawnTimer = 0;
 
 	// Reset player HP to max.
-	p1.stat.hp = p1.stat.mhp;
-	if(p2 !== null)
+	_p1.stat.hp = _p1.stat.mhp;
+	if(_p2 !== null)
 	{
-		p2.stat.hp = p2.stat.mhp;
+		_p2.stat.hp = _p2.stat.mhp;
 	}
 
 	player.imgtag.src = player.stat.imgSource;
@@ -635,8 +586,8 @@ function resetGame(player)
 	refreshPlayer2Equipment();
 	redrawMaxHearts();
 	redrawHearts();
-	mapX = p1.misc.checkpointMapX;
-	mapY = p1.misc.checkpointMapY;
+	_mapX = _p1.misc.checkpointMapX;
+	_mapY = _p1.misc.checkpointMapY;
 	resetFoes();
 	nextRoom(0, 0);
 }

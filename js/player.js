@@ -13,25 +13,25 @@ function playerWalk(player) {
 	}
 	
 	// TODO - implement these as variables that can be changed. https://github.com/Seansuke/ZeldaJavascript/issues/3
-	if (control[player.ctrl.left] == true || touchControls.left || wiiuGamepadState.hold & 0x00000800 || wiiuGamepadState.hold & 0x40000000 || wiiuRemoteState.held & 0x00000100) {
+	if (_controlList[player.ctrl.left] == true || _touchControlList.left || wiiuGamepadState.hold & 0x00000800 || wiiuGamepadState.hold & 0x40000000 || wiiuRemoteState.held & 0x00000100) {
 		isWalking = true;
 		player.misc.direction = "left";
 		moveObj(player, - player.stat.speed / 2 , 0); 
 		moveObj(player, - player.stat.speed / 2 , 0); 
 	}
-	else if (control[player.ctrl.right] == true || touchControls.right  || wiiuGamepadState.hold & 0x00000400 || wiiuGamepadState.hold & 0x20000000  || wiiuRemoteState.held & 0x00000200) {
+	else if (_controlList[player.ctrl.right] == true || _touchControlList.right  || wiiuGamepadState.hold & 0x00000400 || wiiuGamepadState.hold & 0x20000000  || wiiuRemoteState.held & 0x00000200) {
 		isWalking = true;
 		player.misc.direction = "right"; 	
 		moveObj(player, player.stat.speed / 2 , 0);
 		moveObj(player, player.stat.speed / 2 , 0);
 	}
-	if (control[player.ctrl.up] == true || touchControls.up  || wiiuGamepadState.hold & 0x00000200 || wiiuGamepadState.hold & 0x10000000  || wiiuRemoteState.held & 0x00000800) {
+	if (_controlList[player.ctrl.up] == true || _touchControlList.up  || wiiuGamepadState.hold & 0x00000200 || wiiuGamepadState.hold & 0x10000000  || wiiuRemoteState.held & 0x00000800) {
 		isWalking = true;
 		player.misc.direction = "up";
 		moveObj(player, 0 , - player.stat.speed / 2);
 		moveObj(player, 0 , - player.stat.speed / 2);
 	}
-	else if (control[player.ctrl.down] == true || touchControls.down  || wiiuGamepadState.hold & 0x00000100 || wiiuGamepadState.hold & 0x08000000  || wiiuRemoteState.held & 0x00000400) {
+	else if (_controlList[player.ctrl.down] == true || _touchControlList.down  || wiiuGamepadState.hold & 0x00000100 || wiiuGamepadState.hold & 0x08000000  || wiiuRemoteState.held & 0x00000400) {
 		isWalking = true;
 		player.misc.direction = "down"; 
 		moveObj(player, 0 , player.stat.speed / 2); 
@@ -46,52 +46,48 @@ function playerWalk(player) {
 	}
 
 	// Check all boundaries
-	if(player.pos.x > 635) {
+	if (player.pos.x > 635) {
 		player.pos.x = 10;
-		p1.pos.x = player.pos.x;
-		p1.pos.y = player.pos.y;
-		if(p2 !== null)
-		{
-			p2.pos.x = player.pos.x;
-			p2.pos.y = player.pos.y;
+		_p1.pos.x = player.pos.x;
+		_p1.pos.y = player.pos.y;
+		if (_p2 !== null) {
+			_p2.pos.x = player.pos.x;
+			_p2.pos.y = player.pos.y;
 		}
-		nextRoom(1,0);
+		nextRoom(1, 0);
 		resetFoes();
 	}
-	else if(player.pos.x < 5) {
+	else if (player.pos.x < 5) {
 		player.pos.x = 630;
-		p1.pos.x = player.pos.x;
-		p1.pos.y = player.pos.y;
-		if(p2 !== null)
-		{
-			p2.pos.x = player.pos.x;
-			p2.pos.y = player.pos.y;
+		_p1.pos.x = player.pos.x;
+		_p1.pos.y = player.pos.y;
+		if (_p2 !== null) {
+			_p2.pos.x = player.pos.x;
+			_p2.pos.y = player.pos.y;
 		}
 		nextRoom(-1,0);
 		resetFoes();
 	}
-	else if(player.pos.y > 475) {
+	else if (player.pos.y > 475) {
 		player.pos.y = 10;
-		p1.pos.x = player.pos.x;
-		p1.pos.y = player.pos.y;
-		if(p2 !== null)
-		{
-			p2.pos.x = player.pos.x;
-			p2.pos.y = player.pos.y;
+		_p1.pos.x = player.pos.x;
+		_p1.pos.y = player.pos.y;
+		if (_p2 !== null) {
+			_p2.pos.x = player.pos.x;
+			_p2.pos.y = player.pos.y;
 		}
-		nextRoom(0,1);
+		nextRoom(0, 1);
 		resetFoes();
 	}
-	else if(player.pos.y < 5) {
+	else if (player.pos.y < 5) {
 		player.pos.y = 470;
-		p1.pos.x = player.pos.x;
-		p1.pos.y = player.pos.y;
-		if(p2 !== null)
-		{
-			p2.pos.x = player.pos.x;
-			p2.pos.y = player.pos.y;
+		_p1.pos.x = player.pos.x;
+		_p1.pos.y = player.pos.y;
+		if (_p2 !== null) {
+			_p2.pos.x = player.pos.x;
+			_p2.pos.y = player.pos.y;
 		}
-		nextRoom(0,-1);
+		nextRoom(0, -1);
 		resetFoes();
 	}
 	return isWalking;
@@ -111,28 +107,28 @@ function playerAttack(player, isWalking) {
 	}
 
 	// Sword
-	if (control[player.ctrl.attA] == true || touchControls.A || stateu.hold & 0x00008000 || state.held & 0x00000002) {
+	if (_controlList[player.ctrl.attA] == true || _touchControlList.A || stateu.hold & 0x00008000 || state.held & 0x00000002) {
 		player.misc.attackType = isWalking;
 		player.misc.currentWpn = player.wpn.A; 
 		player.misc.attacking = 99;
 	}
 
 	// Boomerang
-	else if (control[player.ctrl.attB] == true || touchControls.B ||  stateu.hold & 0x00000080 || state.held & 0x00000001) { 
+	else if (_controlList[player.ctrl.attB] == true || _touchControlList.B ||  stateu.hold & 0x00000080 || state.held & 0x00000001) { 
 		player.misc.attackType = isWalking;
 		player.misc.currentWpn = player.wpn.B; 
 		player.misc.attacking = 99;
 	}
 
 	// Bomb
-	else if (control[player.ctrl.attC] == true || touchControls.C ||  stateu.hold & 0x00040000 || state.held & 0x00000008) { 
+	else if (_controlList[player.ctrl.attC] == true || _touchControlList.C ||  stateu.hold & 0x00040000 || state.held & 0x00000008) { 
 		player.misc.attackType = isWalking;
 		player.misc.currentWpn = player.wpn.C;
 		player.misc.attacking = 99;
 	} 
 
 	// Arrow
-	else if (control[player.ctrl.attD] == true || touchControls.D ||  stateu.hold & 0x00000040 || state.held & 0x00000004) {
+	else if (_controlList[player.ctrl.attD] == true || _touchControlList.D ||  stateu.hold & 0x00000040 || state.held & 0x00000004) {
 		player.misc.attackType = isWalking;
 		player.misc.currentWpn = player.wpn.D;
 		player.misc.attacking = 99;
@@ -156,11 +152,11 @@ function playerAction(player) {
 		player.misc.respawnTimer--;
 		return;
 	}
-	boundaryCheck(player);
+	reduceCooldownAndResetOutsideBoundaries(player);
 
 	if(player.dmg.time > 0) { 
 		// If the player takes damage, they are unable to move
-		objDmg(player); 
+		combatantDamageState(player); 
 	}
 	else if(player.misc.attacking <= 0) {
 		// If the player is not attacking, the player can walk or choose to initiate an attack.

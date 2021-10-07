@@ -21,11 +21,11 @@ function placeFree(x,y) {
 	var centerY = Math.round(y / 16);
 	var topY = Math.round((y - 4) / 16);
 	var bottomY = Math.round((y + 4) / 16);
-	var centerTile = tileSet[centerX][centerY].toString();
-	var leftTopTile = tileSet[leftX][topY].toString();
-	var rightTopTile = tileSet[rightX][topY].toString();
-	var leftBottomTile = tileSet[leftX][bottomY].toString();
-	var rightBottomTile = tileSet[rightX][bottomY].toString();
+	var centerTile = _tileMatrix[centerX][centerY].toString();
+	var leftTopTile = _tileMatrix[leftX][topY].toString();
+	var rightTopTile = _tileMatrix[rightX][topY].toString();
+	var leftBottomTile = _tileMatrix[leftX][bottomY].toString();
+	var rightBottomTile = _tileMatrix[rightX][bottomY].toString();
 
 	// Actually check for the tiles.
 	if(passableTileList.indexOf(centerTile) == -1) { 

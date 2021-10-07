@@ -64,7 +64,7 @@ function SaveData() {
 // TODO - This should go into its own class file.  https://github.com/Seansuke/ZeldaJavascript/issues/12
 function EquipmentList() {
 	this.h = new Equipment("heart", 0, "heal", "gfx/gui/heart_half.png", heal, 0);
-	this.H = new Equipment("heartContainer", 1, "heartContainer", "gfx/gui/heart_full.png", heartUpgrade, upgradeHeartsCostFlatFee + upgradeHeartCostMultiplier * p1.stat.mhp);
+	this.H = new Equipment("heartContainer", 1, "heartContainer", "gfx/gui/heart_full.png", heartUpgrade, UPGRADE_HEART_COST_FLAT_FEE + UPGRADE_HEART_COST_MULTIPLIER * _p1.stat.mhp);
 	this.u = new Equipment("lensOfTruth", 0, "lensOfTruth", "gfx/wpn/lensOfTruth.png", lensOfTruthUpgrade, 8);
 	this.U = new Equipment("lensOfTruth", 1, "eyeOfTruth", "gfx/wpn/lensOfTruth.png", lensOfTruthUpgrade, 16);
 	this.woodenSword = new Equipment("sword", 0, "wooden_sword", "gfx/wpn/wooden_sword.png", swordUpgrade, 0);
