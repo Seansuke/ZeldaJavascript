@@ -1,0 +1,32 @@
+<root><![CDATA[
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWW                        WWWWWWWW
+WWWWWW                         @@@    WWW
+WWWWWW                         @@@    WWW
+WWW         @@@         @@@    @@@    WWW
+WWW         @@@         @@@           WWW
+WWW  @@@    @@@         @@@           WWW
+WWW  @@@                              WWW
+WWW  @@@           @@@         @@@    WWW
+WWW                @@@ @@@     @@@    WWW
+WWW                @@@ @@@     @@@    WWW
+WWW     @@@            @@@            WWW
+        @@@               @@@         WWW
+        @@@               @@@         WWW
+                @@@       @@@         WWW
+###             @@@                   ###
+###             @@@@@@                ###
+###   @@@          @@@        @       ###
+###   @@@@@@       @@@       @@@   ######
+###   @@@@@@           @@@    @   @######
+###      @@@@@@        @@@       @@######
+###         @@@        @@@      @@@######
+###         @@@                @@@@######
+#####                         @@@@#######
+#######                   ###############
+##################    ###################
+##################    ###################
+##################    ###################
+]]></root>

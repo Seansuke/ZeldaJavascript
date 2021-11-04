@@ -1,32 +1,32 @@
 <root><![CDATA[
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-WWWW                                  WWW
-WWWW                                  WWW
-WWWW                                  WWW
-WWWW                                  WWW
-WWWW                                  WWW
-WWWW                                  WWW
-WWWW                                  WWW
-WWWW                                   WW
-WWWW                                   WW
-WWWW                                   WW
-WWWW                                   WW
-WWWW                                    W
-                                        #
-                                        #
-                                        #
-####                                   ##
-###                                   ###
-###                                   ###
-####                                  ###
-####                                  ###
-####                                  ###
-#####                                 ###
-#######                               ###
-#########                           #####
-############               h         ####
-##########                           ####
+WWWWWWWWWWWW  @     @   @  @     @    WWW
+WWWWWWWW @      @    @         @      WWW
+WWWWWWWW    @     @       @           WWW
+WWWWWWW   @           @             @ WWW
+WWWWWW  @     @     @         @       WWW
+WWWWWW      @     @     @   @   @     WWW
+WWWWWW    @   @     @    @        @   WWW
+WWWWW  @   @           @@@@   @@       WW
+WWWWW    @        @               @@@  WW
+WWWW  @      @        @@               WW
+WWWW       @    @         @@@          WW
+WWWW    @                      @@@      W
+     #             @@                    
+           @              @@     @@      
+        @            @@   @@     @@      
+####           @     @@                ##
+###       @                           ###
+###          @@@@@                    ###
+####     @   @@@@@           @@@@     ###
+####         @@@@@           @@@@     ###
+#####                        @@@@     ###
+######     @       @         @@@@     ###
+#######       @ @@@                   ###
+#########       @@@                 #####
+##########@@    @@@        h         ####
+##########                 @@@@      ####
 ##################    ###################
-#########################################
+##################    ###################
 ]]></root>

@@ -12,11 +12,15 @@ function CombatStrategy() {
 		var itemDrop = new Drop();
 		itemDrop.pos.x = x;
 		itemDrop.pos.y = y;
-		if (_p1.stat.hp <= 15 || (_p2 === null ? false : _p2.stat.hp <= maxDropValue)) {
+		var p1HpPercent = _p1.stat.hp / _p1.stat.mhp;
+		var p2HpPercent = _p2 === null ? null : _p2.stat.hp / _p2.stat.mhp;
+		var minHpPercent = Math.min(p1HpPercent, p2HpPercent ?? 999);
+		var maxHpPercent = Math.max(p1HpPercent, p2HpPercent ?? 0);
+		if (minHpPercent <= 0.333) {
 			// Low on HP, promote healing.
 			itemDrop.type = (Array('heart', 'heart', 'heart', 'heart', 'heart', 'rupee', 'speed'))[Math.floor(Math.random() * 7)];
 		}
-		else if (_p1.stat.mhp - _p1.stat.hp <= maxDropValue || (_p2 === null ? false : _p2.stat.mhp - _p2.stat.hp <= maxDropValue)) {
+		else if (maxHpPercent >= 0.75) {
 			// Don't promote overhealing when high on HP.
 			itemDrop.type = (Array('heart', 'rupee', 'rupee', 'rupee', 'speed', 'speed', 'speed'))[Math.floor(Math.random() * 7)];
 		}

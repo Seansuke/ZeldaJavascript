@@ -25,11 +25,11 @@ document.onkeyup=function(e) {
 function setKey(playerNumber) {
 	// Iterate through all keys pressed to find what is being pressed and set it.
 	for (var keyCode = 0; keyCode < 512; keyCode++) {
-		var currentKeyName = KEY_LIST[currentKeyIndex];
-		var previousKeyName = KEY_LIST[currentKeyIndex - 1];
+		var currentKeyName = KEY_LIST[_currentKeyIndex];
+		var previousKeyName = KEY_LIST[_currentKeyIndex - 1];
 		var isKeyCodePressed = _controlList[keyCode];
 		if (isKeyCodePressed == true) {
-			if (currentKeyIndex == 0) {
+			if (_currentKeyIndex == 0) {
 				if (playerNumber == 1) {
 					_p1.ctrl[currentKeyName] = keyCode;
 				}
